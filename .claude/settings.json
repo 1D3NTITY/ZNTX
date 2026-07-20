@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Edit|Write|Read|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 /srv/zntx/.claude/hooks/guardrails.py"
+          }
+        ]
+      }
+    ]
+  }
+}

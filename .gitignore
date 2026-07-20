@@ -1,0 +1,17 @@
+node_modules/
+.env
+.env.*
+!.env.example
+secrets/
+.next/
+dist/
+build/
+*.log
+.DS_Store
+.claude/settings.local.json
+.claude/.implementation-session-active
+.claude/hooks/__pycache__/
+services/web/.next/
+services/web/node_modules/
+services/web/next-env.d.ts
+services/web/tsconfig.tsbuildinfo
