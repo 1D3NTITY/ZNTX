@@ -14,10 +14,27 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const TITLE = "zntx — Luis";
+const DESCRIPTION =
+  "Full-Stack-Entwicklung & Server-Infrastruktur: echte Produktiv-Infrastruktur über mehrere Server, Docker/Caddy/Postgres-Betrieb, laufende Projekte statt Prototypen.";
+
 export const metadata: Metadata = {
-  title: "zntx — Luis",
-  description:
-    "Technisches Profil: echte Produktiv-Infrastruktur über mehrere Server, Docker/Caddy/Postgres-Betrieb, Full-Stack-Projekte.",
+  title: TITLE,
+  description: DESCRIPTION,
+  metadataBase: new URL("https://zntx.de"),
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: "https://zntx.de",
+    siteName: "zntx",
+    locale: "de_DE",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
 };
 
 export default function RootLayout({

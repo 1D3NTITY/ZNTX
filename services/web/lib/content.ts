@@ -163,6 +163,15 @@ export const CROSS_CUTTING_SKILLS: SkillCategory[] = [
   },
 ];
 
+export const LINKS = {
+  linkedin: "https://www.linkedin.com/in/luis-b-668750319/",
+  contactEmail: "kontakt@zntx.de",
+};
+
+export const HERO = {
+  role: "Full-Stack-Entwicklung & Server-Infrastruktur",
+};
+
 export const BIO = {
   heading: "Operator-Profil",
   dayJob: "Vollzeit und Minijob im Lager.",
@@ -170,10 +179,4 @@ export const BIO = {
     "Nebenbei: mehrere Root-Server, echte Produktiv-Infrastruktur, FPV-Drohnen-Foto- und Videografie.",
   note:
     "Kein Blender-Lebenslauf — die Projekte auf dieser Karte laufen wirklich, mit echtem Betrieb dahinter.",
-};
-
-export const FPV_SHOWCASE = {
-  heading: "FPV-Aufnahmen",
-  note:
-    "Eigenes Foto-/Videomaterial folgt hier, sobald Rohmaterial gesichtet und geschnitten ist.",
 };
