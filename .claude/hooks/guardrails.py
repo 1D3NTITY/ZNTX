@@ -23,6 +23,21 @@ import sys
 
 PROJECT_ROOT = "/srv/zntx"
 COMPOSE_FILENAME_RE = re.compile(r"(^|/)(docker-)?compose\.ya?ml$", re.IGNORECASE)
+# `ports:`-Policy korrigiert (Luis, 2026-07-20, siehe docs/plans/portfolio-aufbau.md
+# "Wichtiger Fund"): die alte Blanko-Sperre widersprach der gelebten Praxis bei
+# foodapp/ravepuls/matrix-chat (127.0.0.1-gebundene ports:, Caddy als Host-Service statt
+# Container). Jetzt: `ports:`-Einträge erlaubt, aber NUR wenn an 127.0.0.1 gebunden —
+# alles andere (0.0.0.0, bare Port ohne Host-Bind) bleibt geblockt.
+PORT_ITEM_RE = re.compile(r'^-\s*["\']?([\w.]*:?\d{1,5}:\d{1,5}(?:/\w+)?)["\']?\s*$')
+
+
+def find_unsafe_port_mappings(text: str) -> list[str]:
+    unsafe = []
+    for line in text.splitlines():
+        m = PORT_ITEM_RE.match(line.strip())
+        if m and not m.group(1).startswith("127.0.0.1:"):
+            unsafe.append(m.group(1))
+    return unsafe
 
 
 def block(msg: str) -> None:
@@ -52,20 +67,17 @@ def main() -> None:
 
         if tool in ("Edit", "Write") and COMPOSE_FILENAME_RE.search(low):
             if tool == "Edit":
-                old = str(ti.get("old_string", ""))
                 new = str(ti.get("new_string", ""))
-                if "ports:" in new and "ports:" not in old:
-                    block("adding `ports:` to a compose file is forbidden — use a Caddy route instead")
+                unsafe = find_unsafe_port_mappings(new)
             else:  # Write
                 content = str(ti.get("content", ""))
-                existing = ""
-                if os.path.exists(path):
-                    try:
-                        existing = open(path, encoding="utf-8", errors="ignore").read()
-                    except OSError:
-                        existing = ""
-                if "ports:" in content and "ports:" not in existing:
-                    block("adding `ports:` to a compose file is forbidden — use a Caddy route instead")
+                unsafe = find_unsafe_port_mappings(content)
+            if unsafe:
+                block(
+                    "unsafe `ports:` entry (not bound to 127.0.0.1): "
+                    f"{', '.join(unsafe)}. Nur 127.0.0.1:<host>:<container> ist erlaubt — "
+                    "Caddy bleibt einziger öffentlicher Ingress."
+                )
         return
 
     if tool == "Bash":

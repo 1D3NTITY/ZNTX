@@ -1,0 +1,42 @@
+# zntx — Repo-Kopie des zntx.de-Blocks in /etc/caddy/Caddyfile (Live-Datei ist maßgeblich,
+# diese Datei NIE automatisch deployen — nur zum Review/Diff).
+#
+# WICHTIG: Der zntx.de{}-Block wird mit /srv/matrix-chat geteilt (gemeinsame Apex-Domain).
+# Die beiden handle /.well-known/matrix/*-Blöcke gehören matrix-chat (siehe dort
+# infra/caddy-routes.caddy) — hier nur unverändert übernommen, damit diese Datei den
+# vollständigen Live-Block zeigt. NICHT eigenständig editieren; Änderungen an diesen zwei
+# Blöcken laufen über /srv/matrix-chat. zntx "besitzt" ausschließlich den finalen
+# handle{}-Fallback (reverse_proxy statt 404).
+#
+# Nutzt die globalen Snippets service_tls / security_headers der gemeinsamen Caddyfile,
+# plus einen eigenen csp_zntx-Snippet (unten) für Cloudflare Turnstile im Kontaktformular.
+
+# Eigener CSP-Snippet für zntx — nicht csp_app/csp_ravepuls_web wiederverwenden (deren
+# connect-src/script-src sind auf andere Projekte zugeschnitten). challenges.cloudflare.com
+# für Turnstile (Kontaktformular-Spam-Schutz), sonst 'self'.
+(csp_zntx) {
+    header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; worker-src 'self' blob:; media-src 'self' blob:"
+}
+
+zntx.de {
+    import service_tls
+    import security_headers
+
+    # ── Gehört matrix-chat, nicht anfassen (siehe Hinweis oben) ──
+    handle /.well-known/matrix/client {
+        header Access-Control-Allow-Origin "*"
+        header Content-Type "application/json"
+        respond `{"m.homeserver":{"base_url":"https://matrix.zntx.de"}}` 200
+    }
+
+    handle /.well-known/matrix/server {
+        header Content-Type "application/json"
+        respond `{"m.server":"matrix.zntx.de:443"}` 200
+    }
+    # ── Ende matrix-chat-Bereich ──
+
+    import csp_zntx
+    handle {
+        reverse_proxy localhost:3020
+    }
+}

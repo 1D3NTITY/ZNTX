@@ -1,0 +1,30 @@
+# Nutzt die bereits laufende shared Infrastruktur (Postgres aus /srv/foodapp/infra) über
+# das externe Docker-Netzwerk "infra_default" — kein eigener Postgres-Container hier.
+# "ports:" ist auf 127.0.0.1 beschränkt, Caddy (Host-systemd-Service) bleibt einziger
+# öffentlicher Ingress.
+#
+# Expliziter "name:" (Pflicht — siehe ravepuls/infra/docker-compose.yml-Kommentar zur
+# Namenskollision vom 2026-07-11). Service heißt "zntx-web" (nicht nur "web"): auf dem
+# shared Netz "infra_default" vergibt Compose sonst einen Alias, der mit anderen
+# Projekten kollidieren könnte.
+name: zntx
+
+services:
+  zntx-web:
+    build:
+      context: ../services/web
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${TURNSTILE_SITE_KEY:-}
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Berlin
+      - DATABASE_URL=postgresql://zntx_app:${ZNTX_DB_PASSWORD}@postgres:5432/zntx_db
+      - TURNSTILE_SECRET_KEY=${TURNSTILE_SECRET_KEY:-}
+    ports:
+      - "127.0.0.1:3020:3000"
+
+networks:
+  default:
+    name: infra_default
+    external: true
