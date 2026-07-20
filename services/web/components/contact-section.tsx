@@ -1,3 +1,5 @@
+import { ContactForm } from "@/components/contact-form";
+
 export function ContactSection() {
   return (
     <section
@@ -14,10 +16,7 @@ export function ContactSection() {
         </h2>
       </header>
 
-      {/* Formular folgt (Terminal-Prompt-Optik + Turnstile + Route Handler) */}
-      <div className="rounded-md border border-dashed border-border p-8 font-mono text-sm text-foreground-muted">
-        &gt; kontaktformular wird geladen...
-      </div>
+      <ContactForm />
     </section>
   );
 }
