@@ -1,5 +1,7 @@
 # zntx — Repo-Kopie des zntx.de-Blocks in /etc/caddy/Caddyfile (Live-Datei ist maßgeblich,
 # diese Datei NIE automatisch deployen — nur zum Review/Diff).
+# Live seit 2026-07-20: zntx.de → reverse_proxy localhost:3020, verifiziert (200 auf /,
+# /impressum, /datenschutz; matrix-chat-Endpunkte unverändert erreichbar).
 #
 # WICHTIG: Der zntx.de{}-Block wird mit /srv/matrix-chat geteilt (gemeinsame Apex-Domain).
 # Die beiden handle /.well-known/matrix/*-Blöcke gehören matrix-chat (siehe dort
@@ -35,8 +37,8 @@ zntx.de {
     }
     # ── Ende matrix-chat-Bereich ──
 
-    import csp_zntx
     handle {
+        import csp_zntx
         reverse_proxy localhost:3020
     }
 }
