@@ -1,10 +1,16 @@
-import { PROJECTS } from "@/lib/content";
-import { NodeCard } from "@/components/node-card";
+"use client";
+
+import { useState } from "react";
+import { PROJECTS, type ProjectNode } from "@/lib/content";
+import { NetworkGraph } from "@/components/network-graph";
+import { NodeDetailPanel } from "@/components/node-detail-panel";
 
 export function NetworkMap() {
+  const [selected, setSelected] = useState<ProjectNode | null>(null);
+
   return (
     <section id="network" className="mx-auto w-full max-w-6xl px-6 py-24">
-      <header className="mb-10 flex items-end justify-between gap-4 border-b border-border pb-4">
+      <header className="mb-4 flex items-end justify-between gap-4 border-b border-border pb-4">
         <div>
           <p className="font-mono text-xs uppercase tracking-widest text-accent">
             {"// netzwerkkarte"}
@@ -18,11 +24,14 @@ export function NetworkMap() {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {PROJECTS.map((project) => (
-          <NodeCard key={project.id} project={project} />
-        ))}
-      </div>
+      <p className="mb-10 max-w-2xl text-sm leading-relaxed text-foreground-muted">
+        Jeder Knoten ist ein Projekt, das gerade wirklich läuft — kein Mockup, keine
+        Demo. Klick auf einen Knoten für Stack, Details und (wo öffentlich
+        erreichbar) den Link zum Projekt.
+      </p>
+
+      <NetworkGraph projects={PROJECTS} onSelect={setSelected} />
+      <NodeDetailPanel project={selected} onClose={() => setSelected(null)} />
     </section>
   );
 }

@@ -16,6 +16,12 @@ export function SkillsPanel() {
         </h2>
       </header>
 
+      <p className="mb-10 max-w-2xl text-sm leading-relaxed text-foreground-muted">
+        Nicht pro Projekt einzeln erzählt, sondern als das, was tatsächlich überall
+        wiederkehrt — die eigentlichen Skills stecken im Betrieb, nicht in einer
+        einzelnen App.
+      </p>
+
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {CROSS_CUTTING_SKILLS.map((group) => (
           <div

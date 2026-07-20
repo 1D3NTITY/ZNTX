@@ -7,12 +7,17 @@
 # Namenskollision vom 2026-07-11). Service heißt "zntx-web" (nicht nur "web"): auf dem
 # shared Netz "infra_default" vergibt Compose sonst einen Alias, der mit anderen
 # Projekten kollidieren könnte.
+#
+# WICHTIG: wird immer mit `--project-directory .` von /srv/zntx aus aufgerufen (sonst
+# findet Compose die Env-Datei im Projekt-Root nicht, siehe docs/plans/portfolio-aufbau.md).
+# Das verschiebt auch die Basis für relative Pfade hier im File — deshalb "services/web"
+# statt "../services/web" (relativ zu /srv/zntx, nicht zu infra/).
 name: zntx
 
 services:
   zntx-web:
     build:
-      context: ../services/web
+      context: services/web
       dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${TURNSTILE_SITE_KEY:-}
