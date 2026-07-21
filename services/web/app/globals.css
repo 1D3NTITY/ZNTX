@@ -58,36 +58,42 @@ body::before {
   50% { opacity: 0.75; }
 }
 
-/* Hero-Hintergrund: dezent driftendes Koordinaten-Grid + eine langsame
-   Scanline. Kein Gradient-Blob, kein Glow — nur Linien/Textur, passend zum
-   Dossier-/Systems-Look, aber mit spürbarer Bewegung statt Flat-Black. */
-.hero-grid {
-  background-image:
-    linear-gradient(var(--border) 1px, transparent 1px),
-    linear-gradient(90deg, var(--border) 1px, transparent 1px);
-  background-size: 64px 64px;
-  opacity: 0.4;
-  animation: hero-grid-drift 90s linear infinite;
+/* Hero-Hintergrund: dichte, langsam driftende Text-Wand aus echten
+   Begriffen (lib/hero-fragments.ts) statt Fake-Prompts — Referenz war
+   midjourney.com's Glitch-Text-Intro, hier mit echtem Stack-Vokabular statt
+   erfundenem Content. Mehrere Zeilen, unterschiedliche Tiefe/Tempo/Richtung,
+   dazu ein Glitch-Flicker pro Zeile. */
+.hero-textwall {
+  font-family: var(--font-mono);
+  color: var(--foreground-muted);
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+  width: max-content;
 }
 
-@keyframes hero-grid-drift {
-  from { background-position: 0 0; }
-  to { background-position: 640px 640px; }
+@keyframes marquee-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
-.hero-scanline {
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    color-mix(in srgb, var(--accent) 16%, transparent),
-    transparent
+@keyframes marquee-right {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes glitch-flicker {
+  0%, 91%, 100% { opacity: 1; transform: none; filter: none; }
+  92% { opacity: 0.35; transform: translateX(2px); filter: blur(0.5px); }
+  94% { opacity: 1; transform: translateX(-1px); filter: none; }
+  96% { opacity: 0.5; transform: translateX(1px); }
+}
+
+.hero-scrim {
+  background: radial-gradient(
+    ellipse 65% 65% at 28% 42%,
+    var(--background) 20%,
+    transparent 78%
   );
-  animation: hero-scanline-move 8s ease-in-out infinite;
-}
-
-@keyframes hero-scanline-move {
-  0% { transform: translateY(-120%); }
-  100% { transform: translateY(600%); }
 }
 
 @media (prefers-reduced-motion: reduce) {
