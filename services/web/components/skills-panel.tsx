@@ -3,47 +3,38 @@ import { CROSS_CUTTING_SKILLS } from "@/lib/content";
 export function SkillsPanel() {
   return (
     <section
-      id="skills"
-      className="mx-auto w-full max-w-6xl px-6 py-24"
-      aria-labelledby="skills-heading"
+      id="capability"
+      className="scroll-mt-24 border-t border-border py-16"
+      aria-labelledby="capability-heading"
     >
-      <header className="mb-10 border-b border-border pb-4">
-        <p className="font-mono text-xs uppercase tracking-widest text-accent">
-          {"// systemstatus"}
-        </p>
-        <h2 id="skills-heading" className="mt-1 text-2xl font-semibold sm:text-3xl">
-          Quer über alle Projekte
-        </h2>
-      </header>
-
-      <p className="mb-10 max-w-2xl text-sm leading-relaxed text-foreground-muted">
-        Nicht pro Projekt einzeln erzählt, sondern als das, was tatsächlich überall
-        wiederkehrt — die eigentlichen Skills stecken im Betrieb, nicht in einer
+      <p className="font-mono text-xs uppercase tracking-widest text-accent">§02</p>
+      <h2
+        id="capability-heading"
+        className="mt-1 font-serif text-3xl font-semibold sm:text-4xl"
+      >
+        Arbeitsweise
+      </h2>
+      <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground-muted">
+        Nicht pro Projekt einzeln erzählt, sondern das, was tatsächlich überall
+        wiederkehrt — die eigentlichen Fähigkeiten stecken im Betrieb, nicht in einer
         einzelnen App.
       </p>
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <dl className="mt-8 divide-y divide-border border-y border-border">
         {CROSS_CUTTING_SKILLS.map((group) => (
           <div
             key={group.category}
-            className="rounded-md border border-border bg-surface p-5"
+            className="grid grid-cols-1 gap-2 py-5 sm:grid-cols-[180px_1fr] sm:gap-6"
           >
-            <h3 className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
+            <dt className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
               {group.category}
-            </h3>
-            <ul className="mt-3 flex flex-col gap-2 text-sm text-foreground">
-              {group.items.map((item) => (
-                <li key={item} className="flex gap-2 leading-relaxed">
-                  <span className="text-accent" aria-hidden>
-                    &gt;
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
+            </dt>
+            <dd className="text-sm leading-relaxed text-foreground">
+              {group.items.join(" · ")}
+            </dd>
           </div>
         ))}
-      </div>
+      </dl>
     </section>
   );
 }

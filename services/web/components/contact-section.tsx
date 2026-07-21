@@ -4,19 +4,23 @@ export function ContactSection() {
   return (
     <section
       id="contact"
-      className="mx-auto w-full max-w-6xl px-6 py-24"
+      className="scroll-mt-24 border-t border-border py-16"
       aria-labelledby="contact-heading"
     >
-      <header className="mb-10 border-b border-border pb-4">
-        <p className="font-mono text-xs uppercase tracking-widest text-accent">
-          {"// kontakt"}
-        </p>
-        <h2 id="contact-heading" className="mt-1 text-2xl font-semibold sm:text-3xl">
-          Terminal öffnen
-        </h2>
-      </header>
+      <p className="font-mono text-xs uppercase tracking-widest text-accent">§04</p>
+      <h2
+        id="contact-heading"
+        className="mt-1 font-serif text-3xl font-semibold sm:text-4xl"
+      >
+        Kontakt
+      </h2>
+      <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground-muted">
+        Kein Kontaktformular-Standardtext — schreib, worum es geht, ich melde mich zurück.
+      </p>
 
-      <ContactForm />
+      <div className="mt-8 max-w-xl">
+        <ContactForm />
+      </div>
     </section>
   );
 }

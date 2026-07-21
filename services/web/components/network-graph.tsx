@@ -24,14 +24,19 @@ function nodePositions(count: number, radius = 38): Point[] {
 export function NetworkGraph({
   projects,
   onSelect,
+  compact = false,
 }: {
   projects: ProjectNode[];
   onSelect: (project: ProjectNode) => void;
+  /** Kleinere Darstellung für die Index-Leiste statt große Hero-Fläche. */
+  compact?: boolean;
 }) {
   const positions = useMemo(() => nodePositions(projects.length), [projects.length]);
 
   return (
-    <div className="relative mx-auto aspect-square w-full max-w-2xl select-none">
+    <div
+      className={`relative mx-auto aspect-square w-full select-none ${compact ? "max-w-[220px]" : "max-w-2xl"}`}
+    >
       <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" aria-hidden="true">
         {positions.map((p, i) => (
           <line
@@ -56,9 +61,11 @@ export function NetworkGraph({
         aria-hidden="true"
       >
         <span className="h-2 w-2 rounded-full bg-accent shadow-[0_0_12px_var(--accent)]" />
-        <span className="font-mono text-[9px] uppercase tracking-widest text-foreground-muted">
-          operator
-        </span>
+        {!compact && (
+          <span className="font-mono text-[9px] uppercase tracking-widest text-foreground-muted">
+            operator
+          </span>
+        )}
       </div>
 
       {projects.map((project, i) => {
@@ -69,22 +76,25 @@ export function NetworkGraph({
             type="button"
             onClick={() => onSelect(project)}
             style={{ left: `${p.x}%`, top: `${p.y}%` }}
-            className="group absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1.5 rounded-md p-2 outline-none"
-            aria-label={`${project.name} — Details öffnen`}
+            className="group absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1.5 rounded-md p-1.5 outline-none"
+            aria-label={`Zu ${project.name} springen`}
+            title={project.name}
           >
             <span
-              className="h-2.5 w-2.5 rounded-full ring-2 ring-offset-2 ring-offset-background transition-transform group-hover:scale-125 group-focus-visible:scale-125"
+              className="h-2 w-2 rounded-full ring-2 ring-offset-2 ring-offset-background transition-transform group-hover:scale-125 group-focus-visible:scale-125"
               style={{
                 backgroundColor: STATUS_COLOR[project.status],
-                boxShadow: `0 0 10px ${STATUS_COLOR[project.status]}`,
+                boxShadow: `0 0 8px ${STATUS_COLOR[project.status]}`,
                 // ring-Farbe per inline style, da Tailwind-Ring keine CSS-Var-Farbe pro Status kennt
                 ["--tw-ring-color" as string]: "var(--border)",
               }}
               aria-hidden="true"
             />
-            <span className="whitespace-nowrap rounded border border-border bg-surface px-2 py-1 font-mono text-[10px] text-foreground transition-colors group-hover:border-accent-dim group-focus-visible:border-accent">
-              {project.name}
-            </span>
+            {!compact && (
+              <span className="whitespace-nowrap rounded border border-border bg-surface px-2 py-1 font-mono text-[10px] text-foreground transition-colors group-hover:border-accent-dim group-focus-visible:border-accent">
+                {project.name}
+              </span>
+            )}
           </button>
         );
       })}

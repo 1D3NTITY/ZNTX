@@ -26,6 +26,7 @@
   --color-status-paper: var(--status-paper);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-source-serif);
 }
 
 body {

@@ -2,20 +2,15 @@ import { HERO, LINKS } from "@/lib/content";
 
 export function Hero() {
   return (
-    <section className="mx-auto flex w-full max-w-6xl flex-col justify-center gap-6 px-6 pt-32 pb-16">
+    <section className="mx-auto flex w-full max-w-[1400px] flex-col justify-center gap-6 px-6 pt-28 pb-14 lg:px-10 lg:pt-40 lg:pb-20">
       <p className="font-mono text-xs uppercase tracking-widest text-accent">
-        $ whoami
+        {HERO.kicker}
       </p>
-      <h1 className="max-w-2xl text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
-        Luis — betreibt echte Infrastruktur, nicht nur Prototypen.
+      <h1 className="max-w-3xl font-serif text-4xl font-semibold leading-[1.1] tracking-tight sm:text-6xl">
+        {HERO.headline}
       </h1>
-      <p className="font-mono text-sm uppercase tracking-widest text-foreground-muted">
-        {HERO.role}
-      </p>
       <p className="max-w-xl text-base leading-relaxed text-foreground-muted sm:text-lg">
-        Zwei eigene Root-Server, sechs laufende Projekte, Docker/Caddy/Postgres im
-        Dauerbetrieb. Diese Seite ist selbst Teil des Nachweises — scroll runter
-        zur Netzwerkkarte.
+        {HERO.subline}
       </p>
       <div className="flex flex-wrap gap-3 pt-2">
         <a

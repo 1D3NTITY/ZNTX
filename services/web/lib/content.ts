@@ -4,121 +4,123 @@ export type ProjectNode = {
   id: string;
   name: string;
   role: string;
-  tagline: string;
-  description: string;
-  url?: string;
-  stack: string[];
-  highlights: string[];
   status: ProjectStatus;
   server: "server-1" | "server-2";
+  url?: string;
+  stack: string[];
+  /** Kontext / Problem — warum gibt es das Projekt überhaupt. */
+  context: string;
+  /** Mein Beitrag — was konkret gebaut/betrieben wurde. */
+  contribution: string;
+  /** Technische Herausforderung — der schwierigste Teil, nicht die Featureliste. */
+  challenge: string;
+  /** Ergebnis — was es heute beweist/leistet. */
+  outcome: string;
+  /** Optional: was daran besonders war, eine knappe Zeile. */
+  note?: string;
 };
 
-// Reihenfolge = Reihenfolge auf der Netzwerkkarte. zntx zuletzt (Meta-Knoten: "du bist hier").
+// Reihenfolge = Reihenfolge im Fließtext. zntx zuletzt (Meta-Projekt: "du liest es gerade").
 export const PROJECTS: ProjectNode[] = [
   {
     id: "foodapp",
     name: "Food & Fitness App",
     role: "Multi-Platform-Produkt",
-    tagline:
-      "FastAPI-Backend, Next.js-Web, Expo/React-Native-Mobile mit OTA-Updates. Gesundheitsdaten → DSGVO Art. 9 aktiv umgesetzt.",
-    description:
-      "Multi-Platform-Produkt aus einem Guss: ein FastAPI-Backend bedient sowohl die Next.js-Web-App als auch die Expo/React-Native-Mobile-App. Weil echte Gesundheitsdaten (Ernährung, Trainingsdaten) verarbeitet werden, ist DSGVO Art. 9 kein Lippenbekenntnis — Zugriffskontrolle, Export und Löschung sind fest im Backend verankert, nicht nachträglich drangeflickt. Releases laufen über Alembic-Migrationen und eine feste Sprint-/Versionierungs-Disziplin, n8n übernimmt Automatisierung im Hintergrund.",
-    stack: ["FastAPI", "Next.js", "Expo / React Native", "Postgres", "Alembic", "n8n"],
-    highlights: [
-      "Zugriffskontrolle, Export & Löschung für Gesundheitsdaten (Art. 9 DSGVO)",
-      "OTA-Updates für die Mobile-App ohne Store-Review-Wartezeit",
-      "Strukturierte Sprint-/Release-Disziplin mit Versionierung & Changelog",
-    ],
     status: "live",
     server: "server-1",
+    stack: ["FastAPI", "Next.js", "Expo / React Native", "Postgres", "Alembic", "n8n"],
+    context:
+      "Ein Multi-Platform-Produkt für Ernährungs- und Trainingsdaten — echte Gesundheitsdaten, nicht Fitness-Tracking zum Spaß. Sobald DSGVO Art. 9 greift, ist nachträglich eingebauter Datenschutz keine Option.",
+    contribution:
+      "FastAPI-Backend als gemeinsames Fundament für die Next.js-Web-App und die Expo/React-Native-Mobile-App, mit Zugriffskontrolle, Export- und Löschfunktion direkt im Datenmodell verankert. Releases über Alembic-Migrationen, feste Sprint-/Versionierungsdisziplin, n8n für Automatisierung im Hintergrund.",
+    challenge:
+      "Ein Backend für zwei grundverschiedene Clients konsistent halten, ohne Logik zu duplizieren — und OTA-Updates für die Mobile-App liefern, ohne auf App-Store-Review-Zyklen zu warten.",
+    outcome:
+      "Ein Produkt, das Gesundheitsdaten so behandelt, wie es das Gesetz verlangt — nicht weil ein Audit das später gefordert hätte, sondern weil es von Anfang an so gebaut wurde.",
   },
   {
     id: "ravepuls",
     name: "Ravepuls",
     role: "Event-Discovery-Plattform",
-    tagline:
-      "ravepuls.de — automatisiertes Aggregieren von Rave-Infos aus Social Media, plus manuelle Pflege.",
-    description:
-      "Event-Discovery für die Rave-Szene einer Stadt: ein Telegram-Userbot liest configurierte Kanäle passiv mit, Browser-Automation (Browserless/Chromium) scraped Venue-Websites, die client-seitig rendern — beides läuft in eine gemeinsame Dedup-/Extraktions-Pipeline. Öffentliche Formulare sind mit Cloudflare Turnstile und eigener CSP gegen Missbrauch gehärtet. Eine komplette Domain-Migration (.eu → .de) wurde sauber mit dauerhaften Redirects gelöst, ohne kaputte Links oder Duplicate Content.",
-    url: "https://ravepuls.de",
-    stack: ["FastAPI", "Next.js", "Telethon", "Browserless/Chromium", "Cloudflare Turnstile"],
-    highlights: [
-      "Telegram-Userbot + Browser-Automation fürs Scraping",
-      "Eigene CSP/Security-Header, Cloudflare-Turnstile-Bot-Schutz",
-      "Domain-Migration .eu → .de sauber mit Redirects gelöst",
-    ],
     status: "live",
     server: "server-1",
+    url: "https://ravepuls.de",
+    stack: ["FastAPI", "Next.js", "Telethon", "Browserless/Chromium", "Cloudflare Turnstile"],
+    context:
+      "Event-Discovery für die Rave-Szene einer Stadt — die Information existiert, ist aber über Dutzende Social-Media-Kanäle und Venue-Websites verstreut.",
+    contribution:
+      "Ein Telegram-Userbot liest konfigurierte Kanäle passiv mit, Browser-Automation (Browserless/Chromium) scraped Venue-Websites, die client-seitig rendern — beide Wege laufen in dieselbe Dedup-/Extraktions-Pipeline. Öffentliche Formulare mit Cloudflare Turnstile und eigener CSP gegen Missbrauch gehärtet.",
+    challenge:
+      "Eine vollständige Domain-Migration (.eu → .de) mitten im Betrieb, ohne kaputte Links, Duplicate Content oder verlorene Nutzer.",
+    outcome:
+      "ravepuls.de läuft live, aggregiert automatisiert und bleibt trotzdem gegen Missbrauch gehärtet.",
   },
   {
     id: "matrix-chat",
     name: "matrix-chat",
     role: "Privater Matrix-Homeserver",
-    tagline:
-      "Selbst gehostet (Tuwunel/Rust), Federation bewusst deaktiviert, Invite-Only per Token.",
-    description:
-      "Ein privater Matrix-Homeserver (Tuwunel, geschrieben in Rust) für einen geschlossenen Nutzerkreis — bewusst kein Standard-Webstack. RocksDB läuft eingebettet, kein zusätzlicher Datenbank-Container nötig. Federation ist absichtlich deaktiviert und Registrierung nur per Invite-Token möglich, das reduziert die Angriffsfläche drastisch gegenüber einem offenen Server. Zeigt: Infra-Betrieb geht über Web-Apps mit Postgres hinaus.",
-    url: "https://matrix.zntx.de",
-    stack: ["Tuwunel (Rust)", "RocksDB (embedded)", "Caddy"],
-    highlights: [
-      "Betrieb von Nicht-Standard-Infra, nicht nur Web-Apps",
-      "Invite-Only per Token statt offener Registrierung",
-      "Bewusst ohne Federation — reduzierte Angriffsfläche",
-    ],
     status: "live",
     server: "server-1",
+    url: "https://matrix.zntx.de",
+    stack: ["Tuwunel (Rust)", "RocksDB (embedded)", "Caddy"],
+    context:
+      "Ein privater Kommunikationskanal für einen geschlossenen Nutzerkreis — kein Interesse an einem weiteren SaaS-Chat-Abo, dafür volle Kontrolle über die eigene Infrastruktur.",
+    contribution:
+      "Selbst gehosteter Matrix-Homeserver (Tuwunel, geschrieben in Rust) mit eingebettetem RocksDB, kein zusätzlicher Datenbank-Container. Registrierung ausschließlich per Invite-Token, Federation bewusst deaktiviert.",
+    challenge:
+      "Eine Nicht-Standard-Infra (Rust-Binary statt gewohntem Web-Stack) sauber in dieselbe Caddy-Architektur integrieren wie alle anderen Projekte.",
+    outcome:
+      "Läuft seit dem Deploy ohne offene Registrierung oder Federation-Angriffsfläche — Infra-Betrieb, der über Web-Apps mit Postgres hinausgeht.",
   },
   {
     id: "wcp-arma",
     name: "WCP / Arma-Community-Server",
     role: "Discord-Bot + Gameserver-Ops",
-    tagline:
-      "Discord-Bot (Python/discord.py, ~5000 Zeilen) mit OAuth2-Dashboard und RCON zu einem laufenden Arma-Reforger-Server.",
-    description:
-      "Ein ~5000 Zeilen großer Discord-Bot (discord.py) mit ~36 Hybrid-Commands, OAuth2-Web-Dashboard und direkter RCON-Anbindung an einen laufenden Arma-Reforger-Gameserver (Pterodactyl/Wings, Docker). Live-Spieler-Tracking läuft über dieselbe RCON-Verbindung, ein Ticket-System mit persistenten Discord-Views deckt den Community-Support ab. Läuft seit Monaten produktiv für eine echte, aktive Community — kein Demo-Projekt.",
-    stack: ["discord.py", "OAuth2", "RCON", "Pterodactyl/Wings", "Docker"],
-    highlights: [
-      "~36 Hybrid-Commands, Ticket-System mit persistenten Discord-Views",
-      "Live-Spieler-Tracking über RCON-Integration",
-      "Läuft seit Monaten produktiv für eine echte Community",
-    ],
     status: "live",
     server: "server-2",
+    stack: ["discord.py", "OAuth2", "RCON", "Pterodactyl/Wings", "Docker"],
+    context:
+      "Eine aktive Arma-Reforger-Community brauchte mehr als einen Standard-Discord-Bot — echte Integration mit dem laufenden Gameserver, nicht nur Rollenverwaltung.",
+    contribution:
+      "Ein ~5000 Zeilen großer Discord-Bot (discord.py) mit ~36 Hybrid-Commands, OAuth2-Web-Dashboard und direkter RCON-Anbindung an den Arma-Reforger-Server (Pterodactyl/Wings, Docker). Ticket-System mit persistenten Discord-Views für den Community-Support.",
+    challenge:
+      "Live-Spieler-Tracking über dieselbe RCON-Verbindung wie die Server-Steuerung — stabil genug für Dauerbetrieb, nicht nur gelegentliche Admin-Befehle.",
+    outcome:
+      "Läuft seit Monaten produktiv für eine echte, aktive Community — kein Demo, kein totes Side-Project.",
   },
   {
     id: "qntx",
     name: "qntx",
     role: "KI-gestützter Krypto-Trading-Bot",
-    tagline:
-      "Kraken/CCXT, aktuell in strukturierter Paper-Trading-Phase vor Live-Go-Live — mit dokumentierten Go-Live-Kriterien statt 'einfach live schalten'.",
-    description:
-      "Ein KI-gestützter Krypto-Trading-Bot (Kraken über CCXT) mit 13 orthogonalen Handelssignalen und einem 8-Modell-KI-Sentiment-Ensemble, das per Mehrheitsentscheid und Ausfallschutz entscheidet — kein Single-Point-of-Failure bei einem ausgefallenen Modell. Gewichte werden Walk-Forward-validiert per Optuna getuned, Strategien vorab per Monte-Carlo-Backtesting geprüft. Vor echtem Kapitalrisiko steht eine vollständige Risikokette (Stop-Loss, Kill-Switch, Drawdown-Stop) und dokumentierte, harte Go-Live-Kriterien statt eines Bauchgefühl-Entscheids.",
-    stack: ["CCXT", "Optuna", "Monte-Carlo-Backtesting", "8-Modell-KI-Ensemble"],
-    highlights: [
-      "13 orthogonale Handelssignale, Sentiment-Ensemble mit Mehrheitsentscheid & Ausfallschutz",
-      "Walk-Forward-validiertes Gewichtstuning (Optuna)",
-      "Vollständige Risikokette: Stop-Loss, Kill-Switch, Drawdown-Stop",
-    ],
     status: "paper-trading",
     server: "server-2",
+    stack: ["CCXT", "Optuna", "Monte-Carlo-Backtesting", "8-Modell-KI-Ensemble"],
+    context:
+      "Ein Krypto-Trading-Bot, der Entscheidungen nicht auf Bauchgefühl trifft — bei echtem Kapitalrisiko reicht 'sieht gut aus' nicht.",
+    contribution:
+      "Kraken-Anbindung über CCXT, 13 orthogonale Handelssignale, 8-Modell-KI-Sentiment-Ensemble mit Mehrheitsentscheid und Ausfallschutz — kein Single-Point-of-Failure bei einem ausgefallenen Modell. Gewichtstuning Walk-Forward-validiert per Optuna.",
+    challenge:
+      "Strategien vor echtem Kapitaleinsatz per Monte-Carlo-Backtesting prüfen und eine vollständige Risikokette bauen (Stop-Loss, Kill-Switch, Drawdown-Stop), die auch bei komplettem Modellausfall greift.",
+    outcome:
+      "Aktuell in strukturierter Paper-Trading-Phase mit dokumentierten, harten Go-Live-Kriterien — bewusst noch nicht live, bis diese Kriterien erfüllt sind.",
+    note: "Bewusst kein 'einfach live schalten' — Go-Live-Kriterien sind schriftlich fixiert, nicht verhandelbar.",
   },
   {
     id: "zntx",
     name: "zntx",
-    role: "Dieses Portfolio — du bist hier",
-    tagline:
-      "Next.js + Docker Compose + Caddy + eigene Postgres-DB, mit deterministischen Guardrail-Hooks statt Blindvertrauen in KI-Edits.",
-    description:
-      "Diese Seite selbst: Next.js auf einer eigenen Postgres-DB (isolierte Rolle, kein Shared-Superuser), hinter Caddy als einzigem Ingress, deployed über Docker Compose. Gebaut mit KI-Unterstützung, aber nicht blind — eigene deterministische PreToolUse-Guardrail-Hooks blocken automatisiert Secret-Leaks, Scope-Verletzungen und riskante Compose-Konfiguration, bevor sie passieren. Der Unterschied zwischen 'KI schreibt Code' und 'KI schreibt Code mit echten Leitplanken' ist genau das, was hier den Unterschied macht.",
-    url: "https://zntx.de",
-    stack: ["Next.js", "Docker Compose", "Caddy", "Postgres", "Drizzle ORM"],
-    highlights: [
-      "Eigene PreToolUse-Guardrail-Hooks gegen Secret-Leaks & Scope-Verletzungen",
-      "Kein Public-Port-Exposure — Caddy bleibt einziger Ingress",
-      "Diese Seite selbst ist der Skill-Nachweis, nicht nur ihr Inhalt",
-    ],
+    role: "Dieses Portfolio",
     status: "live",
     server: "server-1",
+    url: "https://zntx.de",
+    stack: ["Next.js", "Docker Compose", "Caddy", "Postgres", "Drizzle ORM"],
+    context:
+      "Diese Seite selbst — der Anspruch war, ein Portfolio nicht nur zu behaupten, sondern als eigenes Infra-Projekt zu betreiben.",
+    contribution:
+      "Next.js auf einer eigenen, isolierten Postgres-Rolle (kein Shared-Superuser), hinter Caddy als einzigem Ingress, deployed über Docker Compose. Gebaut mit KI-Unterstützung — aber mit eigenen deterministischen PreToolUse-Guardrail-Hooks, die Secret-Leaks, Scope-Verletzungen und riskante Compose-Konfiguration automatisiert blocken.",
+    challenge:
+      "KI-gestützte Entwicklung nutzen, ohne ihr blind zu vertrauen — die Guardrails mussten selbst gebaut werden, es gab kein fertiges Tool dafür.",
+    outcome:
+      "zntx.de läuft, mit echter Produktions-Pipeline dahinter. Der Unterschied zwischen 'KI schreibt Code' und 'KI schreibt Code mit echten Leitplanken' ist genau das, was hier den Unterschied macht.",
   },
 ];
 
@@ -142,7 +144,7 @@ export const CROSS_CUTTING_SKILLS: SkillCategory[] = [
     category: "Daten",
     items: [
       "Postgres-Isolation: eine DB pro Service, nie geteilt",
-      "Secrets-Hygiene — .env-Disziplin, nie committen",
+      "Secrets-Hygiene — Umgebungsdatei-Disziplin, nie committen",
     ],
   },
   {
@@ -169,14 +171,17 @@ export const LINKS = {
 };
 
 export const HERO = {
-  role: "Full-Stack-Entwicklung & Server-Infrastruktur",
+  kicker: "§00 — SYSTEMS ON RECORD",
+  headline: "Zwei Server, sechs Systeme, ein Betreiber.",
+  subline:
+    "Vollzeit im Lager. Nebenbei: Produktiv-Infrastruktur, die läuft — nicht nur baut.",
 };
 
 export const BIO = {
-  heading: "Operator-Profil",
+  heading: "Hintergrund",
   dayJob: "Vollzeit und Minijob im Lager.",
   passion:
     "Nebenbei: mehrere Root-Server, echte Produktiv-Infrastruktur, FPV-Drohnen-Foto- und Videografie.",
   note:
-    "Kein Blender-Lebenslauf — die Projekte auf dieser Karte laufen wirklich, mit echtem Betrieb dahinter.",
+    "Kein Blender-Lebenslauf — die Systeme in diesem Dossier laufen wirklich, mit echtem Betrieb dahinter.",
 };
