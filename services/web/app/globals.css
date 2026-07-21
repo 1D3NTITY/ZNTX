@@ -58,29 +58,30 @@ body::before {
   50% { opacity: 0.75; }
 }
 
-/* Hero-Hintergrund: sehr zurückhaltende Text-Textur aus echten Begriffen
-   (lib/hero-fragments.ts). Referenz-Screenshots (qntx.zblt.eu, zblt.eu)
-   zeigten: professionelle Hacker-Terminal-Seiten halten den Hintergrund
-   fast unlesbar leise (reine Textur, kein Vordergrund-Wettbewerb) — die
-   erste Version hier war zu laut/zu gut lesbar. Deutlich reduzierte Opazität,
-   kein Glitch-Flicker mehr (wirkte unruhig gegen die ruhigen Referenzen).
-   Farbe bleibt strikt border/foreground-muted, kein Akzent im Hintergrund. */
-.hero-textwall {
-  font-family: var(--font-mono);
-  color: var(--border);
-  white-space: nowrap;
-  letter-spacing: 0.06em;
-  width: max-content;
+/* Hero-Hintergrund: echte vertikale Matrix-Rain (Feedback: horizontaler
+   Ticker war weder als "Matrix" erkennbar noch bei niedriger Opazität
+   sichtbar). Spalten aus echten Tokens (lib/hero-fragments.ts), Cyan-Akzent
+   mit spürbarer, aber dem Vordergrund-Text untergeordneter Sichtbarkeit
+   (Kontrast über das Scrim-Panel in hero.tsx sichergestellt, nicht über
+   Beinahe-Unsichtbarkeit des Effekts selbst). */
+.hero-matrix-col {
+  color: var(--accent);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
-@keyframes marquee-left {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+@keyframes matrix-fall {
+  from { transform: translateY(-110%); }
+  to { transform: translateY(110%); }
 }
 
-@keyframes marquee-right {
-  from { transform: translateX(-50%); }
-  to { transform: translateX(0); }
+.hero-matrix-mask {
+  background: linear-gradient(
+    to bottom,
+    var(--background) 0%,
+    transparent 18%,
+    transparent 82%,
+    var(--background) 100%
+  );
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,47 +1,50 @@
 import { HERO_FRAGMENTS } from "@/lib/hero-fragments";
 
-function buildRow(seed: number, count: number) {
-  const items = Array.from(
-    { length: count },
-    (_, i) => HERO_FRAGMENTS[(seed + i) % HERO_FRAGMENTS.length]
+// Echte vertikale Matrix-Rain statt horizontalem Ticker (der war weder als
+// "Matrix" erkennbar noch bei ausreichend Kontrast sichtbar — Feedback:
+// "kein matrix alike hintergrund in einem Stil"). Spalten aus echten Tokens
+// (lib/hero-fragments.ts), Cyan-Akzent, deutlich sichtbar aber hinter dem
+// Scrim-Panel im Hero-Text unterlegen.
+function buildColumn(seed: number, length: number) {
+  return Array.from(
+    { length },
+    (_, i) => HERO_FRAGMENTS[(seed + i * 7) % HERO_FRAGMENTS.length]
   );
-  return items.join("   ·   ");
 }
 
-// Deutlich zurückhaltender als die erste Version (Referenz: qntx.zblt.eu,
-// zblt.eu — beide halten ihren Hintergrund fast unlesbar leise, reine
-// Textur statt Vordergrund-Konkurrenz). Nur 3 Zeilen, sehr niedrige Opazität,
-// sehr langsam.
-const ROWS = [
-  { size: "text-sm", opacity: 0.05, duration: 140, direction: "left" as const, seed: 0 },
-  { size: "text-xs", opacity: 0.04, duration: 110, direction: "right" as const, seed: 9 },
-  { size: "text-base", opacity: 0.06, duration: 160, direction: "left" as const, seed: 18 },
-];
+const COLUMN_COUNT = 16;
 
-// Rein dekorativ, aria-hidden — Text im Hero (hero.tsx) bleibt semantisch
-// unabhängig davon.
+const COLUMNS = Array.from({ length: COLUMN_COUNT }, (_, i) => ({
+  left: `${(i / COLUMN_COUNT) * 100 + (i % 3) * 1.5}%`,
+  duration: 14 + ((i * 7) % 11),
+  delay: -((i * 3.7) % 14),
+  seed: i * 5,
+  opacity: 0.22 + ((i % 4) * 0.06),
+}));
+
 export function HeroScene() {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-      <div className="absolute inset-0 flex flex-col justify-center gap-16 py-10">
-        {ROWS.map((row, i) => {
-          const text = buildRow(row.seed, 9);
-          return (
-            <div
-              key={i}
-              className={`hero-textwall ${row.size}`}
-              style={{
-                opacity: row.opacity,
-                animation: `marquee-${row.direction} ${row.duration}s linear infinite`,
-              }}
-            >
-              {text}
-              {"   ·   "}
-              {text}
-            </div>
-          );
-        })}
-      </div>
+      {COLUMNS.map((col, i) => {
+        const tokens = buildColumn(col.seed, 8);
+        return (
+          <div
+            key={i}
+            className="hero-matrix-col absolute top-0 font-mono text-[11px] leading-[1.8] whitespace-nowrap"
+            style={{
+              left: col.left,
+              opacity: col.opacity,
+              animation: `matrix-fall ${col.duration}s linear infinite`,
+              animationDelay: `${col.delay}s`,
+            }}
+          >
+            {tokens.map((t, j) => (
+              <div key={j}>{t}</div>
+            ))}
+          </div>
+        );
+      })}
+      <div className="hero-matrix-mask absolute inset-0" />
     </div>
   );
 }
