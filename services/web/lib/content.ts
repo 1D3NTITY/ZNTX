@@ -30,6 +30,7 @@ export const PROJECTS: ProjectNode[] = [
     role: "Multi-Platform-Produkt",
     status: "live",
     server: "server-1",
+    since: "Mai 2026",
     stack: ["FastAPI", "Next.js", "Expo / React Native", "Postgres", "Alembic", "n8n"],
     context:
       "Ein Multi-Platform-Produkt für Ernährungs- und Trainingsdaten — echte Gesundheitsdaten, nicht Fitness-Tracking zum Spaß. Sobald DSGVO Art. 9 greift, ist nachträglich eingebauter Datenschutz keine Option.",
@@ -46,6 +47,7 @@ export const PROJECTS: ProjectNode[] = [
     role: "Event-Discovery-Plattform",
     status: "live",
     server: "server-1",
+    since: "Juli 2026",
     url: "https://ravepuls.de",
     stack: ["FastAPI", "Next.js", "Telethon", "Browserless/Chromium", "Cloudflare Turnstile"],
     context:
@@ -63,6 +65,7 @@ export const PROJECTS: ProjectNode[] = [
     role: "Privater Matrix-Homeserver",
     status: "live",
     server: "server-1",
+    since: "Juli 2026",
     url: "https://matrix.zntx.de",
     stack: ["Tuwunel (Rust)", "RocksDB (embedded)", "Caddy"],
     context:
@@ -80,6 +83,7 @@ export const PROJECTS: ProjectNode[] = [
     role: "Discord-Bot + Gameserver-Ops",
     status: "live",
     server: "server-2",
+    since: "Ende Mai / Anfang Juni 2026",
     stack: ["discord.py", "OAuth2", "RCON", "Pterodactyl/Wings", "Docker"],
     context:
       "Eine aktive Arma-Reforger-Community brauchte mehr als einen Standard-Discord-Bot — echte Integration mit dem laufenden Gameserver, nicht nur Rollenverwaltung.",
@@ -96,6 +100,7 @@ export const PROJECTS: ProjectNode[] = [
     role: "KI-gestützter Krypto-Trading-Bot",
     status: "paper-trading",
     server: "server-2",
+    since: "Juli 2026",
     stack: ["CCXT", "Optuna", "Monte-Carlo-Backtesting", "8-Modell-KI-Ensemble"],
     context:
       "Ein Krypto-Trading-Bot, der Entscheidungen nicht auf Bauchgefühl trifft — bei echtem Kapitalrisiko reicht 'sieht gut aus' nicht.",
