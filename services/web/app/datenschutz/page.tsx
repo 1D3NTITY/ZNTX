@@ -52,15 +52,17 @@ export default function DatenschutzPage() {
           Kontaktformular
         </h2>
         <p className="mt-2">
-          Wenn du das Kontaktformular nutzt, werden die von dir eingegebenen
-          Daten (Name, Nachricht) sowie der Zeitpunkt der Anfrage
+          Bei Nutzung des Kontaktformulars werden die eingegebenen Daten (Name,
+          E-Mail-Adresse, Nachricht) sowie der Zeitpunkt der Anfrage
           gespeichert, um die Anfrage zu bearbeiten und bei Rückfragen darauf
           zurückgreifen zu können (Art. 6 Abs. 1 lit. b DSGVO, vorvertragliche
           Maßnahme bzw. Anbahnung eines Kontakts). Die Daten werden in einer
           eigenen, ausschließlich für diesen Zweck genutzten Datenbank
-          gespeichert und nicht an Dritte weitergegeben. Die Löschung erfolgt,
-          sobald die Anfrage abschließend bearbeitet ist und keine
-          gesetzlichen Aufbewahrungspflichten entgegenstehen.
+          gespeichert und zusätzlich per E-Mail an den Betreiber weitergeleitet,
+          um eine zeitnahe Rückmeldung zu ermöglichen. Eine Weitergabe an
+          Dritte darüber hinaus erfolgt nicht. Die Löschung erfolgt, sobald die
+          Anfrage abschließend bearbeitet ist und keine gesetzlichen
+          Aufbewahrungspflichten entgegenstehen.
         </p>
         <p className="mt-2">
           Zum Schutz vor automatisiertem Spam-Missbrauch wird Cloudflare

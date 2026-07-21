@@ -5,12 +5,14 @@ describe("validateContactInput", () => {
   it("akzeptiert gültige Eingaben und trimmt Whitespace", () => {
     const result = validateContactInput({
       name: "  Luis  ",
+      email: "  luis@example.com  ",
       message: "  Hallo, das ist eine Testnachricht.  ",
       honeypot: "",
     });
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.data.name).toBe("Luis");
+      expect(result.data.email).toBe("luis@example.com");
       expect(result.data.message).toBe("Hallo, das ist eine Testnachricht.");
     }
   });
@@ -18,6 +20,7 @@ describe("validateContactInput", () => {
   it("lehnt fehlenden Namen ab", () => {
     const result = validateContactInput({
       name: "",
+      email: "luis@example.com",
       message: "Eine ausreichend lange Nachricht.",
       honeypot: "",
     });
@@ -28,6 +31,7 @@ describe("validateContactInput", () => {
   it("lehnt Namen ab, der nur aus Whitespace besteht", () => {
     const result = validateContactInput({
       name: "   ",
+      email: "luis@example.com",
       message: "Eine ausreichend lange Nachricht.",
       honeypot: "",
     });
@@ -38,6 +42,7 @@ describe("validateContactInput", () => {
   it("lehnt zu langen Namen ab (> 200 Zeichen)", () => {
     const result = validateContactInput({
       name: "a".repeat(201),
+      email: "luis@example.com",
       message: "Eine ausreichend lange Nachricht.",
       honeypot: "",
     });
@@ -45,9 +50,43 @@ describe("validateContactInput", () => {
     if (!result.ok) expect(result.errors.name).toBeDefined();
   });
 
+  it("lehnt fehlende E-Mail ab", () => {
+    const result = validateContactInput({
+      name: "Luis",
+      email: "",
+      message: "Eine ausreichend lange Nachricht.",
+      honeypot: "",
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.errors.email).toBeDefined();
+  });
+
+  it("lehnt ungültiges E-Mail-Format ab", () => {
+    const result = validateContactInput({
+      name: "Luis",
+      email: "keine-email-adresse",
+      message: "Eine ausreichend lange Nachricht.",
+      honeypot: "",
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.errors.email).toBeDefined();
+  });
+
+  it("lehnt zu lange E-Mail ab (> 254 Zeichen)", () => {
+    const result = validateContactInput({
+      name: "Luis",
+      email: `${"a".repeat(250)}@example.com`,
+      message: "Eine ausreichend lange Nachricht.",
+      honeypot: "",
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.errors.email).toBeDefined();
+  });
+
   it("lehnt fehlende Nachricht ab", () => {
     const result = validateContactInput({
       name: "Luis",
+      email: "luis@example.com",
       message: "",
       honeypot: "",
     });
@@ -58,6 +97,7 @@ describe("validateContactInput", () => {
   it("lehnt zu kurze Nachricht ab (< 10 Zeichen)", () => {
     const result = validateContactInput({
       name: "Luis",
+      email: "luis@example.com",
       message: "zu kurz",
       honeypot: "",
     });
@@ -68,6 +108,7 @@ describe("validateContactInput", () => {
   it("lehnt zu lange Nachricht ab (> 5000 Zeichen)", () => {
     const result = validateContactInput({
       name: "Luis",
+      email: "luis@example.com",
       message: "a".repeat(5001),
       honeypot: "",
     });
@@ -78,6 +119,7 @@ describe("validateContactInput", () => {
   it("lehnt ausgefülltes Honeypot-Feld ab (Bot-Falle)", () => {
     const result = validateContactInput({
       name: "Luis",
+      email: "luis@example.com",
       message: "Eine ausreichend lange Nachricht.",
       honeypot: "ich bin ein bot",
     });

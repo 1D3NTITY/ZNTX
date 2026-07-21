@@ -15,7 +15,7 @@ export function ContactSection() {
         Kontakt
       </h2>
       <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground-muted">
-        Kein Kontaktformular-Standardtext — schreib, worum es geht, ich melde mich zurück.
+        Kurze Einordnung des Anliegens genügt — Rückmeldung erfolgt zeitnah.
       </p>
 
       <div className="mt-8 max-w-xl">
