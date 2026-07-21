@@ -3,6 +3,7 @@ import { validateContactInput, verifyTurnstile } from "@/lib/contact";
 import { isRateLimited } from "@/lib/rate-limit";
 import { db } from "@/lib/db";
 import { contactMessages } from "@/lib/db/schema";
+import { sendContactNotification } from "@/lib/mail";
 
 function getClientIp(request: Request): string {
   // Caddy hat trusted_proxies für Cloudflare konfiguriert — CF-Connecting-IP ist die
@@ -69,6 +70,7 @@ export async function POST(request: Request) {
   try {
     await db.insert(contactMessages).values({
       name: validation.data.name,
+      email: validation.data.email,
       message: validation.data.message,
       turnstileVerified,
     });
@@ -79,6 +81,10 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
+
+  // Best-effort: die Anfrage ist bereits sicher in der DB, ein Mail-Fehler darf
+  // den Absender nicht als Fehlschlag erreichen.
+  void sendContactNotification(validation.data);
 
   return NextResponse.json({ ok: true });
 }

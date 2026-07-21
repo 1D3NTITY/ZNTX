@@ -52,6 +52,7 @@ export function ContactForm() {
 
     const formData = new FormData(e.currentTarget);
     const name = String(formData.get("name") ?? "");
+    const email = String(formData.get("email") ?? "");
     const message = String(formData.get("message") ?? "");
     const honeypot = String(formData.get("website") ?? "");
 
@@ -69,7 +70,7 @@ export function ContactForm() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, message, honeypot, turnstileToken: token }),
+        body: JSON.stringify({ name, email, message, honeypot, turnstileToken: token }),
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {
@@ -124,6 +125,17 @@ export function ContactForm() {
             name="name"
             required
             maxLength={200}
+            className="rounded border border-border bg-background px-3 py-2 text-foreground outline-none focus:border-accent"
+          />
+        </label>
+
+        <label className="flex flex-col gap-1">
+          <span className="text-foreground-muted">{"> email"}</span>
+          <input
+            type="email"
+            name="email"
+            required
+            maxLength={254}
             className="rounded border border-border bg-background px-3 py-2 text-foreground outline-none focus:border-accent"
           />
         </label>

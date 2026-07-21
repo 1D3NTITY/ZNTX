@@ -1,13 +1,19 @@
 const NAME_MAX = 200;
+const EMAIL_MAX = 254;
 const MESSAGE_MIN = 10;
 const MESSAGE_MAX = 5000;
 
+// Bewusst simpel (kein RFC-5322-Vollparser) — reicht, um Tippfehler/offensichtlichen
+// Unsinn abzufangen, ohne gültige, aber ungewöhnliche Adressen abzulehnen.
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export type ContactData = {
   name: string;
+  email: string;
   message: string;
 };
 
-type ContactErrors = Partial<Record<"name" | "message" | "honeypot", string>>;
+type ContactErrors = Partial<Record<"name" | "email" | "message" | "honeypot", string>>;
 
 export type ValidationResult =
   | { ok: true; data: ContactData }
@@ -31,12 +37,21 @@ export function validateContactInput(input: unknown): ValidationResult {
   }
 
   const name = typeof raw.name === "string" ? raw.name.trim() : "";
+  const email = typeof raw.email === "string" ? raw.email.trim() : "";
   const message = typeof raw.message === "string" ? raw.message.trim() : "";
 
   if (name.length === 0) {
     errors.name = "Name darf nicht leer sein";
   } else if (name.length > NAME_MAX) {
     errors.name = `Name darf maximal ${NAME_MAX} Zeichen lang sein`;
+  }
+
+  if (email.length === 0) {
+    errors.email = "E-Mail-Adresse darf nicht leer sein";
+  } else if (email.length > EMAIL_MAX) {
+    errors.email = `E-Mail-Adresse darf maximal ${EMAIL_MAX} Zeichen lang sein`;
+  } else if (!EMAIL_RE.test(email)) {
+    errors.email = "E-Mail-Adresse ist ungültig";
   }
 
   if (message.length === 0) {
@@ -51,7 +66,7 @@ export function validateContactInput(input: unknown): ValidationResult {
     return { ok: false, errors };
   }
 
-  return { ok: true, data: { name, message } };
+  return { ok: true, data: { name, email, message } };
 }
 
 type TurnstileResponse = {

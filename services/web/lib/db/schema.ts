@@ -5,6 +5,7 @@ import { pgTable, uuid, varchar, text, timestamp, boolean } from "drizzle-orm/pg
 export const contactMessages = pgTable("contact_messages", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name", { length: 200 }).notNull(),
+  email: varchar("email", { length: 254 }).notNull(),
   message: text("message").notNull(),
   turnstileVerified: boolean("turnstile_verified").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

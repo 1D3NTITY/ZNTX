@@ -26,6 +26,11 @@ services:
       - TZ=Europe/Berlin
       - DATABASE_URL=postgresql://zntx_app:${ZNTX_DB_PASSWORD}@postgres:5432/zntx_db
       - TURNSTILE_SECRET_KEY=${TURNSTILE_SECRET_KEY:-}
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+      - CONTACT_EMAIL_TO=${CONTACT_EMAIL_TO:-kontakt@zntx.de}
     ports:
       - "127.0.0.1:3020:3000"
 
