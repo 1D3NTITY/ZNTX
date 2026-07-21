@@ -7,6 +7,7 @@ const STATUS_COLOR: Record<ProjectStatus, string> = {
   live: "var(--status-online)",
   "paper-trading": "var(--status-paper)",
   internal: "var(--foreground-muted)",
+  archived: "var(--foreground-muted)",
 };
 
 type Point = { x: number; y: number };

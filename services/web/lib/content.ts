@@ -1,11 +1,12 @@
-export type ProjectStatus = "live" | "paper-trading" | "internal";
+export type ProjectStatus = "live" | "paper-trading" | "internal" | "archived";
 
 export type ProjectNode = {
   id: string;
   name: string;
   role: string;
   status: ProjectStatus;
-  server: "server-1" | "server-2";
+  /** Optional: manche archivierten Projekte lassen sich keinem aktuellen Server mehr zuordnen. */
+  server?: "server-1" | "server-2";
   url?: string;
   /** Grobes Laufzeit-Datum (Monat/Jahr), falls bekannt — keine Erfindung, leer lassen wenn unklar. */
   since?: string;
@@ -84,15 +85,16 @@ export const PROJECTS: ProjectNode[] = [
     status: "live",
     server: "server-2",
     since: "Ende Mai / Anfang Juni 2026",
+    url: "https://zblt.eu",
     stack: ["discord.py", "OAuth2", "RCON", "Pterodactyl/Wings", "Docker"],
     context:
-      "Eine aktive Arma-Reforger-Community brauchte mehr als einen Standard-Discord-Bot — echte Integration mit dem laufenden Gameserver, nicht nur Rollenverwaltung.",
+      "Ein Arma-Reforger-Gameserver brauchte mehr als einen Standard-Discord-Bot — echte Integration mit dem laufenden Server, nicht nur Rollenverwaltung.",
     contribution:
-      "Ein ~5000 Zeilen großer Discord-Bot (discord.py) mit ~36 Hybrid-Commands, OAuth2-Web-Dashboard und direkter RCON-Anbindung an den Arma-Reforger-Server (Pterodactyl/Wings, Docker). Ticket-System mit persistenten Discord-Views für den Community-Support.",
+      "Ein ~5000 Zeilen großer Discord-Bot (discord.py) mit ~36 Hybrid-Commands, OAuth2-Web-Dashboard und direkter RCON-Anbindung an den Arma-Reforger-Server (Pterodactyl/Wings, Docker). Ticket-System mit persistenten Discord-Views für den Support.",
     challenge:
       "Live-Spieler-Tracking über dieselbe RCON-Verbindung wie die Server-Steuerung — stabil genug für Dauerbetrieb, nicht nur gelegentliche Admin-Befehle.",
     outcome:
-      "Läuft seit Monaten produktiv für eine echte, aktive Community — kein Demo, kein totes Side-Project.",
+      "Läuft seit Monaten produktiv — kein Demo, kein totes Side-Project.",
   },
   {
     id: "qntx",
@@ -101,6 +103,7 @@ export const PROJECTS: ProjectNode[] = [
     status: "paper-trading",
     server: "server-2",
     since: "Juli 2026",
+    url: "https://qntx.zblt.eu",
     stack: ["CCXT", "Optuna", "Monte-Carlo-Backtesting", "8-Modell-KI-Ensemble"],
     context:
       "Ein Krypto-Trading-Bot, der Entscheidungen nicht auf Bauchgefühl trifft — bei echtem Kapitalrisiko reicht 'sieht gut aus' nicht.",
@@ -111,6 +114,22 @@ export const PROJECTS: ProjectNode[] = [
     outcome:
       "Aktuell in strukturierter Paper-Trading-Phase mit dokumentierten, harten Go-Live-Kriterien — bewusst noch nicht live, bis diese Kriterien erfüllt sind.",
     note: "Bewusst kein 'einfach live schalten' — Go-Live-Kriterien sind schriftlich fixiert, nicht verhandelbar.",
+  },
+  {
+    id: "n8n-automation",
+    name: "YouTube-Automatisierung (n8n)",
+    role: "Content-Automatisierung / Workflow-Infrastruktur",
+    status: "archived",
+    since: "November 2025 – Februar 2026",
+    stack: ["n8n", "Workflow-Automatisierung", "Error-Handling-Pipelines"],
+    context:
+      "Bevor es die heutige, saubere Multi-Projekt-Infrastruktur gab: ein Experiment mit vollständig automatisierten YouTube-Inhalten — kein manueller Upload, keine manuelle Bearbeitung.",
+    contribution:
+      "Ein automatisierter YouTube-Kanal mit vollständigem n8n-Workflow von Erstellung bis Veröffentlichung, dazu eine eigene n8n-Infrastruktur mit eigenem Error-Handling für ausfallsichere Automatisierungs-Pipelines.",
+    challenge:
+      "Eine wachsende Automatisierungs-Infrastruktur sicher und wartbar zu halten, während parallel weiter experimentiert und erweitert wurde — am Ende eskalierte das so weit, dass der komplette Root-Server zurückgesetzt werden musste.",
+    outcome:
+      "Der Server wurde komplett neu aufgesetzt — bewusst sauberer und strukturierter als vorher. Die Disziplin, die sich durch die anderen Projekte auf dieser Seite zieht (Secrets-Hygiene, isolierte DBs, eigene Guardrail-Hooks), hat hier ihren Ursprung: einmal etwas komplett verloren zu haben, sitzt tiefer als jede Best-Practice-Checkliste.",
   },
   {
     id: "zntx",

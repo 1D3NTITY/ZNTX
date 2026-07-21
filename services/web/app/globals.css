@@ -58,6 +58,38 @@ body::before {
   50% { opacity: 0.75; }
 }
 
+/* Hero-Hintergrund: dezent driftendes Koordinaten-Grid + eine langsame
+   Scanline. Kein Gradient-Blob, kein Glow — nur Linien/Textur, passend zum
+   Dossier-/Systems-Look, aber mit spürbarer Bewegung statt Flat-Black. */
+.hero-grid {
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 64px 64px;
+  opacity: 0.4;
+  animation: hero-grid-drift 90s linear infinite;
+}
+
+@keyframes hero-grid-drift {
+  from { background-position: 0 0; }
+  to { background-position: 640px 640px; }
+}
+
+.hero-scanline {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--accent) 16%, transparent),
+    transparent
+  );
+  animation: hero-scanline-move 8s ease-in-out infinite;
+}
+
+@keyframes hero-scanline-move {
+  0% { transform: translateY(-120%); }
+  100% { transform: translateY(600%); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

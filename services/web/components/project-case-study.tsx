@@ -7,9 +7,10 @@ const STATUS_LABEL: Record<ProjectNode["status"], string> = {
   live: "LIVE",
   "paper-trading": "PAPER-TRADING",
   internal: "INTERNAL",
+  archived: "ARCHIVIERT",
 };
 
-const SERVER_LABEL: Record<ProjectNode["server"], string> = {
+const SERVER_LABEL: Record<"server-1" | "server-2", string> = {
   "server-1": "Server 1",
   "server-2": "Server 2",
 };
@@ -29,8 +30,9 @@ function CaseStudy({ project, index }: { project: ProjectNode; index: number }) 
           {String(index + 1).padStart(2, "0")} — {project.name}
         </h3>
         <span className="font-mono text-[11px] uppercase tracking-widest text-foreground-muted">
-          {STATUS_LABEL[project.status]} · {SERVER_LABEL[project.server]}
-          {project.since ? ` · seit ${project.since}` : ""}
+          {STATUS_LABEL[project.status]}
+          {project.server ? ` · ${SERVER_LABEL[project.server]}` : ""}
+          {project.since ? ` · ${project.status === "archived" ? "" : "seit "}${project.since}` : ""}
         </span>
       </div>
       <p className="mt-1 font-mono text-xs uppercase tracking-widest text-accent">
@@ -98,8 +100,9 @@ export function ProjectCaseStudies() {
         Projekte
       </h2>
       <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground-muted">
-        Sechs Systeme, die tatsächlich laufen — kein Mockup, keine Demo. Kontext, Beitrag,
-        die eigentliche technische Herausforderung und was dabei herauskam.
+        Kein Mockup, keine Demo — echte Systeme, inklusive eines archivierten, an dem sich
+        einiges lernen ließ. Kontext, Beitrag, die eigentliche technische Herausforderung
+        und was dabei herauskam.
       </p>
 
       <div>
