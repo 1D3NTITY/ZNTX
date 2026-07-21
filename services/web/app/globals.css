@@ -36,23 +36,6 @@ body {
   position: relative;
 }
 
-/* Dot-Grid + Vignette statt Flat-Black — Control-Room-Konzept braucht sichtbare
-   Tiefe im Hintergrund, nicht nur Cards auf reiner Fläche. Fixed + niedriger
-   z-index, damit Content immer obenauf bleibt ohne dass jede Section explizit
-   z-10 setzen muss. */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background-image: radial-gradient(circle at 1px 1px, var(--border) 1px, transparent 0);
-  background-size: 42px 42px;
-  opacity: 0.6;
-  mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 30%, transparent 85%);
-  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 30%, transparent 85%);
-}
-
 @keyframes pulse-line {
   0%, 100% { opacity: 0.25; }
   50% { opacity: 0.75; }

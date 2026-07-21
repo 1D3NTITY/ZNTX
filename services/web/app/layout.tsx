@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Source_Serif_4 } from "next/font/google";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { Footer } from "@/components/footer";
+import { Logo } from "@/components/logo";
+import { GlobalMatrixBackground } from "@/components/global-matrix-background";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -56,6 +58,8 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif.variable} h-full antialiased dark`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        <GlobalMatrixBackground />
+        <Logo />
         <SmoothScroll>
           {children}
           <Footer />
