@@ -49,7 +49,10 @@ export function NetworkGraph({
             stroke="var(--accent-dim)"
             strokeWidth={0.3}
             style={{
-              animation: "pulse-line 3.5s ease-in-out infinite",
+              // Nur 3 Durchläufe beim Laden ("Boot-Flicker"), dann Ruhe — eine
+              // permanent sichtbare Sidebar-Animation ermüdet (UI-Craft-Audit:
+              // Motion-Overload ist das häufigste "wirkt billig"-Signal).
+              animation: "pulse-line 3.5s ease-in-out 3",
               animationDelay: `${i * 0.3}s`,
             }}
           />
