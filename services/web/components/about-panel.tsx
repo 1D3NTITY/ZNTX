@@ -22,9 +22,19 @@ export function AboutPanel() {
         <dd className="text-sm leading-relaxed text-foreground">{BIO.dayJob}</dd>
 
         <dt className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
+          Werdegang
+        </dt>
+        <dd className="text-sm leading-relaxed text-foreground">{BIO.throughline}</dd>
+
+        <dt className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
           Nebenbei
         </dt>
         <dd className="text-sm leading-relaxed text-foreground">{BIO.passion}</dd>
+
+        <dt className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
+          Perspektive
+        </dt>
+        <dd className="text-sm leading-relaxed text-foreground">{BIO.trajectory}</dd>
       </dl>
 
       <p className="mt-6 max-w-2xl border-l-2 border-accent-dim pl-4 text-sm italic leading-relaxed text-foreground-muted">

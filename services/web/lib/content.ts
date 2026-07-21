@@ -7,6 +7,8 @@ export type ProjectNode = {
   status: ProjectStatus;
   server: "server-1" | "server-2";
   url?: string;
+  /** Grobes Laufzeit-Datum (Monat/Jahr), falls bekannt — keine Erfindung, leer lassen wenn unklar. */
+  since?: string;
   stack: string[];
   /** Kontext / Problem — warum gibt es das Projekt überhaupt. */
   context: string;
@@ -111,6 +113,7 @@ export const PROJECTS: ProjectNode[] = [
     role: "Dieses Portfolio",
     status: "live",
     server: "server-1",
+    since: "Juli 2026",
     url: "https://zntx.de",
     stack: ["Next.js", "Docker Compose", "Caddy", "Postgres", "Drizzle ORM"],
     context:
@@ -180,8 +183,12 @@ export const HERO = {
 export const BIO = {
   heading: "Hintergrund",
   dayJob: "Vollzeit und Minijob im Lager.",
+  throughline:
+    "Seit der Schulzeit Ansprechpartner für alles, was mit Technik zu tun hat — das hat sich in den Lagerjob mitgezogen: hilft dort gelegentlich freiwillig der Haustechnik aus.",
   passion:
     "Nebenbei: mehrere Root-Server, echte Produktiv-Infrastruktur, FPV-Drohnen-Foto- und Videografie.",
+  trajectory:
+    "Ziel ist perspektivisch die Selbstständigkeit im Tech-Bereich. Aktuell liegt der Fokus auf Weiterbildung im jetzigen Job, keine aktive Jobsuche — aber offen für den richtigen Kontakt.",
   note:
     "Kein Blender-Lebenslauf — die Systeme in diesem Dossier laufen wirklich, mit echtem Betrieb dahinter.",
 };

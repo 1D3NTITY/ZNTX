@@ -30,6 +30,7 @@ function CaseStudy({ project, index }: { project: ProjectNode; index: number }) 
         </h3>
         <span className="font-mono text-[11px] uppercase tracking-widest text-foreground-muted">
           {STATUS_LABEL[project.status]} · {SERVER_LABEL[project.server]}
+          {project.since ? ` · seit ${project.since}` : ""}
         </span>
       </div>
       <p className="mt-1 font-mono text-xs uppercase tracking-widest text-accent">
