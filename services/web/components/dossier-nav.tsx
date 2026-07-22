@@ -31,7 +31,7 @@ function NavLinks() {
 // ein Modal zu öffnen — die Karte ist Navigation, nicht mehr Hauptinhalt.
 export function IndexRail() {
   return (
-    <aside className="hidden shrink-0 lg:sticky lg:top-16 lg:block lg:h-fit lg:w-[240px] lg:self-start">
+    <aside className="hidden shrink-0 lg:sticky lg:top-16 lg:block lg:h-fit lg:w-[270px] lg:self-start">
       <div className="border-l border-border pl-5">
         <NavLinks />
         <div className="mt-10">
@@ -40,6 +40,9 @@ export function IndexRail() {
             onSelect={(project) => scrollToSection(`project-${project.id}`)}
             compact
           />
+          <p className="mt-3 text-center font-mono text-[9px] uppercase leading-relaxed tracking-widest text-foreground-muted">
+            Knoten anklicken →<br />springt zur Case-Study
+          </p>
         </div>
       </div>
     </aside>

@@ -36,7 +36,7 @@ export function NetworkGraph({
 
   return (
     <div
-      className={`relative mx-auto aspect-square w-full select-none ${compact ? "max-w-[220px]" : "max-w-2xl"}`}
+      className={`relative mx-auto aspect-square w-full select-none ${compact ? "max-w-[250px]" : "max-w-2xl"}`}
     >
       <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" aria-hidden="true">
         {positions.map((p, i) => (

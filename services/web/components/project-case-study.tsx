@@ -91,17 +91,22 @@ function CaseStudy({ project, index }: { project: ProjectNode; index: number }) 
         <dd className="text-sm leading-relaxed text-foreground">{project.challenge}</dd>
 
         <dt className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
-          Ergebnis
-        </dt>
-        <dd className="text-sm leading-relaxed text-foreground">{project.outcome}</dd>
-
-        <dt className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
           Stack
         </dt>
         <dd className="font-mono text-xs leading-relaxed text-foreground-muted">
           {project.stack.join(" · ")}
         </dd>
       </motion.dl>
+
+      {/* Ergebnis bewusst aus dem Datenblatt herausgezogen und als eigener
+          Beat hervorgehoben — sonst sehen alle 7 Case-Studies identisch
+          "flach" aus (Feedback: zu eintönig trotz unterschiedlicher Inhalte). */}
+      <motion.p
+        variants={item}
+        className="mt-6 border-l-2 border-accent pl-4 font-serif text-lg leading-snug text-foreground sm:text-xl"
+      >
+        {project.outcome}
+      </motion.p>
 
       {project.note && (
         <motion.p
