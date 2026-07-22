@@ -1,29 +1,31 @@
 @import "tailwindcss";
 
-/* Dark-Theme ist Default, nicht nur bei prefers-color-scheme — das Konzept
-   (Control-Room / Netzwerkkarte) trägt nicht im Light-Mode. */
+/* "The Rack" — industrielle Material-/Statuslicht-Sprache statt digitalem
+   Terminal-Grün. Dark ist weiterhin Default (kein Light-Mode-Konzept). */
 :root {
-  --background: #08090c;
-  --surface: #0f1216;
-  --border: #1e242b;
-  --foreground: #e4e7eb;
-  --foreground-muted: #8b96a3;
-  --accent: #22d3ee;
-  --accent-dim: #0e7490;
-  --status-online: #4ade80;
-  --status-paper: #facc15;
+  --background: #0c0d0f;
+  --surface: #17191c;
+  --surface-raised: #202327;
+  --border: #2c3034;
+  --metal-highlight: #3a3f45;
+  --foreground: #e7e9eb;
+  --foreground-muted: #8b9096;
+  --accent: #4ade80;
+  --accent-dim: #22883f;
+  --led-warn: #f59e0b;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
   --color-border: var(--border);
+  --color-metal-highlight: var(--metal-highlight);
   --color-foreground: var(--foreground);
   --color-foreground-muted: var(--foreground-muted);
   --color-accent: var(--accent);
   --color-accent-dim: var(--accent-dim);
-  --color-status-online: var(--status-online);
-  --color-status-paper: var(--status-paper);
+  --color-led-warn: var(--led-warn);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-serif: var(--font-source-serif);
@@ -36,61 +38,54 @@ body {
   position: relative;
 }
 
-@keyframes pulse-line {
-  0%, 100% { opacity: 0.25; }
-  50% { opacity: 0.75; }
+/* Gebürstetes Metall + Lüftungsgitter — reine CSS-Textur, keine Bilddateien,
+   für Rack-Unit-Oberflächen. */
+.rack-metal {
+  background-image:
+    repeating-linear-gradient(
+      100deg,
+      color-mix(in srgb, var(--metal-highlight) 35%, transparent) 0px,
+      transparent 2px,
+      transparent 6px
+    ),
+    linear-gradient(180deg, var(--surface-raised), var(--surface));
 }
 
-/* Hero-Hintergrund: echte vertikale Matrix-Rain (Feedback: horizontaler
-   Ticker war weder als "Matrix" erkennbar noch bei niedriger Opazität
-   sichtbar). Spalten aus echten Tokens (lib/hero-fragments.ts), Cyan-Akzent
-   mit spürbarer, aber dem Vordergrund-Text untergeordneter Sichtbarkeit
-   (Kontrast über das Scrim-Panel in hero.tsx sichergestellt, nicht über
-   Beinahe-Unsichtbarkeit des Effekts selbst). */
-.hero-matrix-col {
-  color: var(--accent);
-  text-shadow: 0 0 6px color-mix(in srgb, var(--accent) 55%, transparent);
-}
-
-@keyframes matrix-fall {
-  from { transform: translateY(-110%); }
-  to { transform: translateY(110%); }
-}
-
-.hero-matrix-mask {
-  background: linear-gradient(
-    to bottom,
-    var(--background) 0%,
-    transparent 18%,
-    transparent 82%,
-    var(--background) 100%
+.rack-vents {
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--border) 0px,
+    var(--border) 2px,
+    transparent 2px,
+    transparent 8px
   );
 }
 
-/* Spotlight-Hover für Case-Study-Blöcke: der Maus folgende, sehr dezente
-   Aufhellung statt Deko-Glow-Fläche. --x/--y werden per onPointerMove als
-   Prozentwerte gesetzt (siehe project-case-study.tsx), kein Re-Render pro
-   Frame — nur CSS-Custom-Properties. */
-.spotlight {
-  position: relative;
+/* Status-LED: kurzes Power-On-Flackern, danach stabiles Leuchten. Läuft
+   einmal (kein infinite) — Dauerschleifen-Lichter wurden im vorherigen
+   Durchgang als "Motion-Overload" identifiziert. */
+@keyframes led-power-on {
+  0% { opacity: 0.15; }
+  8% { opacity: 0.9; }
+  14% { opacity: 0.2; }
+  22% { opacity: 1; }
+  30% { opacity: 0.3; }
+  40%, 100% { opacity: 1; }
 }
 
-.spotlight::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  background: radial-gradient(
-    360px circle at var(--x, 50%) var(--y, 50%),
-    color-mix(in srgb, var(--accent) 7%, transparent),
-    transparent 70%
-  );
+.led {
+  animation: led-power-on 1.4s ease-out both;
 }
 
-.spotlight:hover::before {
-  opacity: 1;
+/* Kabel-/Verbindungspfade zwischen Einheiten (SVG stroke-dashoffset). */
+@keyframes draw-path {
+  from { stroke-dashoffset: var(--path-length, 300); }
+  to { stroke-dashoffset: 0; }
+}
+
+.cable-path {
+  stroke-dasharray: var(--path-length, 300);
+  animation: draw-path 1.2s ease-out forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
