@@ -57,6 +57,24 @@ body {
   to { transform: translateY(110%); }
 }
 
+/* Signatur-Glyphen (ZNTX, siehe matrix-rain.tsx) — fallen wie normale
+   Matrix-Tokens (kein eigenes Transform, verhindert die Stutter-Kollision
+   mit matrix-fall, siehe Feedback zu glitch-flicker weiter oben im Projekt).
+   Animiert nur opacity/filter: ruhig, dann kurzer heller Doppel-Glitch. */
+@keyframes signature-glitch {
+  0%, 42% { opacity: 0.45; filter: brightness(1) drop-shadow(0 0 0 transparent); }
+  46% { opacity: 1; filter: brightness(2.4) drop-shadow(0 0 8px var(--accent)); }
+  50% { opacity: 0.55; filter: brightness(1.2) drop-shadow(0 0 2px var(--accent)); }
+  54% { opacity: 1; filter: brightness(2.6) drop-shadow(0 0 10px var(--accent)); }
+  60%, 100% { opacity: 0.45; filter: brightness(1) drop-shadow(0 0 0 transparent); }
+}
+
+.matrix-signature-glyph {
+  color: var(--foreground);
+  font-weight: 700;
+  animation: signature-glitch 7s ease-in-out infinite;
+}
+
 .hero-matrix-mask {
   background: linear-gradient(
     to bottom,

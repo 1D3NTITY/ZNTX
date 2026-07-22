@@ -8,11 +8,13 @@ function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-// Fixed, sehr dezent, hinter dem gesamten Seiteninhalt (z-index -1, wie zuvor
-// das Dot-Grid) — ein durchgängiger Stil statt "Hero hat Matrix-Rain, Rest
-// der Seite hat ein anderes Dot-Grid". Muss lesbar bleiben: Case-Studies/
-// Kontaktformular haben keine eigene Karte, die den Hintergrund abschirmt,
-// deshalb sehr niedrige Opazität + reduzierte Spaltenzahl gegenüber dem Hero.
+// Fixed, hinter dem gesamten Seiteninhalt (z-index -1) — ein durchgängiger
+// Stil statt "Hero hat Matrix-Rain, Rest der Seite hat ein anderes Dot-Grid".
+// Bewusst voller/präsenter als vorher (Feedback 2026-07-22: darf über den
+// ganzen Bildschirm gehen) — mehr Spalten, etwas höhere Opazität. Bleibt
+// unter der Hero-Intensität (0.3), damit Fließtext ohne eigene Karte
+// (Case-Studies/Kontaktformular) lesbar bleibt. signature=true blendet
+// "ZNTX" cryptisch in den Rain ein.
 export function GlobalMatrixBackground() {
   const [reducedMotion, setReducedMotion] = useState(prefersReducedMotion);
 
@@ -27,7 +29,7 @@ export function GlobalMatrixBackground() {
 
   return (
     <div className="fixed inset-0 -z-10">
-      <MatrixRain columnCount={10} baseOpacity={0.05} slow />
+      <MatrixRain columnCount={26} baseOpacity={0.1} slow signature rows={60} />
     </div>
   );
 }
