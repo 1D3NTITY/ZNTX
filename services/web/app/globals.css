@@ -1,7 +1,10 @@
 @import "tailwindcss";
 
-/* "The Rack" — industrielle Material-/Statuslicht-Sprache statt digitalem
-   Terminal-Grün. Dark ist weiterhin Default (kein Light-Mode-Konzept). */
+/* "The Rack" + kryptische Matrix-Glitch-Textur (Referenz: midjourney.com-
+   Intro, Luis' ursprüngliche Inspiration) im Hintergrund. Neon-Rot als
+   Marken-Akzent (Luis' Lieblingsfarbe) — Status-Ampel (aktiv/Papier/Archiv)
+   bleibt bewusst getrennt davon, damit "läuft"/"archiviert" eindeutig
+   bleibt. Dark ist weiterhin Default. */
 :root {
   --background: #0c0d0f;
   --surface: #17191c;
@@ -10,8 +13,9 @@
   --metal-highlight: #3a3f45;
   --foreground: #e7e9eb;
   --foreground-muted: #8b9096;
-  --accent: #4ade80;
-  --accent-dim: #22883f;
+  --accent: #ff1e3c;
+  --accent-dim: #7a0f1f;
+  --status-active: #4ade80;
   --led-warn: #f59e0b;
 }
 
@@ -25,6 +29,7 @@
   --color-foreground-muted: var(--foreground-muted);
   --color-accent: var(--accent);
   --color-accent-dim: var(--accent-dim);
+  --color-status-active: var(--status-active);
   --color-led-warn: var(--led-warn);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -86,6 +91,39 @@ body {
 .cable-path {
   stroke-dasharray: var(--path-length, 300);
   animation: draw-path 1.2s ease-out forwards;
+}
+
+/* Kryptische Matrix-Glitch-Textur: vertikale Fall-Bewegung (matrix-fall) +
+   ein kurzes Glitch-Flackern pro Spalte. WICHTIG: Glitch animiert nur
+   opacity/filter, nie transform — sonst kollidiert es mit matrix-fall auf
+   derselben Property (genau der Bug, der im vorherigen Durchgang per
+   Audit gefunden wurde). */
+.matrix-col {
+  color: var(--accent);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+@keyframes matrix-fall {
+  from { transform: translateY(-110%); }
+  to { transform: translateY(110%); }
+}
+
+@keyframes matrix-glitch {
+  0%, 100% { opacity: 1; filter: none; }
+  92% { opacity: 1; filter: none; }
+  93.5% { opacity: 0.3; filter: blur(0.6px) hue-rotate(20deg); }
+  95% { opacity: 1; filter: none; }
+  96.5% { opacity: 0.5; filter: blur(0.4px); }
+}
+
+.matrix-mask {
+  background: linear-gradient(
+    to bottom,
+    var(--background) 0%,
+    transparent 18%,
+    transparent 82%,
+    var(--background) 100%
+  );
 }
 
 @media (prefers-reduced-motion: reduce) {

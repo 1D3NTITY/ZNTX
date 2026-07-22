@@ -3,7 +3,7 @@
 import { PROJECTS } from "@/lib/content";
 
 const STATUS_COLOR: Record<string, string> = {
-  live: "var(--accent)",
+  live: "var(--status-active)",
   "paper-trading": "var(--led-warn)",
   archived: "var(--foreground-muted)",
 };
@@ -14,7 +14,7 @@ const UNITS = [
     id: `ru-${p.id}`,
     color: STATUS_COLOR[p.status],
   })),
-  { ru: "08", id: "ru-operator", color: "var(--accent)" },
+  { ru: "08", id: "ru-operator", color: "var(--status-active)" },
 ];
 
 function scrollTo(id: string) {

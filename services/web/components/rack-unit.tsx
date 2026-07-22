@@ -19,7 +19,7 @@ export type RackUnitProps = {
 };
 
 const STATUS_COLOR: Record<RackUnitProps["status"], string> = {
-  active: "var(--accent)",
+  active: "var(--status-active)",
   paper: "var(--led-warn)",
   archived: "var(--foreground-muted)",
 };

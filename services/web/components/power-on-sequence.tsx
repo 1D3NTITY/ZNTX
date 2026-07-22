@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { HERO, LINKS } from "@/lib/content";
+import { MatrixRain } from "@/components/matrix-rain";
 
 function prefersReducedMotion() {
   if (typeof window === "undefined") return false;
@@ -26,7 +27,12 @@ export function PowerOnSequence() {
 
   return (
     <section className="relative mx-auto flex w-full max-w-[1400px] flex-col justify-center gap-6 overflow-hidden px-6 pt-28 pb-16 lg:px-10 lg:pt-40 lg:pb-24">
-      <div className="rack-vents rack-metal flex items-center gap-2 self-start rounded-sm border border-border px-4 py-3">
+      <div className="absolute inset-0" aria-hidden="true">
+        <MatrixRain columnCount={16} baseOpacity={0.3} />
+        <div className="matrix-mask absolute inset-0" />
+      </div>
+
+      <div className="relative z-10 rack-vents rack-metal flex items-center gap-2 self-start rounded-sm border border-border px-4 py-3">
         {Array.from({ length: LED_COUNT }, (_, i) => (
           <span
             key={i}
@@ -44,7 +50,7 @@ export function PowerOnSequence() {
       </div>
 
       <motion.div
-        className="flex flex-col gap-6"
+        className="relative z-10 -m-6 flex flex-col gap-6 rounded-md bg-background/60 p-6 backdrop-blur-[2px] sm:w-fit"
         initial={{ opacity: 0, y: 10 }}
         animate={booted ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.4, ease: "easeOut" }}
