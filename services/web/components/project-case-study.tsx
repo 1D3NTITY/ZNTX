@@ -1,7 +1,9 @@
 "use client";
 
-import { motion } from "motion/react";
+import { useRef, type PointerEvent } from "react";
+import { motion, type Variants } from "motion/react";
 import { PROJECTS, type ProjectNode } from "@/lib/content";
+import { SectionNumber } from "@/components/section-number";
 
 const STATUS_LABEL: Record<ProjectNode["status"], string> = {
   live: "LIVE",
@@ -15,17 +17,50 @@ const SERVER_LABEL: Record<"server-1" | "server-2", string> = {
   "server-2": "Server 2",
 };
 
+const container: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.09 } },
+};
+
+const item: Variants = {
+  hidden: { opacity: 0, y: 14 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
+};
+
 function CaseStudy({ project, index }: { project: ProjectNode; index: number }) {
+  const ref = useRef<HTMLElement>(null);
+
+  function onPointerMove(e: PointerEvent<HTMLElement>) {
+    const rect = ref.current?.getBoundingClientRect();
+    if (!rect) return;
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    ref.current!.style.setProperty("--x", `${x}%`);
+    ref.current!.style.setProperty("--y", `${y}%`);
+  }
+
   return (
     <motion.article
+      ref={ref}
       id={`project-${project.id}`}
-      className="scroll-mt-24 border-t border-border py-12 first:border-t-0 first:pt-0"
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      onPointerMove={onPointerMove}
+      className="spotlight scroll-mt-24 border-t border-border py-12 first:border-t-0 first:pt-0"
+      initial="hidden"
+      whileInView="visible"
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
+      variants={container}
     >
-      <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+      <motion.p
+        variants={item}
+        className="font-mono text-xs uppercase tracking-widest text-accent"
+      >
+        {project.role}
+      </motion.p>
+
+      <motion.div
+        variants={item}
+        className="mt-1 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2"
+      >
         <h3 className="font-serif text-2xl font-semibold text-foreground sm:text-3xl">
           {String(index + 1).padStart(2, "0")} — {project.name}
         </h3>
@@ -34,12 +69,12 @@ function CaseStudy({ project, index }: { project: ProjectNode; index: number }) 
           {project.server ? ` · ${SERVER_LABEL[project.server]}` : ""}
           {project.since ? ` · ${project.status === "archived" ? "" : "seit "}${project.since}` : ""}
         </span>
-      </div>
-      <p className="mt-1 font-mono text-xs uppercase tracking-widest text-accent">
-        {project.role}
-      </p>
+      </motion.div>
 
-      <dl className="mt-6 grid grid-cols-1 gap-x-10 gap-y-5 sm:grid-cols-[140px_1fr]">
+      <motion.dl
+        variants={item}
+        className="mt-6 grid grid-cols-1 gap-x-10 gap-y-5 sm:grid-cols-[140px_1fr]"
+      >
         <dt className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
           Kontext
         </dt>
@@ -66,23 +101,27 @@ function CaseStudy({ project, index }: { project: ProjectNode; index: number }) 
         <dd className="font-mono text-xs leading-relaxed text-foreground-muted">
           {project.stack.join(" · ")}
         </dd>
-      </dl>
+      </motion.dl>
 
       {project.note && (
-        <p className="mt-5 border-l-2 border-accent-dim pl-4 text-sm italic leading-relaxed text-foreground-muted">
+        <motion.p
+          variants={item}
+          className="mt-5 border-l-2 border-accent-dim pl-4 text-sm italic leading-relaxed text-foreground-muted"
+        >
           {project.note}
-        </p>
+        </motion.p>
       )}
 
       {project.url && (
-        <a
+        <motion.a
+          variants={item}
           href={project.url}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-5 inline-block font-mono text-xs uppercase tracking-widest text-accent hover:underline"
         >
           {project.url.replace("https://", "")} →
-        </a>
+        </motion.a>
       )}
     </motion.article>
   );
@@ -95,15 +134,18 @@ export function ProjectCaseStudies() {
       className="scroll-mt-24 py-16"
       aria-labelledby="projects-heading"
     >
-      <p className="font-mono text-xs uppercase tracking-widest text-accent">§01</p>
-      <h2 id="projects-heading" className="mt-1 font-serif text-3xl font-semibold sm:text-4xl">
-        Projekte
-      </h2>
-      <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground-muted">
-        Kein Mockup, keine Demo — echte Systeme, inklusive eines archivierten, an dem sich
-        einiges lernen ließ. Kontext, Beitrag, die eigentliche technische Herausforderung
-        und was dabei herauskam.
-      </p>
+      <div className="relative overflow-hidden">
+        <SectionNumber n="01" />
+        <p className="font-mono text-xs uppercase tracking-widest text-accent">§01</p>
+        <h2 id="projects-heading" className="mt-1 font-serif text-3xl font-semibold sm:text-4xl">
+          Projekte
+        </h2>
+        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground-muted">
+          Kein Mockup, keine Demo — echte Systeme, inklusive eines archivierten, an dem sich
+          einiges lernen ließ. Kontext, Beitrag, die eigentliche technische Herausforderung
+          und was dabei herauskam.
+        </p>
+      </div>
 
       <div>
         {PROJECTS.map((project, i) => (

@@ -1,5 +1,12 @@
-import { BIO } from "@/lib/content";
+"use client";
 
+import { motion } from "motion/react";
+import { BIO } from "@/lib/content";
+import { SectionNumber } from "@/components/section-number";
+
+// Eigene Komposition statt dl-Duplikat der Projekte/Arbeitsweise-Struktur:
+// Werdegang als große Pull-Quote, Brotjob/Nebenbei/Perspektive als kompakter
+// Profil-Streifen statt Label/Value-Tabelle.
 export function AboutPanel() {
   return (
     <section
@@ -7,37 +14,49 @@ export function AboutPanel() {
       className="scroll-mt-24 border-t border-border py-16"
       aria-labelledby="background-heading"
     >
-      <p className="font-mono text-xs uppercase tracking-widest text-accent">§03</p>
-      <h2
-        id="background-heading"
-        className="mt-1 font-serif text-3xl font-semibold sm:text-4xl"
+      <div className="relative overflow-hidden">
+        <SectionNumber n="03" />
+        <p className="font-mono text-xs uppercase tracking-widest text-accent">§03</p>
+        <h2
+          id="background-heading"
+          className="mt-1 font-serif text-3xl font-semibold sm:text-4xl"
+        >
+          {BIO.heading}
+        </h2>
+      </div>
+
+      <motion.blockquote
+        initial={{ opacity: 0, y: 14 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="mt-8 max-w-2xl border-l-2 border-accent pl-5 font-serif text-xl leading-snug text-foreground sm:text-2xl"
       >
-        {BIO.heading}
-      </h2>
+        {BIO.throughline}
+      </motion.blockquote>
 
-      <dl className="mt-8 grid max-w-2xl grid-cols-1 gap-x-10 gap-y-5 sm:grid-cols-[140px_1fr]">
-        <dt className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
-          Brotjob
-        </dt>
-        <dd className="text-sm leading-relaxed text-foreground">{BIO.dayJob}</dd>
+      <div className="mt-10 flex max-w-2xl flex-col gap-6 sm:flex-row sm:gap-10">
+        <div className="flex-1">
+          <p className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
+            Brotjob
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-foreground">{BIO.dayJob}</p>
+        </div>
+        <div className="flex-1">
+          <p className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
+            Nebenbei
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-foreground">{BIO.passion}</p>
+        </div>
+        <div className="flex-1">
+          <p className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
+            Perspektive
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-foreground">{BIO.trajectory}</p>
+        </div>
+      </div>
 
-        <dt className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
-          Werdegang
-        </dt>
-        <dd className="text-sm leading-relaxed text-foreground">{BIO.throughline}</dd>
-
-        <dt className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
-          Nebenbei
-        </dt>
-        <dd className="text-sm leading-relaxed text-foreground">{BIO.passion}</dd>
-
-        <dt className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
-          Perspektive
-        </dt>
-        <dd className="text-sm leading-relaxed text-foreground">{BIO.trajectory}</dd>
-      </dl>
-
-      <p className="mt-6 max-w-2xl border-l-2 border-accent-dim pl-4 text-sm italic leading-relaxed text-foreground-muted">
+      <p className="mt-8 max-w-2xl border-l-2 border-accent-dim pl-4 text-sm italic leading-relaxed text-foreground-muted">
         {BIO.note}
       </p>
     </section>

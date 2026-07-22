@@ -91,7 +91,7 @@ export function ContactForm() {
 
   if (status === "success") {
     return (
-      <div className="rounded-md border border-status-online/40 bg-surface p-8 font-mono text-sm text-status-online">
+      <div className="rounded border border-status-online/40 p-4 font-mono text-sm text-status-online">
         {"> Nachricht gesendet. Danke — melde mich zeitnah zurück."}
       </div>
     );
@@ -109,7 +109,7 @@ export function ContactForm() {
       )}
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-4 rounded-md border border-border bg-surface p-6 font-mono text-sm"
+        className="flex flex-col gap-4 font-mono text-sm"
       >
         {/* Honeypot: für echte Nutzer per CSS versteckt, Bots füllen oft blind alles aus */}
         <div className="hidden" aria-hidden="true">
