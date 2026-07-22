@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { PROJECTS, BIO, type ProjectNode } from "@/lib/content";
 import { RackUnit, type RackUnitProps } from "@/components/rack-unit";
 import { RackOverview, RackOverviewMobile } from "@/components/rack-overview";
@@ -39,7 +40,17 @@ function projectMeta(p: ProjectNode) {
 // visuelles Gewicht.
 const HEIGHTS: RackUnitProps["height"][] = ["lg", "md", "md", "lg", "lg", "md"];
 
+const OPERATOR_ID = "ru-operator";
+
 export function Rack() {
+  // Target-Lock: Klick auf eine Einheit fokussiert sie, alle anderen treten
+  // zurück (Signature Moment #2). Nochmaliger Klick hebt den Fokus auf.
+  const [focusedId, setFocusedId] = useState<string | null>(null);
+
+  function toggleFocus(id: string) {
+    setFocusedId((current) => (current === id ? null : id));
+  }
+
   return (
     <>
       <RackOverviewMobile />
@@ -50,24 +61,30 @@ export function Rack() {
             className="flex flex-col gap-8 border-t border-border py-16"
             aria-label="Montierte Einheiten"
           >
-            {PROJECTS.map((p, i) => (
-              <RackUnit
-                key={p.id}
-                id={`ru-${p.id}`}
-                ruNumber={String(i + 1).padStart(2, "0")}
-                title={p.name}
-                role={p.role}
-                meta={projectMeta(p)}
-                fields={projectFields(p)}
-                note={p.note}
-                url={p.url}
-                status={projectStatus(p.status)}
-                height={HEIGHTS[i] ?? "md"}
-              />
-            ))}
+            {PROJECTS.map((p, i) => {
+              const unitId = `ru-${p.id}`;
+              return (
+                <RackUnit
+                  key={p.id}
+                  id={unitId}
+                  ruNumber={String(i + 1).padStart(2, "0")}
+                  title={p.name}
+                  role={p.role}
+                  meta={projectMeta(p)}
+                  fields={projectFields(p)}
+                  note={p.note}
+                  url={p.url}
+                  status={projectStatus(p.status)}
+                  height={HEIGHTS[i] ?? "md"}
+                  focused={focusedId === unitId}
+                  dimmed={focusedId !== null && focusedId !== unitId}
+                  onToggleFocus={() => toggleFocus(unitId)}
+                />
+              );
+            })}
 
             <RackUnit
-              id="ru-operator"
+              id={OPERATOR_ID}
               ruNumber="08"
               title="Operator"
               role={BIO.heading}
@@ -80,6 +97,9 @@ export function Rack() {
               note={BIO.note}
               status="active"
               height="lg"
+              focused={focusedId === OPERATOR_ID}
+              dimmed={focusedId !== null && focusedId !== OPERATOR_ID}
+              onToggleFocus={() => toggleFocus(OPERATOR_ID)}
             />
           </section>
 

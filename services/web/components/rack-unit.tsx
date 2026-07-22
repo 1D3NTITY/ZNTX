@@ -16,6 +16,11 @@ export type RackUnitProps = {
   status: "active" | "paper" | "archived";
   height?: "sm" | "md" | "lg";
   id?: string;
+  /** Target-Lock: ist diese Einheit fokussiert? */
+  focused?: boolean;
+  /** Target-Lock: ist eine ANDERE Einheit fokussiert (also diese hier zurücktreten soll)? */
+  dimmed?: boolean;
+  onToggleFocus?: () => void;
 };
 
 const STATUS_COLOR: Record<RackUnitProps["status"], string> = {
@@ -38,7 +43,9 @@ const HEIGHT_PADDING: Record<NonNullable<RackUnitProps["height"]>, string> = {
 
 // Eine montierte Rack-Einheit — Typenschild + technisches Datenblatt statt
 // Fließtext-Absätzen. Archivierte Einheiten sind sichtbar schräg montiert
-// ("außer Betrieb"), keine reine Text-Kennzeichnung.
+// UND haben ein eigenes Static-Glitch-Overlay ("außer Betrieb" ist eine
+// visuelle Störung, keine reine Text-Kennzeichnung). Klick auf eine Einheit
+// = Target-Lock: sie tritt hervor, alle anderen treten zurück.
 export function RackUnit({
   ruNumber,
   title,
@@ -50,6 +57,9 @@ export function RackUnit({
   status,
   height = "md",
   id,
+  focused = false,
+  dimmed = false,
+  onToggleFocus,
 }: RackUnitProps) {
   const ref = useRef<HTMLElement>(null);
 
@@ -65,14 +75,27 @@ export function RackUnit({
       ref={ref}
       id={id}
       onPointerMove={onPointerMove}
+      onClick={onToggleFocus}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-      className={`rack-metal spotlight relative flex gap-4 rounded-sm border border-border px-5 sm:px-8 ${HEIGHT_PADDING[height]} ${
-        status === "archived" ? "-rotate-1 opacity-80" : ""
-      }`}
+      animate={{
+        opacity: dimmed ? 0.35 : 1,
+        scale: dimmed ? 0.98 : focused ? 1.01 : 1,
+      }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
+      className={`rack-metal spotlight relative flex cursor-pointer gap-4 rounded-sm border px-5 sm:px-8 ${HEIGHT_PADDING[height]} ${
+        status === "archived" ? "-rotate-1" : ""
+      } ${focused ? "border-accent" : "border-border"}`}
+      style={focused ? { boxShadow: "0 0 0 1px var(--accent), 0 0 24px color-mix(in srgb, var(--accent) 25%, transparent)" } : undefined}
     >
+      {status === "archived" && (
+        <span
+          className="unit-static pointer-events-none absolute inset-0 rounded-sm"
+          aria-hidden="true"
+        />
+      )}
+
       {/* Nieten */}
       <span className="absolute left-2 top-2 h-1.5 w-1.5 rounded-full bg-border" aria-hidden="true" />
       <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-border" aria-hidden="true" />
@@ -127,6 +150,7 @@ export function RackUnit({
             href={url}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
             className="mt-4 inline-block font-mono text-xs uppercase tracking-widest text-accent hover:underline"
           >
             {url.replace("https://", "")} →

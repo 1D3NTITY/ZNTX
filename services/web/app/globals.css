@@ -82,6 +82,29 @@ body {
   animation: led-power-on 1.4s ease-out both;
 }
 
+/* Static-Glitch-Overlay exklusiv für die archivierte Einheit — ihr eigenes,
+   einzigartiges Signature-Moment ("außer Betrieb" als sichtbare Störung,
+   nicht nur ein Text-Label). Steps() statt ease für jitterigen Look. */
+@keyframes static-flicker {
+  0%, 100% { opacity: 0.05; }
+  12% { opacity: 0.16; }
+  18% { opacity: 0.02; }
+  45% { opacity: 0.1; }
+  63% { opacity: 0.01; }
+  80% { opacity: 0.13; }
+}
+
+.unit-static {
+  background-image: repeating-linear-gradient(
+    0deg,
+    var(--foreground-muted) 0px,
+    var(--foreground-muted) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  animation: static-flicker 3.4s steps(10) infinite;
+}
+
 /* Kabel-/Verbindungspfade zwischen Einheiten (SVG stroke-dashoffset). */
 @keyframes draw-path {
   from { stroke-dashoffset: var(--path-length, 300); }
