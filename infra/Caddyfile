@@ -16,8 +16,12 @@
 # Eigener CSP-Snippet für zntx — nicht csp_app/csp_ravepuls_web wiederverwenden (deren
 # connect-src/script-src sind auf andere Projekte zugeschnitten). challenges.cloudflare.com
 # für Turnstile (Kontaktformular-Spam-Schutz), sonst 'self'.
+# WICHTIG (Bug 2026-07-22): Turnstile lädt zur Bot-Erkennung Ressourcen von randomisierten
+# Subdomains wie brunhild.challenges.cloudflare.com — eine exakte Origin-Angabe ohne
+# Wildcard blockt das (CSP matcht Subdomains NICHT automatisch), Widget rendert dann bei
+# niemandem sichtbar. Deshalb *.challenges.cloudflare.com in script-src/connect-src/frame-src.
 (csp_zntx) {
-    header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; worker-src 'self' blob:; media-src 'self' blob:"
+    header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://*.challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://challenges.cloudflare.com https://*.challenges.cloudflare.com; frame-src https://challenges.cloudflare.com https://*.challenges.cloudflare.com; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; worker-src 'self' blob:; media-src 'self' blob:"
 }
 
 zntx.de {

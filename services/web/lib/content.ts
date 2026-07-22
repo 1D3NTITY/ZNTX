@@ -192,6 +192,32 @@ export const CROSS_CUTTING_SKILLS: SkillCategory[] = [
   },
 ];
 
+// Konkrete Einsatzbereiche, aus den 7 Projekten oben abgeleitet — keine
+// Erfindung, sondern Zusammenfassung dessen, was die Case-Studies bereits
+// belegen. Beantwortet "wofür ist das geeignet", nicht nur "was kann er".
+export const ROLE_FIT = [
+  {
+    role: "Backend-/API-Entwicklung",
+    evidence: "FastAPI- und Next.js-Route-Handler-Backends produktiv im Einsatz (foodapp, ravepuls, zntx)",
+  },
+  {
+    role: "Full-Stack-Entwicklung",
+    evidence: "Next.js/React + eigenes Backend + Postgres als durchgängiger Stack über mehrere Projekte",
+  },
+  {
+    role: "Linux-/Server-Administration, DevOps",
+    evidence: "Eigenständiger Betrieb von 2 Root-Servern, Docker-Compose-Architektur, Caddy-Ingress, SSH-Härtung",
+  },
+  {
+    role: "Automatisierung & Workflow-Engineering",
+    evidence: "n8n-Workflow-Infrastruktur, Discord-Bot-/RCON-Automatisierung (WCP/Arma)",
+  },
+  {
+    role: "Security-/Compliance-bewusste Entwicklung",
+    evidence: "DSGVO Art. 9 bei Gesundheitsdaten, Kill-Switches bei echtem Kapitalrisiko, eigene Guardrail-Hooks",
+  },
+];
+
 export const LINKS = {
   linkedin: "https://www.linkedin.com/in/luis-b-668750319/",
   contactEmail: "kontakt@zntx.de",
@@ -214,5 +240,5 @@ export const BIO = {
   trajectory:
     "Ziel ist perspektivisch die Selbstständigkeit im Tech-Bereich. Aktuell liegt der Fokus auf Weiterbildung im jetzigen Job, keine aktive Jobsuche — aber offen für den richtigen Kontakt.",
   note:
-    "Kein Blender-Lebenslauf — die Systeme in diesem Dossier laufen wirklich, mit echtem Betrieb dahinter.",
+    "Keine Behauptungen ohne Beleg — die Systeme in diesem Dossier sind produktiv im Einsatz, nicht nur beschrieben.",
 };

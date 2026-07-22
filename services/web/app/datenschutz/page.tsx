@@ -1,8 +1,16 @@
+import Link from "next/link";
+
 export const metadata = { title: "Datenschutz — zntx" };
 
 export default function DatenschutzPage() {
   return (
     <article className="mx-auto w-full max-w-2xl space-y-8 px-6 py-24 text-sm leading-relaxed text-foreground-muted">
+      <Link
+        href="/"
+        className="inline-block font-mono text-xs uppercase tracking-widest text-accent hover:underline"
+      >
+        ← Zurück zur Startseite
+      </Link>
       <h1 className="text-2xl font-semibold text-foreground">
         Datenschutzerklärung
       </h1>

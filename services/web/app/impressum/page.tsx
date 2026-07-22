@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export const metadata = { title: "Impressum — zntx" };
 
 // Impressum wird bewusst extern gehostet (Generator-Anbieter, gleiches Profil wie
@@ -7,6 +9,12 @@ export const metadata = { title: "Impressum — zntx" };
 export default function ImpressumPage() {
   return (
     <article className="mx-auto w-full max-w-2xl px-6 py-24 text-sm leading-relaxed text-foreground-muted">
+      <Link
+        href="/"
+        className="mb-8 inline-block font-mono text-xs uppercase tracking-widest text-accent hover:underline"
+      >
+        ← Zurück zur Startseite
+      </Link>
       <h1 className="text-2xl font-semibold text-foreground">Impressum</h1>
       <p className="mt-4">
         Das vollständige Impressum wird extern über einen Anbieter für

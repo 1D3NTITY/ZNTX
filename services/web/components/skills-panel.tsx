@@ -1,4 +1,4 @@
-import { CROSS_CUTTING_SKILLS } from "@/lib/content";
+import { CROSS_CUTTING_SKILLS, ROLE_FIT } from "@/lib/content";
 import { SectionNumber } from "@/components/section-number";
 
 export function SkillsPanel() {
@@ -39,6 +39,20 @@ export function SkillsPanel() {
           </div>
         ))}
       </dl>
+
+      <div className="mt-10">
+        <p className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
+          Wofür geeignet
+        </p>
+        <dl className="mt-4 grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-[260px_1fr]">
+          {ROLE_FIT.map((r) => (
+            <div key={r.role} className="contents">
+              <dt className="text-sm font-semibold text-foreground">{r.role}</dt>
+              <dd className="text-sm leading-relaxed text-foreground-muted">{r.evidence}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
     </section>
   );
 }
