@@ -1,36 +1,29 @@
 @import "tailwindcss";
 
-/* "The Rack" + kryptische Matrix-Glitch-Textur (Referenz: midjourney.com-
-   Intro, Luis' ursprüngliche Inspiration) im Hintergrund. Neon-Rot als
-   Marken-Akzent (Luis' Lieblingsfarbe) — Status-Ampel (aktiv/Papier/Archiv)
-   bleibt bewusst getrennt davon, damit "läuft"/"archiviert" eindeutig
-   bleibt. Dark ist weiterhin Default. */
+/* Dark-Theme ist Default, nicht nur bei prefers-color-scheme — das Konzept
+   (Control-Room / Netzwerkkarte) trägt nicht im Light-Mode. */
 :root {
-  --background: #0c0d0f;
-  --surface: #17191c;
-  --surface-raised: #202327;
-  --border: #2c3034;
-  --metal-highlight: #3a3f45;
-  --foreground: #e7e9eb;
-  --foreground-muted: #8b9096;
+  --background: #08090c;
+  --surface: #0f1216;
+  --border: #1e242b;
+  --foreground: #e4e7eb;
+  --foreground-muted: #8b96a3;
   --accent: #ff1e3c;
   --accent-dim: #7a0f1f;
-  --status-active: #4ade80;
-  --led-warn: #f59e0b;
+  --status-online: #4ade80;
+  --status-paper: #facc15;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);
-  --color-surface-raised: var(--surface-raised);
   --color-border: var(--border);
-  --color-metal-highlight: var(--metal-highlight);
   --color-foreground: var(--foreground);
   --color-foreground-muted: var(--foreground-muted);
   --color-accent: var(--accent);
   --color-accent-dim: var(--accent-dim);
-  --color-status-active: var(--status-active);
-  --color-led-warn: var(--led-warn);
+  --color-status-online: var(--status-online);
+  --color-status-paper: var(--status-paper);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-serif: var(--font-source-serif);
@@ -43,85 +36,18 @@ body {
   position: relative;
 }
 
-/* Gebürstetes Metall + Lüftungsgitter — reine CSS-Textur, keine Bilddateien,
-   für Rack-Unit-Oberflächen. */
-.rack-metal {
-  background-image:
-    repeating-linear-gradient(
-      100deg,
-      color-mix(in srgb, var(--metal-highlight) 35%, transparent) 0px,
-      transparent 2px,
-      transparent 6px
-    ),
-    linear-gradient(180deg, var(--surface-raised), var(--surface));
+@keyframes pulse-line {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.75; }
 }
 
-.rack-vents {
-  background-image: repeating-linear-gradient(
-    90deg,
-    var(--border) 0px,
-    var(--border) 2px,
-    transparent 2px,
-    transparent 8px
-  );
-}
-
-/* Status-LED: kurzes Power-On-Flackern, danach stabiles Leuchten. Läuft
-   einmal (kein infinite) — Dauerschleifen-Lichter wurden im vorherigen
-   Durchgang als "Motion-Overload" identifiziert. */
-@keyframes led-power-on {
-  0% { opacity: 0.15; }
-  8% { opacity: 0.9; }
-  14% { opacity: 0.2; }
-  22% { opacity: 1; }
-  30% { opacity: 0.3; }
-  40%, 100% { opacity: 1; }
-}
-
-.led {
-  animation: led-power-on 1.4s ease-out both;
-}
-
-/* Static-Glitch-Overlay exklusiv für die archivierte Einheit — ihr eigenes,
-   einzigartiges Signature-Moment ("außer Betrieb" als sichtbare Störung,
-   nicht nur ein Text-Label). Steps() statt ease für jitterigen Look. */
-@keyframes static-flicker {
-  0%, 100% { opacity: 0.05; }
-  12% { opacity: 0.16; }
-  18% { opacity: 0.02; }
-  45% { opacity: 0.1; }
-  63% { opacity: 0.01; }
-  80% { opacity: 0.13; }
-}
-
-.unit-static {
-  background-image: repeating-linear-gradient(
-    0deg,
-    var(--foreground-muted) 0px,
-    var(--foreground-muted) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  animation: static-flicker 3.4s steps(10) infinite;
-}
-
-/* Kabel-/Verbindungspfade zwischen Einheiten (SVG stroke-dashoffset). */
-@keyframes draw-path {
-  from { stroke-dashoffset: var(--path-length, 300); }
-  to { stroke-dashoffset: 0; }
-}
-
-.cable-path {
-  stroke-dasharray: var(--path-length, 300);
-  animation: draw-path 1.2s ease-out forwards;
-}
-
-/* Kryptische Matrix-Glitch-Textur: vertikale Fall-Bewegung (matrix-fall) +
-   ein kurzes Glitch-Flackern pro Spalte. WICHTIG: Glitch animiert nur
-   opacity/filter, nie transform — sonst kollidiert es mit matrix-fall auf
-   derselben Property (genau der Bug, der im vorherigen Durchgang per
-   Audit gefunden wurde). */
-.matrix-col {
+/* Hero-Hintergrund: echte vertikale Matrix-Rain (Feedback: horizontaler
+   Ticker war weder als "Matrix" erkennbar noch bei niedriger Opazität
+   sichtbar). Spalten aus echten Tokens (lib/hero-fragments.ts), Cyan-Akzent
+   mit spürbarer, aber dem Vordergrund-Text untergeordneter Sichtbarkeit
+   (Kontrast über das Scrim-Panel in hero.tsx sichergestellt, nicht über
+   Beinahe-Unsichtbarkeit des Effekts selbst). */
+.hero-matrix-col {
   color: var(--accent);
   text-shadow: 0 0 6px color-mix(in srgb, var(--accent) 55%, transparent);
 }
@@ -131,15 +57,7 @@ body {
   to { transform: translateY(110%); }
 }
 
-@keyframes matrix-glitch {
-  0%, 100% { opacity: 1; filter: none; }
-  92% { opacity: 1; filter: none; }
-  93.5% { opacity: 0.3; filter: blur(0.6px) hue-rotate(20deg); }
-  95% { opacity: 1; filter: none; }
-  96.5% { opacity: 0.5; filter: blur(0.4px); }
-}
-
-.matrix-mask {
+.hero-matrix-mask {
   background: linear-gradient(
     to bottom,
     var(--background) 0%,
@@ -147,6 +65,32 @@ body {
     transparent 82%,
     var(--background) 100%
   );
+}
+
+/* Spotlight-Hover für Case-Study-Blöcke: der Maus folgende, sehr dezente
+   Aufhellung statt Deko-Glow-Fläche. --x/--y werden per onPointerMove als
+   Prozentwerte gesetzt (siehe project-case-study.tsx), kein Re-Render pro
+   Frame — nur CSS-Custom-Properties. */
+.spotlight {
+  position: relative;
+}
+
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background: radial-gradient(
+    360px circle at var(--x, 50%) var(--y, 50%),
+    color-mix(in srgb, var(--accent) 7%, transparent),
+    transparent 70%
+  );
+}
+
+.spotlight:hover::before {
+  opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {

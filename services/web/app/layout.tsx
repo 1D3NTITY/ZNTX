@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Source_Serif_4 } from "next/font/google";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { Footer } from "@/components/footer";
-import { AmbientLoop } from "@/components/ambient-loop";
+import { Logo } from "@/components/logo";
 import { GlobalMatrixBackground } from "@/components/global-matrix-background";
 import "./globals.css";
 
@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Dritter Typo-Layer: Serif-Titel für Einheiten-/Modul-Namen, Mono bleibt
-// für technische Beschriftung (RU-Nummern, Specs, Status).
+// Dritter Typo-Layer für den Dossier-Look: Serif-Headlines geben den
+// Sektionstiteln Report-Charakter, statt alles im selben Sans/Mono zu halten.
 const sourceSerif = Source_Serif_4({
   variable: "--font-source-serif",
   subsets: ["latin"],
@@ -59,7 +59,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <GlobalMatrixBackground />
-        <AmbientLoop />
+        <Logo />
         <SmoothScroll>
           {children}
           <Footer />

@@ -7,9 +7,10 @@ function buildColumn(seed: number, length: number) {
   );
 }
 
-// Kryptische Matrix-Glitch-Textur (Referenz: midjourney.com-Intro) — vertikal
-// fallende Spalten aus echten Tokens, mit kurzem Glitch-Flackern pro Spalte.
-// Wiederverwendbar: im Hero prominent, seitenweit sehr dezent.
+// Wiederverwendbare Matrix-Rain — im Hero prominent (siehe hero-scene.tsx),
+// als globaler Hintergrund sehr dezent (siehe global-matrix-background.tsx).
+// Ein Effekt, ein Stil, zwei Intensitäten statt zwei unterschiedlicher
+// Hintergrund-Systeme nebeneinander.
 export function MatrixRain({
   columnCount = 16,
   baseOpacity = 0.3,
@@ -23,7 +24,6 @@ export function MatrixRain({
     left: `${(i / columnCount) * 100 + (i % 3) * 1.5}%`,
     duration: (slow ? 34 : 14) + ((i * 7) % 11),
     delay: -((i * 3.7) % 14),
-    glitchDelay: (i * 1.9) % 6,
     seed: i * 5,
     opacity: baseOpacity + (i % 4) * (baseOpacity * 0.2),
   }));
@@ -35,12 +35,12 @@ export function MatrixRain({
         return (
           <div
             key={i}
-            className="matrix-col absolute top-0 font-mono text-[11px] leading-[1.8] whitespace-nowrap"
+            className="hero-matrix-col absolute top-0 font-mono text-[11px] leading-[1.8] whitespace-nowrap"
             style={{
               left: col.left,
               opacity: col.opacity,
-              animation: `matrix-fall ${col.duration}s linear infinite, matrix-glitch ${5 + (i % 3)}s ease-in-out infinite`,
-              animationDelay: `${col.delay}s, ${col.glitchDelay}s`,
+              animation: `matrix-fall ${col.duration}s linear infinite`,
+              animationDelay: `${col.delay}s`,
             }}
           >
             {tokens.map((t, j) => (

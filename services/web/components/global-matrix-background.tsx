@@ -8,10 +8,11 @@ function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-// Fixed, sehr dezent, hinter dem gesamten Rack (z-index -1). Deutlich
-// zurückhaltender als die Power-On-Sequenz-Variante — Case-Studies/
-// Betriebsparameter/Patch-Panel haben keine eigene abschirmende Karte,
-// deshalb niedrige Opazität + wenige Spalten.
+// Fixed, sehr dezent, hinter dem gesamten Seiteninhalt (z-index -1, wie zuvor
+// das Dot-Grid) — ein durchgängiger Stil statt "Hero hat Matrix-Rain, Rest
+// der Seite hat ein anderes Dot-Grid". Muss lesbar bleiben: Case-Studies/
+// Kontaktformular haben keine eigene Karte, die den Hintergrund abschirmt,
+// deshalb sehr niedrige Opazität + reduzierte Spaltenzahl gegenüber dem Hero.
 export function GlobalMatrixBackground() {
   const [reducedMotion, setReducedMotion] = useState(prefersReducedMotion);
 

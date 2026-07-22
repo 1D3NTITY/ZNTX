@@ -1,5 +1,6 @@
 // Echte Begriffe/Tokens aus den Case-Studies dieser Seite — keine erfundenen
-// Buzzwords. Für die Matrix-Glitch-Textur im Hintergrund (rein dekorativ).
+// Buzzwords. Werden für die Matrix-Rain-Spalten im Hero-Hintergrund in
+// einzelne Zeichen zerlegt (rein dekorativ, keine Aussage für sich).
 export const HERO_FRAGMENTS = [
   "DOCKER",
   "CADDY",

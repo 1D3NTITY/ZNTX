@@ -198,7 +198,7 @@ export const LINKS = {
 };
 
 export const HERO = {
-  kicker: "OPERATOR RACK — 2 STANDORTE",
+  kicker: "§00 — SYSTEMS ON RECORD",
   headline: "Zwei Server, sechs Systeme, ein Betreiber.",
   subline:
     "Vollzeit im Lager. Nebenbei: Produktiv-Infrastruktur, die läuft — nicht nur baut.",
