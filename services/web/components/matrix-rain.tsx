@@ -48,7 +48,9 @@ export function MatrixRain({
   const signatureColumn = Math.floor(columnCount / 2);
   const columns = Array.from({ length: columnCount }, (_, i) => ({
     left: `${(i / columnCount) * 100 + (i % 3) * 1.5}%`,
-    duration: (slow ? 34 : 14) + ((i * 7) % 11),
+    // Etwas langsamer als zuvor (Feedback 2026-07-22, "smooth wie Matrix"
+    // statt hektisch) — 20-31s normal, 44-55s im slow-Modus.
+    duration: (slow ? 44 : 20) + ((i * 7) % 11),
     delay: -((i * 3.7) % 14),
     seed: i * 5,
     opacity: baseOpacity + (i % 4) * (baseOpacity * 0.2),

@@ -15,6 +15,16 @@ function prefersReducedMotion() {
 // unter der Hero-Intensität (0.3), damit Fließtext ohne eigene Karte
 // (Case-Studies/Kontaktformular) lesbar bleibt. signature=true blendet
 // "ZNTX" cryptisch in den Rain ein.
+//
+// Bug gefunden (Feedback 2026-07-22, "doppelt übereinander"): dieser Layer
+// ist `fixed`, deckt also immer den ganzen Viewport ab — inklusive der
+// Fläche, in der HeroScene (hero-scene.tsx) früher eine zweite, unabhängige
+// Matrix-Rain in anderem Tempo gerendert hat. Ein per-vh-CSS-Mask-Ansatz
+// (erste Version dieses Fixes) hat NICHT funktioniert: die Maske bezieht
+// sich auf den Viewport, nicht auf die Scroll-Position, und hätte den Rain
+// dadurch fast überall auf einen schmalen Streifen reduziert. Korrekter Fix:
+// HeroScene rendert keine eigene Rain mehr (siehe hero-scene.tsx) — genau
+// ein Layer, sitewide, konsistent.
 export function GlobalMatrixBackground() {
   const [reducedMotion, setReducedMotion] = useState(prefersReducedMotion);
 
@@ -29,7 +39,7 @@ export function GlobalMatrixBackground() {
 
   return (
     <div className="fixed inset-0 -z-10">
-      <MatrixRain columnCount={26} baseOpacity={0.1} slow signature rows={60} />
+      <MatrixRain columnCount={26} baseOpacity={0.14} slow signature rows={60} />
     </div>
   );
 }
