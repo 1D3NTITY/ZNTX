@@ -38,13 +38,13 @@ export function AboutPanel() {
       <div className="mt-10 flex max-w-2xl flex-col gap-6 sm:flex-row sm:gap-10">
         <div className="flex-1">
           <p className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
-            Brotjob
+            Beruflich
           </p>
           <p className="mt-2 text-sm leading-relaxed text-foreground">{BIO.dayJob}</p>
         </div>
         <div className="flex-1">
           <p className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
-            Nebenbei
+            Nebentätigkeit
           </p>
           <p className="mt-2 text-sm leading-relaxed text-foreground">{BIO.passion}</p>
         </div>

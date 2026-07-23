@@ -30,9 +30,9 @@ export function SignatureMoment() {
         transition={{ duration: 0.5, delay: 0.08, ease: "easeOut" }}
         className="font-serif text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl"
       >
-        Einmal alles verloren.
+        Ein vollständiger Datenverlust.
         <br />
-        <span className="text-foreground-muted">Danach sauberer neu aufgesetzt.</span>
+        <span className="text-foreground-muted">Anschließend bewusst sauberer neu aufgesetzt.</span>
       </motion.p>
       <motion.p
         initial={{ opacity: 0, y: 12 }}

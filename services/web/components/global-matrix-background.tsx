@@ -25,6 +25,15 @@ function prefersReducedMotion() {
 // dadurch fast überall auf einen schmalen Streifen reduziert. Korrekter Fix:
 // HeroScene rendert keine eigene Rain mehr (siehe hero-scene.tsx) — genau
 // ein Layer, sitewide, konsistent.
+//
+// Zweiter Bug gefunden (Feedback 2026-07-23, "jetzt doppelt fast dreifach
+// ineinander"): 26 Spalten bei 1440px Breite ≈ 55px Spaltenabstand — viele
+// HERO_FRAGMENTS-Tokens (z. B. "PAPER_TRADING", "SCOPE_GUARD") sind bei
+// 11px Mono aber 70-90px breit. Benachbarte Spalten haben sich dadurch
+// horizontal überlappt, sah wie mehrere Layer übereinander aus (war aber
+// immer nur der eine Layer aus dem ersten Fix). columnCount zurück auf 16
+// (wie im alten Hero, dort nie als überlappend gemeldet) — Vertikal-Fülle
+// kommt weiterhin über rows=60, nicht über mehr Spalten.
 export function GlobalMatrixBackground() {
   const [reducedMotion, setReducedMotion] = useState(prefersReducedMotion);
 
@@ -39,7 +48,7 @@ export function GlobalMatrixBackground() {
 
   return (
     <div className="fixed inset-0 -z-10">
-      <MatrixRain columnCount={26} baseOpacity={0.14} slow signature rows={60} />
+      <MatrixRain columnCount={16} baseOpacity={0.14} slow signature rows={60} />
     </div>
   );
 }

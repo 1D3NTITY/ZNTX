@@ -227,18 +227,18 @@ export const HERO = {
   kicker: "§00 — SYSTEMS ON RECORD",
   headline: "Zwei Server, sechs Systeme, ein Betreiber.",
   subline:
-    "Vollzeit im Lager. Nebenbei: Produktiv-Infrastruktur, die läuft — nicht nur baut.",
+    "Hauptberuflich im Lagerbereich tätig. Nebenbei: produktive Infrastruktur, die im laufenden Betrieb steht — nicht nur konzipiert.",
 };
 
 export const BIO = {
   heading: "Hintergrund",
-  dayJob: "Vollzeit und Minijob im Lager.",
+  dayJob: "Haupt- und Nebentätigkeit im Lagerbereich.",
   throughline:
-    "Seit der Schulzeit Ansprechpartner für alles, was mit Technik zu tun hat — das hat sich in den Lagerjob mitgezogen: hilft dort gelegentlich freiwillig der Haustechnik aus.",
+    "Seit der Schulzeit erster Ansprechpartner für technische Themen im persönlichen Umfeld — diese Rolle hat sich in die berufliche Tätigkeit fortgesetzt: unterstützt dort auf eigene Initiative gelegentlich die Haustechnik.",
   passion:
-    "Nebenbei: mehrere Root-Server, echte Produktiv-Infrastruktur, FPV-Drohnen-Foto- und Videografie.",
+    "Daneben: Betrieb mehrerer eigener Root-Server mit produktiver Infrastruktur sowie FPV-Drohnen-Foto- und Videografie.",
   trajectory:
-    "Ziel ist perspektivisch die Selbstständigkeit im Tech-Bereich. Aktuell liegt der Fokus auf Weiterbildung im jetzigen Job, keine aktive Jobsuche — aber offen für den richtigen Kontakt.",
+    "Ziel ist perspektivisch die Selbstständigkeit im Tech-Bereich. Aktuell liegt der Fokus auf Weiterbildung im jetzigen Beruf, keine aktive Jobsuche — aber offen für den richtigen Kontakt.",
   note:
     "Keine Behauptungen ohne Beleg — die Systeme in diesem Dossier sind produktiv im Einsatz, nicht nur beschrieben.",
 };

@@ -18,9 +18,9 @@ export function SkillsPanel() {
           Arbeitsweise
         </h2>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground-muted">
-          Nicht pro Projekt einzeln erzählt, sondern das, was tatsächlich überall
-          wiederkehrt — die eigentlichen Fähigkeiten stecken im Betrieb, nicht in einer
-          einzelnen App.
+          Nicht pro Projekt einzeln aufgeführt, sondern das, was sich tatsächlich
+          durchgängig wiederholt — die eigentlichen Fähigkeiten zeigen sich im laufenden
+          Betrieb, nicht in einer einzelnen Anwendung.
         </p>
       </div>
 
