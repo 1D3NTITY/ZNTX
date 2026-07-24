@@ -13,17 +13,25 @@
   --status-online: #4ade80;
   --status-paper: #facc15;
 
-  /* Projekt-Akzentfarben für den Live-Ops-Leitstand (Konzept A, 2026-07-24) —
-     festes Farbsystem pro Projekt, nicht verhandelbar (Luis). ravepuls-Rot
-     bewusst ein anderer Ton als --accent (zntx-eigene Chrome-Farbe), damit
-     "das ist ravepuls' Farbe" nicht mit "das ist die Seiten-Akzentfarbe"
-     verwechselt wird. Projekte ohne festgelegte Farbe (foodapp, matrix-chat,
-     n8n-automation, zntx) bekommen keinen eigenen Wert — Komponenten fallen
-     dafür auf --foreground-muted zurück, keine erfundene Farbe.
+  /* Projekt-Akzentfarben für den Live-Ops-Leitstand (Konzept A, 2026-07-24).
+     ravepuls/qntx/arma sind Luis' fest vorgegebene Farben, nicht verhandelbar.
+     foodapp/matrix-chat/n8n-automation/zntx waren zuerst ohne eigene Farbe
+     (neutraler Punkt) — Feedback 2026-07-25: "jedes Projekt soll seine bzw.
+     eine Farbe bekommen" für mehr Übersicht/Wow-Effekt. Ergänzt, jede Farbe
+     bewusst unterscheidbar von den anderen. ravepuls-Rot bleibt bewusst ein
+     anderer Ton als --accent (zntx-eigene Chrome-Farbe) — sonst verwechselbar
+     mit der Seiten-Akzentfarbe selbst. zntx (Meta-Projekt: diese Seite
+     selbst) bekommt aus demselben Grund keinen Rotton, sondern einen hellen
+     Neutralton — klar unterscheidbar von "das ist die Seite" vs. "das ist
+     ravepuls".
   */
+  --project-foodapp: #22c55e;
   --project-ravepuls: #e11d48;
-  --project-qntx: #3b82f6;
+  --project-matrix-chat: #a855f7;
   --project-arma: #eab308;
+  --project-qntx: #3b82f6;
+  --project-n8n: #b45309;
+  --project-zntx: #e4e7eb;
 }
 
 @theme inline {
