@@ -17,13 +17,21 @@ damit aktuell nicht einschlägig, mangels Bildmaterial.
 **Text:** Case-Study-/Bio-Texte sind Eigenbeschreibung von Luis' eigenem Werdegang und
 Projekten (Portfolio/Selbstdarstellung), keine Berichterstattung über Angelegenheiten von
 öffentlichem Interesse im Sinne der Norm — analog einem Lebenslauf. Vermutlich nicht von der
-Text-Kennzeichnungspflicht erfasst, aber wie oben: keine Rechtsberatung, im Zweifel
-gegenchecken statt annehmen.
+Text-Kennzeichnungspflicht erfasst — aber Devise (Luis, 2026-07-25): bei Compliance-Grauzonen
+lieber zu vorsichtig als zu freizügig entscheiden, nicht nur die wahrscheinlichste Auslegung
+annehmen (siehe `[[feedback-dsgvo-erring-cautious]]`). Passt ohnehin zur bestehenden
+Positionierung der Seite (`CLAUDE.md`: "das meiste an Text/Content entsteht im Zusammenspiel
+mit KI" — soll gezeigt, nicht versteckt werden). Vorschlag als Sicherheitsmarge, unabhängig
+von der Rechtsfrage: ein kurzer, ehrlicher Hinweis auf KI-Unterstützung bei der Texterstellung
+(z. B. im Footer oder auf `/datenschutz`) — kostet nichts, macht die Frage komplett
+gegenstandslos statt sich auf eine Auslegung zu verlassen. Noch nicht umgesetzt, mit Luis
+abzustimmen.
 
 **Standing Rule für zukünftige Content-/Design-Arbeit an zntx:** nur Original-/eigene Bilder
 verwenden, falls überhaupt je Bildmaterial dazukommt — dann stellt sich die Kennzeichnungsfrage
 gar nicht erst. Bei KI-generierten Bildern (falls das je gewünscht wird) technische Kennzeichnung
 von Anfang an mitdenken, nicht nachträglich draufsetzen.
 
-**Ergebnis:** Kein Handlungsbedarf zum jetzigen Zeitpunkt. Bei zukünftigen Änderungen (Bilder,
-neue Textformate) diesen Eintrag erneut prüfen.
+**Ergebnis:** Kein akuter Handlungsbedarf, aber ein offener Vorschlag (KI-Hinweis-Text) als
+Sicherheitsmarge — siehe oben. Bei zukünftigen Änderungen (Bilder, neue Textformate) diesen
+Eintrag erneut prüfen.
