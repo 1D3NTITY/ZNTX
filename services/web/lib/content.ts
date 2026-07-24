@@ -21,6 +21,14 @@ export type ProjectNode = {
   outcome: string;
   /** Optional: was daran besonders war, eine knappe Zeile. */
   note?: string;
+  /**
+   * Optional: CSS-Farbwert für den Status-Punkt im Live-Ops-Leitstand — festes
+   * Farbsystem pro Projekt (nicht verhandelbar). Nur gesetzt, wo eine Farbe
+   * tatsächlich zugewiesen ist (ravepuls/qntx/wcp-arma); sonst rendert die
+   * Dashboard-Zeile einen neutralen Punkt (--foreground-muted), statt eine
+   * Farbe zu erfinden.
+   */
+  accentColor?: string;
 };
 
 // Reihenfolge = Reihenfolge im Fließtext. zntx zuletzt (Meta-Projekt: "du liest es gerade").
@@ -47,6 +55,7 @@ export const PROJECTS: ProjectNode[] = [
     name: "Ravepuls",
     role: "Event-Discovery-Plattform",
     status: "live",
+    accentColor: "var(--project-ravepuls)",
     server: "server-1",
     since: "Juli 2026",
     url: "https://ravepuls.de",
@@ -83,6 +92,7 @@ export const PROJECTS: ProjectNode[] = [
     name: "WCP / Arma-Community-Server",
     role: "Discord-Bot + Gameserver-Ops",
     status: "live",
+    accentColor: "var(--project-arma)",
     server: "server-2",
     since: "Ende Mai / Anfang Juni 2026",
     url: "https://zblt.eu",
@@ -101,6 +111,7 @@ export const PROJECTS: ProjectNode[] = [
     name: "qntx",
     role: "KI-gestützter Krypto-Trading-Bot",
     status: "paper-trading",
+    accentColor: "var(--project-qntx)",
     server: "server-2",
     since: "Juli 2026",
     url: "https://qntx.zblt.eu",

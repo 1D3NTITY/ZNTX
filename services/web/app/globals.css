@@ -12,6 +12,18 @@
   --accent-dim: #7a0f1f;
   --status-online: #4ade80;
   --status-paper: #facc15;
+
+  /* Projekt-Akzentfarben für den Live-Ops-Leitstand (Konzept A, 2026-07-24) —
+     festes Farbsystem pro Projekt, nicht verhandelbar (Luis). ravepuls-Rot
+     bewusst ein anderer Ton als --accent (zntx-eigene Chrome-Farbe), damit
+     "das ist ravepuls' Farbe" nicht mit "das ist die Seiten-Akzentfarbe"
+     verwechselt wird. Projekte ohne festgelegte Farbe (foodapp, matrix-chat,
+     n8n-automation, zntx) bekommen keinen eigenen Wert — Komponenten fallen
+     dafür auf --foreground-muted zurück, keine erfundene Farbe.
+  */
+  --project-ravepuls: #e11d48;
+  --project-qntx: #3b82f6;
+  --project-arma: #eab308;
 }
 
 @theme inline {
@@ -73,16 +85,6 @@ body {
   color: var(--foreground);
   font-weight: 700;
   animation: signature-glitch 7s ease-in-out infinite;
-}
-
-.hero-matrix-mask {
-  background: linear-gradient(
-    to bottom,
-    var(--background) 0%,
-    transparent 18%,
-    transparent 82%,
-    var(--background) 100%
-  );
 }
 
 /* Spotlight-Hover für Case-Study-Blöcke: der Maus folgende, sehr dezente

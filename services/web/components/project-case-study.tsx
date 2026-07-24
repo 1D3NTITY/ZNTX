@@ -2,35 +2,42 @@
 
 import { useRef, type PointerEvent } from "react";
 import { motion, type Variants } from "motion/react";
-import { PROJECTS, type ProjectNode } from "@/lib/content";
-import { SectionNumber } from "@/components/section-number";
-
-const STATUS_LABEL: Record<ProjectNode["status"], string> = {
-  live: "LIVE",
-  "paper-trading": "PAPER-TRADING",
-  internal: "INTERNAL",
-  archived: "ARCHIVIERT",
-};
-
-const SERVER_LABEL: Record<"server-1" | "server-2", string> = {
-  "server-1": "Server 1",
-  "server-2": "Server 2",
-};
+import type { ProjectNode } from "@/lib/content";
 
 const container: Variants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.09 } },
+  visible: { transition: { staggerChildren: 0.06 } },
 };
 
 const item: Variants = {
-  hidden: { opacity: 0, y: 14 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
 };
 
-function CaseStudy({ project, index }: { project: ProjectNode; index: number }) {
-  const ref = useRef<HTMLElement>(null);
+// n8n-Projekt bekommt vorangestellt die frühere "Signature Moment"-Erzählung
+// (Crash → Neuaufbau) — war ein separater Scroll-Break zwischen Hero und
+// Projektliste, wird im Live-Ops-Leitstand (Konzept A, 2026-07-24) zum
+// Einstieg der aufgeklappten Case-Study selbst statt eines eigenen Bruchs.
+const SIGNATURE_LEAD: Record<
+  string,
+  { eyebrow: string; headline: string; body: string }
+> = {
+  "n8n-automation": {
+    eyebrow: "Ausgangspunkt",
+    headline:
+      "Ein vollständiger Datenverlust. Anschließend bewusst sauberer neu aufgesetzt.",
+    body: "Ein archiviertes n8n-Automatisierungsprojekt eskalierte so weit, dass der komplette Root-Server zurückgesetzt werden musste. Die Secrets-Hygiene, die isolierten Datenbank-Rollen und die eigenen Guardrail-Hooks, die jedes andere Projekt auf dieser Seite trägt, haben genau dort ihren Ursprung.",
+  },
+};
 
-  function onPointerMove(e: PointerEvent<HTMLElement>) {
+// Reine Inhalts-Komponente ohne eigenen Scroll-Wrapper/Header — wird von
+// dashboard-row.tsx in eine aufgeklappte Zeile eingebettet (Header/Status/
+// Datum übernimmt die Zeile selbst). War vorher eine eigene, per Scroll
+// erreichte Section (`<CaseStudy>` in einer statischen Liste).
+export function ProjectCaseStudyBody({ project }: { project: ProjectNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  function onPointerMove(e: PointerEvent<HTMLDivElement>) {
     const rect = ref.current?.getBoundingClientRect();
     if (!rect) return;
     const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -39,41 +46,34 @@ function CaseStudy({ project, index }: { project: ProjectNode; index: number }) 
     ref.current!.style.setProperty("--y", `${y}%`);
   }
 
+  const lead = SIGNATURE_LEAD[project.id];
+
   return (
-    <motion.article
+    <motion.div
       ref={ref}
-      id={`project-${project.id}`}
       onPointerMove={onPointerMove}
-      className="spotlight scroll-mt-24 border-t border-border py-12 first:border-t-0 first:pt-0"
+      className="spotlight"
       initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-80px" }}
+      animate="visible"
       variants={container}
     >
-      <motion.p
-        variants={item}
-        className="font-mono text-xs uppercase tracking-widest text-accent"
-      >
-        {project.role}
-      </motion.p>
-
-      <motion.div
-        variants={item}
-        className="mt-1 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2"
-      >
-        <h3 className="font-serif text-2xl font-semibold text-foreground sm:text-3xl">
-          {String(index + 1).padStart(2, "0")} — {project.name}
-        </h3>
-        <span className="font-mono text-[11px] uppercase tracking-widest text-foreground-muted">
-          {STATUS_LABEL[project.status]}
-          {project.server ? ` · ${SERVER_LABEL[project.server]}` : ""}
-          {project.since ? ` · ${project.status === "archived" ? "" : "seit "}${project.since}` : ""}
-        </span>
-      </motion.div>
+      {lead && (
+        <motion.div variants={item} className="mb-8">
+          <p className="font-mono text-xs uppercase tracking-widest text-accent">
+            {lead.eyebrow}
+          </p>
+          <p className="mt-2 font-serif text-2xl font-semibold leading-snug text-foreground sm:text-3xl">
+            {lead.headline}
+          </p>
+          <p className="mt-3 max-w-xl text-sm leading-relaxed text-foreground-muted">
+            {lead.body}
+          </p>
+        </motion.div>
+      )}
 
       <motion.dl
         variants={item}
-        className="mt-6 grid grid-cols-1 gap-x-10 gap-y-5 sm:grid-cols-[140px_1fr]"
+        className="grid grid-cols-1 gap-x-10 gap-y-5 sm:grid-cols-[140px_1fr]"
       >
         <dt className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
           Kontext
@@ -98,9 +98,6 @@ function CaseStudy({ project, index }: { project: ProjectNode; index: number }) 
         </dd>
       </motion.dl>
 
-      {/* Ergebnis bewusst aus dem Datenblatt herausgezogen und als eigener
-          Beat hervorgehoben — sonst sehen alle 7 Case-Studies identisch
-          "flach" aus (Feedback: zu eintönig trotz unterschiedlicher Inhalte). */}
       <motion.p
         variants={item}
         className="mt-6 border-l-2 border-accent pl-4 font-serif text-lg leading-snug text-foreground sm:text-xl"
@@ -128,35 +125,6 @@ function CaseStudy({ project, index }: { project: ProjectNode; index: number }) 
           {project.url.replace("https://", "")} →
         </motion.a>
       )}
-    </motion.article>
-  );
-}
-
-export function ProjectCaseStudies() {
-  return (
-    <section
-      id="projects"
-      className="scroll-mt-24 py-16"
-      aria-labelledby="projects-heading"
-    >
-      <div className="relative overflow-hidden">
-        <SectionNumber n="01" />
-        <p className="font-mono text-xs uppercase tracking-widest text-accent">§01</p>
-        <h2 id="projects-heading" className="mt-1 font-serif text-3xl font-semibold sm:text-4xl">
-          Projekte
-        </h2>
-        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-foreground-muted">
-          Kein Mockup, keine Demo — echte Systeme, inklusive eines archivierten, an dem sich
-          einiges lernen ließ. Kontext, Beitrag, die eigentliche technische Herausforderung
-          und was dabei herauskam.
-        </p>
-      </div>
-
-      <div>
-        {PROJECTS.map((project, i) => (
-          <CaseStudy key={project.id} project={project} index={i} />
-        ))}
-      </div>
-    </section>
+    </motion.div>
   );
 }
