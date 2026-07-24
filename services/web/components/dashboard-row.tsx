@@ -1,7 +1,8 @@
 "use client";
 
-import { useId, type ReactNode } from "react";
+import { useEffect, useId, type ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useLenis } from "lenis/react";
 
 // Eine Zeile im Live-Ops-Leitstand (Konzept A, 2026-07-24) — Button-Header
 // (Punkt/Titel/Status/Kontext-Teaser) + aufklappbarer Inhalt. Ersetzt die
@@ -27,6 +28,21 @@ export function DashboardRow({
 }) {
   const panelId = useId();
   const reducedMotion = useReducedMotion();
+  const lenis = useLenis();
+
+  // Bug gefunden (Feedback 2026-07-25, "Scrollen geht gefühlt garnicht mehr"):
+  // Lenis (smooth-scroll.tsx) merkt sich die Dokumenthöhe und aktualisiert sie
+  // nicht automatisch, wenn eine Zeile per Motion-Höhenanimation auf-/zuklappt
+  // — die Seite wächst (z. B. 1192px → 2470px beim Öffnen), aber Lenis' interne
+  // Scroll-Grenzen bleiben auf dem alten, kürzeren Wert stehen. Ergebnis: der
+  // Nutzer hängt fest, sobald irgendeine Zeile offen ist — also praktisch immer,
+  // das ist ja die Kerninteraktion dieser Seite. onUpdate hält Lenis während der
+  // Animation laufend synchron, der Effect fängt den reduced-motion-Fall ab (da
+  // ohne Übergang kein Animate-Frame feuert).
+  useEffect(() => {
+    const t = setTimeout(() => lenis?.resize(), reducedMotion ? 0 : 300);
+    return () => clearTimeout(t);
+  }, [isOpen, lenis, reducedMotion]);
 
   return (
     <div className="border-t border-border first:border-t-0">
@@ -89,6 +105,7 @@ export function DashboardRow({
             animate={{ height: "auto", opacity: 1 }}
             exit={reducedMotion ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
             transition={{ duration: reducedMotion ? 0 : 0.25, ease: "easeOut" }}
+            onUpdate={() => lenis?.resize()}
             className="overflow-hidden"
           >
             <div className="pb-8">{children}</div>
