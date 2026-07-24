@@ -24,14 +24,13 @@ Positionierung der Seite (`CLAUDE.md`: "das meiste an Text/Content entsteht im Z
 mit KI" — soll gezeigt, nicht versteckt werden). Vorschlag als Sicherheitsmarge, unabhängig
 von der Rechtsfrage: ein kurzer, ehrlicher Hinweis auf KI-Unterstützung bei der Texterstellung
 (z. B. im Footer oder auf `/datenschutz`) — kostet nichts, macht die Frage komplett
-gegenstandslos statt sich auf eine Auslegung zu verlassen. Noch nicht umgesetzt, mit Luis
-abzustimmen.
+gegenstandslos statt sich auf eine Auslegung zu verlassen. **Umgesetzt** (2026-07-25): Sektion
+"Inhalte & KI-Unterstützung" auf `/datenschutz` (`app/datenschutz/page.tsx`).
 
 **Standing Rule für zukünftige Content-/Design-Arbeit an zntx:** nur Original-/eigene Bilder
 verwenden, falls überhaupt je Bildmaterial dazukommt — dann stellt sich die Kennzeichnungsfrage
 gar nicht erst. Bei KI-generierten Bildern (falls das je gewünscht wird) technische Kennzeichnung
 von Anfang an mitdenken, nicht nachträglich draufsetzen.
 
-**Ergebnis:** Kein akuter Handlungsbedarf, aber ein offener Vorschlag (KI-Hinweis-Text) als
-Sicherheitsmarge — siehe oben. Bei zukünftigen Änderungen (Bilder, neue Textformate) diesen
-Eintrag erneut prüfen.
+**Ergebnis:** Kein akuter Handlungsbedarf, Sicherheitsmarge (KI-Hinweis auf `/datenschutz`)
+umgesetzt. Bei zukünftigen Änderungen (Bilder, neue Textformate) diesen Eintrag erneut prüfen.
