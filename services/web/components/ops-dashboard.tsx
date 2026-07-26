@@ -29,12 +29,18 @@ export function OpsDashboard() {
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-16 lg:px-0 lg:py-24">
       <header className="mb-12">
-        <p className="font-mono text-xs uppercase tracking-widest text-accent">{HERO.kicker}</p>
+        <p className="font-mono text-sm font-semibold text-foreground">{HERO.name}</p>
+        <p className="mt-1 font-mono text-xs uppercase tracking-widest text-accent">
+          {HERO.kicker}
+        </p>
         <h1 className="mt-2 font-serif text-3xl font-semibold leading-tight text-foreground sm:text-4xl">
           {HERO.headline}
         </h1>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-foreground-muted sm:text-base">
           {HERO.subline}
+        </p>
+        <p className="mt-2 max-w-xl font-mono text-xs uppercase tracking-widest text-foreground-muted">
+          {HERO.roleTagline}
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           <button

@@ -238,7 +238,14 @@ export const LINKS = {
   contactEmail: "kontakt@zntx.de",
 };
 
+// name/roleTagline ergänzt (Feedback 2026-07-26, Headhunter-Perspektive):
+// Name stand vorher nur in Meta-Tags/der LinkedIn-URL, nirgends sichtbar auf
+// der Seite selbst. roleTagline macht "wofür geeignet" (siehe ROLE_FIT weiter
+// oben) ohne Klick in die Operator-Profil-Zeile scannbar — die zwei am besten
+// belegten Rollen aus ROLE_FIT, nicht alle fünf (sonst keine Tagline mehr).
 export const HERO = {
+  name: "Luis B.",
+  roleTagline: "Backend-/Full-Stack-Entwicklung · Server-/Infrastruktur-Administration",
   kicker: "§00 — SYSTEMS ON RECORD",
   headline: "Zwei Server, sechs Systeme, ein Betreiber.",
   subline:
