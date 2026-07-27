@@ -52,49 +52,57 @@ export function DashboardRow({
           (z. B. "WCP / Arma-Community-Server") brach das mittendrin um und
           der Toggle sprang auf eine eigene Zeile. Jetzt: Titel-Zeile bricht
           nie, Meta/Teaser stehen fest darunter, Meta selbst nowrap. */}
-      <button
-        type="button"
-        onClick={onToggle}
-        aria-expanded={isOpen}
-        aria-controls={panelId}
-        className="flex w-full flex-col gap-1 py-5 text-left outline-none focus-visible:ring-2 focus-visible:ring-accent-dim"
-      >
-        <span className="flex w-full items-center gap-3">
-          <span
-            aria-hidden="true"
-            className="h-2.5 w-2.5 shrink-0 rounded-full"
-            style={{
-              backgroundColor: dotColor ?? "var(--foreground-muted)",
-              boxShadow: dotColor ? `0 0 8px ${dotColor}` : "none",
-            }}
-          />
-          <span className="min-w-0 flex-1 truncate font-serif text-lg font-semibold text-foreground sm:text-xl">
-            {title}
+      {/* h2 umschließt den Button (WAI-ARIA-Accordion-Standardmuster) statt
+          umgekehrt — Bug gefunden 2026-07-27: die 8 Zeilen-Titel waren reine
+          <span>, dadurch gab es auf der ganzen Seite nur noch ein einziges
+          <h1> und keine Überschriften-Struktur mehr (SEO-/Screenreader-
+          Regression durch den Dashboard-Umbau). className="contents" nimmt
+          dem h2 seine eigene Box, ändert also nichts am Layout. */}
+      <h2 className="contents">
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={isOpen}
+          aria-controls={panelId}
+          className="flex w-full flex-col gap-1 py-5 text-left outline-none focus-visible:ring-2 focus-visible:ring-accent-dim"
+        >
+          <span className="flex w-full items-center gap-3">
+            <span
+              aria-hidden="true"
+              className="h-2.5 w-2.5 shrink-0 rounded-full"
+              style={{
+                backgroundColor: dotColor ?? "var(--foreground-muted)",
+                boxShadow: dotColor ? `0 0 8px ${dotColor}` : "none",
+              }}
+            />
+            <span className="min-w-0 flex-1 truncate font-serif text-lg font-semibold text-foreground sm:text-xl">
+              {title}
+            </span>
+            <span
+              aria-hidden="true"
+              className={`shrink-0 font-mono text-sm text-foreground-muted transition-transform duration-200 ${
+                isOpen ? "rotate-45" : ""
+              }`}
+            >
+              +
+            </span>
           </span>
-          <span
-            aria-hidden="true"
-            className={`shrink-0 font-mono text-sm text-foreground-muted transition-transform duration-200 ${
-              isOpen ? "rotate-45" : ""
-            }`}
-          >
-            +
-          </span>
-        </span>
-        {(meta || teaser) && (
-          <span className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 pl-[1.375rem]">
-            {meta && (
-              <span className="font-mono text-[11px] uppercase tracking-widest text-foreground-muted sm:whitespace-nowrap">
-                {meta}
-              </span>
-            )}
-            {teaser && (
-              <span className="hidden min-w-0 flex-1 truncate text-sm text-foreground-muted sm:block">
-                {teaser}
-              </span>
-            )}
-          </span>
-        )}
-      </button>
+          {(meta || teaser) && (
+            <span className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 pl-[1.375rem]">
+              {meta && (
+                <span className="font-mono text-[11px] uppercase tracking-widest text-foreground-muted sm:whitespace-nowrap">
+                  {meta}
+                </span>
+              )}
+              {teaser && (
+                <span className="hidden min-w-0 flex-1 truncate text-sm text-foreground-muted sm:block">
+                  {teaser}
+                </span>
+              )}
+            </span>
+          )}
+        </button>
+      </h2>
 
       <AnimatePresence initial={false}>
         {isOpen && (
