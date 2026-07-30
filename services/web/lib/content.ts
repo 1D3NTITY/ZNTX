@@ -41,7 +41,8 @@ export const PROJECTS: ProjectNode[] = [
     accentColor: "var(--project-foodapp)",
     server: "server-1",
     since: "Mai 2026",
-    stack: ["FastAPI", "Next.js", "Expo / React Native", "Postgres", "Alembic", "n8n"],
+    url: "https://app.zentrix-solutions.eu",
+    stack: ["FastAPI", "Next.js", "Expo / React Native", "Postgres", "Redis", "Alembic", "n8n"],
     context:
       "Ein Multi-Platform-Produkt für Ernährungs- und Trainingsdaten — echte Gesundheitsdaten, nicht Fitness-Tracking zum Spaß. Sobald DSGVO Art. 9 greift, ist nachträglich eingebauter Datenschutz keine Option.",
     contribution:
@@ -62,13 +63,13 @@ export const PROJECTS: ProjectNode[] = [
     url: "https://ravepuls.de",
     stack: ["FastAPI", "Next.js", "Telethon", "Browserless/Chromium", "Cloudflare Turnstile"],
     context:
-      "Event-Discovery für die Rave-Szene einer Stadt — die Information existiert, ist aber über Dutzende Social-Media-Kanäle und Venue-Websites verstreut.",
+      "Event-Discovery für die Rave-Szene einer Stadt — die Information existiert, ist aber über Dutzende Social-Media-Kanäle und Venue-Websites verstreut. Bewusst kein kommerzielles Projekt, sondern Community-Nutzen im Vordergrund.",
     contribution:
-      "Ein Telegram-Userbot liest konfigurierte Kanäle passiv mit, Browser-Automation (Browserless/Chromium) scraped Venue-Websites, die client-seitig rendern — beide Wege laufen in dieselbe Dedup-/Extraktions-Pipeline. Öffentliche Formulare mit Cloudflare Turnstile und eigener CSP gegen Missbrauch gehärtet.",
+      "Ein Telegram-Userbot liest konfigurierte Kanäle passiv mit, Browser-Automation (Browserless/Chromium) scraped Venue-Websites, die client-seitig rendern — beide Wege laufen in dieselbe Dedup-/Extraktions-Pipeline. Öffentliche Formulare mit Cloudflare Turnstile und eigener CSP gegen Missbrauch gehärtet. Aktuell zusätzlich: eigenständige EU-AI-Act-Konformität inklusive Kennzeichnung KI-gestützt erzeugter Inhalte.",
     challenge:
       "Eine vollständige Domain-Migration (.eu → .de) mitten im Betrieb, ohne kaputte Links, Duplicate Content oder verlorene Nutzer.",
     outcome:
-      "ravepuls.de läuft live, aggregiert automatisiert und bleibt trotzdem gegen Missbrauch gehärtet.",
+      "ravepuls.de läuft live, aggregiert automatisiert, bleibt gegen Missbrauch gehärtet — und hält auch neue regulatorische Anforderungen (EU AI Act) proaktiv statt nachträglich ein.",
   },
   {
     id: "matrix-chat",
@@ -79,13 +80,13 @@ export const PROJECTS: ProjectNode[] = [
     server: "server-1",
     since: "Juli 2026",
     url: "https://matrix.zntx.de",
-    stack: ["Tuwunel (Rust)", "RocksDB (embedded)", "Caddy"],
+    stack: ["Tuwunel (Rust)", "RocksDB (embedded)", "Caddy", "WhatsApp-Bridge", "Telegram-Bridge"],
     context:
       "Ein privater Kommunikationskanal für einen geschlossenen Nutzerkreis — kein Interesse an einem weiteren SaaS-Chat-Abo, dafür volle Kontrolle über die eigene Infrastruktur.",
     contribution:
-      "Selbst gehosteter Matrix-Homeserver (Tuwunel, geschrieben in Rust) mit eingebettetem RocksDB, kein zusätzlicher Datenbank-Container. Registrierung ausschließlich per Invite-Token, Federation bewusst deaktiviert.",
+      "Selbst gehosteter Matrix-Homeserver (Tuwunel, geschrieben in Rust) mit eingebettetem RocksDB, kein zusätzlicher Datenbank-Container. Registrierung ausschließlich per Invite-Token, Federation bewusst deaktiviert. Zusätzlich WhatsApp- und Telegram-Bridges angebunden, damit bestehende Kontakte auf beiden Plattformen erreichbar bleiben, ohne den privaten Homeserver zu verlassen.",
     challenge:
-      "Eine Nicht-Standard-Infra (Rust-Binary statt gewohntem Web-Stack) sauber in dieselbe Caddy-Architektur integrieren wie alle anderen Projekte.",
+      "Eine Nicht-Standard-Infra (Rust-Binary statt gewohntem Web-Stack) sauber in dieselbe Caddy-Architektur integrieren wie alle anderen Projekte — plus zwei Cross-Plattform-Bridges stabil am selben Server betreiben.",
     outcome:
       "Läuft seit dem Deploy ohne offene Registrierung oder Federation-Angriffsfläche — Infra-Betrieb, der über Web-Apps mit Postgres hinausgeht.",
   },
@@ -117,13 +118,13 @@ export const PROJECTS: ProjectNode[] = [
     server: "server-2",
     since: "Juli 2026",
     url: "https://qntx.zblt.eu",
-    stack: ["CCXT", "Optuna", "Monte-Carlo-Backtesting", "8-Modell-KI-Ensemble"],
+    stack: ["CCXT", "Optuna", "Walk-Forward-Backtesting", "8-Modell-KI-Ensemble"],
     context:
       "Ein Krypto-Trading-Bot, der Entscheidungen nicht auf Bauchgefühl trifft — bei echtem Kapitalrisiko reicht 'sieht gut aus' nicht.",
     contribution:
-      "Kraken-Anbindung über CCXT, 13 orthogonale Handelssignale, 8-Modell-KI-Sentiment-Ensemble mit Mehrheitsentscheid und Ausfallschutz — kein Single-Point-of-Failure bei einem ausgefallenen Modell. Gewichtstuning Walk-Forward-validiert per Optuna.",
+      "Kraken-Anbindung über CCXT, 13 orthogonale Handelssignale (technische Analyse, Marktkontext, u. a. Binance-Liquidationskaskaden), 8-Modell-KI-Sentiment-Ensemble mit Mehrheitsentscheid und Ausfallschutz — kein Single-Point-of-Failure bei einem ausgefallenen Modell. Gewichtstuning Walk-Forward-validiert per Optuna. Aktuell zusätzlich: eigene Funding-Rate- und DeFi-Datensammlung sowie Gate-Effectiveness-Tracking zur weiteren Signal-Validierung.",
     challenge:
-      "Strategien vor echtem Kapitaleinsatz per Monte-Carlo-Backtesting prüfen und eine vollständige Risikokette bauen (Stop-Loss, Kill-Switch, Drawdown-Stop), die auch bei komplettem Modellausfall greift.",
+      "Strategien vor echtem Kapitaleinsatz per Walk-Forward-Backtesting prüfen und eine mehrstufige Risikokette bauen (Stop-Loss, Trailing-Stop, Kill-Switch, Circuit-Breaker), die auch bei komplettem Modellausfall greift.",
     outcome:
       "Aktuell in strukturierter Paper-Trading-Phase mit dokumentierten, harten Go-Live-Kriterien — bewusst noch nicht live, bis diese Kriterien erfüllt sind.",
     note: "Bewusst kein 'einfach live schalten' — Go-Live-Kriterien sind schriftlich fixiert, nicht verhandelbar.",
@@ -229,7 +230,7 @@ export const ROLE_FIT = [
   },
   {
     role: "Security-/Compliance-bewusste Entwicklung",
-    evidence: "DSGVO Art. 9 bei Gesundheitsdaten, Kill-Switches bei echtem Kapitalrisiko, eigene Guardrail-Hooks",
+    evidence: "DSGVO Art. 9 bei Gesundheitsdaten, EU-AI-Act-Konformität (ravepuls), Kill-Switches bei echtem Kapitalrisiko, eigene Guardrail-Hooks",
   },
 ];
 
