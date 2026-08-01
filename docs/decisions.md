@@ -8,11 +8,14 @@ KI-Text, der die Öffentlichkeit über Angelegenheiten von öffentlichem Interes
 Keine Rechtsberatung — bei Unsicherheit fachlich gegenchecken, hier nur der technische
 Ist-Zustand.
 
-**Bilder/Grafiken/Videos:** Keine vorhanden. `services/web/public/` existiert nicht, keine
-`next/image`-/`<img>`-Verwendung, kein Favicon/OG-Image im Layout konfiguriert — die gesamte
-Seite ist reines Text/CSS/SVG (Matrix-Rain = DOM-Text-Knoten + CSS-Animation, Status-Punkte =
-inline-gestylte `<span>`, kein Rasterbild irgendwo). Kennzeichnungspflicht für Bild/Video
-damit aktuell nicht einschlägig, mangels Bildmaterial.
+**Bilder/Grafiken/Videos:** Keine eigenen vorhanden. `services/web/public/` ist leer, keine
+`next/image`-/`<img>`-Verwendung, kein OG-Image im Layout konfiguriert — die gesamte Seite ist
+reines Text/CSS/SVG (Matrix-Rain = DOM-Text-Knoten + CSS-Animation, Status-Punkte =
+inline-gestylte `<span>`, kein Rasterbild irgendwo). Einzige Ausnahme: `app/favicon.ico` —
+unverändertes `create-next-app`-Standard-Icon aus dem initialen Scaffold-Commit (`35c1c31`,
+verifiziert 2026-08-01: einziger Commit in der Datei-Historie), kein KI-generiertes Bild.
+Kennzeichnungspflicht für Bild/Video damit weiterhin nicht einschlägig, mangels
+KI-generiertem Bildmaterial.
 
 **Text:** Case-Study-/Bio-Texte sind Eigenbeschreibung von Luis' eigenem Werdegang und
 Projekten (Portfolio/Selbstdarstellung), keine Berichterstattung über Angelegenheiten von
