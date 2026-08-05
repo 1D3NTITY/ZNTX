@@ -46,11 +46,11 @@ export const PROJECTS: ProjectNode[] = [
     context:
       "Ein Multi-Platform-Produkt für Ernährungs- und Trainingsdaten — echte Gesundheitsdaten, nicht Fitness-Tracking zum Spaß. Sobald DSGVO Art. 9 greift, ist nachträglich eingebauter Datenschutz keine Option.",
     contribution:
-      "FastAPI-Backend als gemeinsames Fundament für die Next.js-Web-App und die Expo/React-Native-Mobile-App, mit Zugriffskontrolle, Export- und Löschfunktion direkt im Datenmodell verankert. Releases über Alembic-Migrationen, feste Sprint-/Versionierungsdisziplin, n8n für Automatisierung im Hintergrund.",
+      "FastAPI-Backend als gemeinsames Fundament für die Next.js-Web-App und die Expo/React-Native-Mobile-App, mit Zugriffskontrolle, Export- und Löschfunktion direkt im Datenmodell verankert. Releases über Alembic-Migrationen, feste Sprint-/Versionierungsdisziplin, n8n für Automatisierung im Hintergrund. Seitdem erweitert um Passwort-Selfservice mit 2FA, granulare OAuth-Scope-Trennung für die Google-Fit-/Kalender-Anbindung und mehrere Security-Härtungen — dazu neue Produktfunktionen wie eigene Trainingsprogramm-Erstellung.",
     challenge:
       "Ein Backend für zwei grundverschiedene Clients konsistent halten, ohne Logik zu duplizieren — und OTA-Updates für die Mobile-App liefern, ohne auf App-Store-Review-Zyklen zu warten.",
     outcome:
-      "Ein Produkt, das Gesundheitsdaten so behandelt, wie es das Gesetz verlangt — nicht weil ein Audit das später gefordert hätte, sondern weil es von Anfang an so gebaut wurde.",
+      "Ein Produkt, das Gesundheitsdaten so behandelt, wie es das Gesetz verlangt — nicht weil ein Audit das später gefordert hätte, sondern weil es von Anfang an so gebaut wurde. DSGVO-Rechte (Auskunft, Löschung, Datenübertragbarkeit) sind inzwischen echter Selfservice, nicht nur Zusage auf Anfrage.",
   },
   {
     id: "ravepuls",
@@ -61,15 +61,15 @@ export const PROJECTS: ProjectNode[] = [
     server: "server-1",
     since: "Juli 2026",
     url: "https://ravepuls.de",
-    stack: ["FastAPI", "Next.js", "Telethon", "Browserless/Chromium", "Cloudflare Turnstile"],
+    stack: ["FastAPI", "Next.js", "Telethon", "Browserless/Chromium", "Cloudflare Turnstile", "Instagram-Automation"],
     context:
       "Event-Discovery für die Rave-Szene einer Stadt — die Information existiert, ist aber über Dutzende Social-Media-Kanäle und Venue-Websites verstreut. Bewusst kein kommerzielles Projekt, sondern Community-Nutzen im Vordergrund.",
     contribution:
-      "Ein Telegram-Userbot liest konfigurierte Kanäle passiv mit, Browser-Automation (Browserless/Chromium) scraped Venue-Websites, die client-seitig rendern — beide Wege laufen in dieselbe Dedup-/Extraktions-Pipeline. Öffentliche Formulare mit Cloudflare Turnstile und eigener CSP gegen Missbrauch gehärtet. Aktuell zusätzlich: eigenständige EU-AI-Act-Konformität inklusive Kennzeichnung KI-gestützt erzeugter Inhalte.",
+      "Ein Telegram-Userbot liest konfigurierte Kanäle passiv mit, Browser-Automation (Browserless/Chromium) scraped Venue-Websites, die client-seitig rendern — beide Wege laufen in dieselbe Dedup-/Extraktions-Pipeline. Öffentliche Formulare mit Cloudflare Turnstile und eigener CSP gegen Missbrauch gehärtet. Eigenständige EU-AI-Act-Konformität inklusive Kennzeichnung KI-gestützt erzeugter Inhalte. Extraktions-Ergebnisse laufen inzwischen durch ein Punktesystem mit Auto-Publish ab einer Vertrauensschwelle, zusätzlich abgesichert durch einen Neutralitäts-Guard (erkennt und blockt politische Partei-/Organisationsnamen) und einen Genre-Scope-Guard. Events werden automatisiert mit echten Flyer-Bildern, Hashtags und Kurzlinks auf Instagram gepostet.",
     challenge:
       "Eine vollständige Domain-Migration (.eu → .de) mitten im Betrieb, ohne kaputte Links, Duplicate Content oder verlorene Nutzer.",
     outcome:
-      "ravepuls.de läuft live, aggregiert automatisiert, bleibt gegen Missbrauch gehärtet — und hält auch neue regulatorische Anforderungen (EU AI Act) proaktiv statt nachträglich ein.",
+      "ravepuls.de läuft live, aggregiert automatisiert, bleibt gegen Missbrauch und Fehlklassifikation gehärtet (Neutralitäts-/Genre-Guards) — und hält die EU-AI-Act-Vorgaben nicht nur ein, sondern sichtbar: KI-Kennzeichnung im UI, echtes Stock-Foto statt KI-generiertem Hero-Banner.",
   },
   {
     id: "matrix-chat",
@@ -110,6 +110,22 @@ export const PROJECTS: ProjectNode[] = [
       "Läuft seit Monaten produktiv — kein Demo, kein totes Side-Project.",
   },
   {
+    id: "motortown",
+    name: "Motor Town: Behind the Wheel",
+    role: "Privater Gameserver",
+    status: "internal",
+    accentColor: "var(--project-motortown)",
+    stack: ["systemd", "Wine/Proton", "SteamCMD"],
+    context:
+      "Ein privater Dedicated-Server für 'Motor Town: Behind the Wheel' (Steam) für einen kleinen, festen Freundeskreis (max. 10–20 Spieler) — bewusst kein öffentliches, wachsendes Projekt wie die anderen Systeme.",
+    contribution:
+      "Der Windows-only Server-Prozess läuft über Wine/Proton unter Linux, verwaltet als systemd-Service statt als Docker-Container — anders als der Rest der Infrastruktur, bewusst so gewählt, weil Wine in einem Container zusätzliche Komplexität ohne echten Nutzen bringen würde.",
+    challenge:
+      "Einen Windows-Server-Prozess stabil unter Linux betreiben (Wine/Proton statt nativer Linux-Build) und dabei bewusst von der sonst durchgängigen Docker-Architektur der anderen Projekte abweichen, wo es technisch die bessere Wahl ist.",
+    outcome:
+      "Läuft stabil für den eigenen Freundeskreis — zeigt, dass die Linux-/Ops-Skills nicht an 'alles läuft in Docker' hängen, sondern die passende Betriebsform je Workload wählen.",
+  },
+  {
     id: "qntx",
     name: "qntx",
     role: "KI-gestützter Krypto-Trading-Bot",
@@ -122,11 +138,11 @@ export const PROJECTS: ProjectNode[] = [
     context:
       "Ein Krypto-Trading-Bot, der Entscheidungen nicht auf Bauchgefühl trifft — bei echtem Kapitalrisiko reicht 'sieht gut aus' nicht.",
     contribution:
-      "Kraken-Anbindung über CCXT, 13 orthogonale Handelssignale (technische Analyse, Marktkontext, u. a. Binance-Liquidationskaskaden), 8-Modell-KI-Sentiment-Ensemble mit Mehrheitsentscheid und Ausfallschutz — kein Single-Point-of-Failure bei einem ausgefallenen Modell. Gewichtstuning Walk-Forward-validiert per Optuna. Aktuell zusätzlich: eigene Funding-Rate- und DeFi-Datensammlung sowie Gate-Effectiveness-Tracking zur weiteren Signal-Validierung.",
+      "Kraken-Anbindung über CCXT, 13 orthogonale Handelssignale (technische Analyse, Marktkontext, u. a. Binance-Liquidationskaskaden), 8-Modell-KI-Sentiment-Ensemble mit Mehrheitsentscheid und Ausfallschutz — kein Single-Point-of-Failure bei einem ausgefallenen Modell. Gewichtstuning Walk-Forward-validiert per Optuna. Eigene Funding-Rate- und DeFi-Datensammlung sowie Gate-Effectiveness-Tracking zur weiteren Signal-Validierung. Dashboard erweitert um Config-Version-Tracking, Entry-Snapshots je Trade, MAE/MFE-Tracking und einen Data-Quality-Audit, dazu ein Shadow-Threshold-Tool für die Analyse von Near-Miss-Trades knapp unterhalb einer Auslöseschwelle.",
     challenge:
       "Strategien vor echtem Kapitaleinsatz per Walk-Forward-Backtesting prüfen und eine mehrstufige Risikokette bauen (Stop-Loss, Trailing-Stop, Kill-Switch, Circuit-Breaker), die auch bei komplettem Modellausfall greift.",
     outcome:
-      "Aktuell in strukturierter Paper-Trading-Phase mit dokumentierten, harten Go-Live-Kriterien — bewusst noch nicht live, bis diese Kriterien erfüllt sind.",
+      "Aktuell in strukturierter Paper-Trading-Phase mit dokumentierten, harten Go-Live-Kriterien — inzwischen zusätzlich abgesichert durch Config-Versionierung, Trade-Level-Diagnostik und Near-Miss-Analyse, bewusst noch nicht live, bis die Kriterien erfüllt sind.",
     note: "Bewusst kein 'einfach live schalten' — Go-Live-Kriterien sind schriftlich fixiert, nicht verhandelbar.",
   },
   {
@@ -222,7 +238,7 @@ export const ROLE_FIT = [
   },
   {
     role: "Linux-/Server-Administration, DevOps",
-    evidence: "Eigenständiger Betrieb von 2 Root-Servern, Docker-Compose-Architektur, Caddy-Ingress, SSH-Härtung",
+    evidence: "Eigenständiger Betrieb von 2 Root-Servern, Docker-Compose-Architektur, Caddy-Ingress, SSH-Härtung, Wine/systemd für Nicht-Docker-Workloads",
   },
   {
     role: "Automatisierung & Workflow-Engineering",
@@ -248,7 +264,7 @@ export const HERO = {
   name: "Luis B.",
   roleTagline: "Backend-/Full-Stack-Entwicklung · Server-/Infrastruktur-Administration",
   kicker: "§00 — SYSTEMS ON RECORD",
-  headline: "Zwei Server, sechs Systeme, ein Betreiber.",
+  headline: "Zwei Server, sieben Systeme, ein Betreiber.",
   subline:
     "Hauptberuflich im Lagerbereich tätig. Nebenbei: produktive Infrastruktur, die im laufenden Betrieb steht — nicht nur konzipiert.",
 };
