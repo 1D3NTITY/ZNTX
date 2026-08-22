@@ -7,7 +7,7 @@ export function Footer() {
       <div className="flex flex-col gap-3 border-t border-border pt-6 font-mono text-xs text-foreground-muted sm:flex-row sm:items-center sm:justify-between">
         <span>© {new Date().getFullYear()} zntx.de</span>
         <nav className="flex gap-4">
-          <a href="#contact" className="hover:text-accent">
+          <a href="#row-contact" className="hover:text-accent">
             Kontakt
           </a>
           <a

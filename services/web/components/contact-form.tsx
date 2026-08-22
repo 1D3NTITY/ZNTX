@@ -108,6 +108,7 @@ export function ContactForm() {
         />
       )}
       <form
+        method="post"
         onSubmit={handleSubmit}
         className="flex flex-col gap-4 font-mono text-sm"
       >

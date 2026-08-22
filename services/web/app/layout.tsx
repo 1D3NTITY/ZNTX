@@ -32,6 +32,9 @@ export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   metadataBase: new URL("https://zntx.de"),
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: TITLE,
     description: DESCRIPTION,
@@ -47,6 +50,27 @@ export const metadata: Metadata = {
   },
 };
 
+// JSON-LD (Person + WebSite, schema.org) — hilft Suchmaschinen/AI-Crawlern, Luis als Person und
+// zntx.de als Site einzuordnen. Natives <script>, kein next/script (Doku: next/script ist für
+// ausführbaren Code optimiert, nicht für reine Strukturdaten). Sanitized nach offiziell empfohlenem
+// XSS-Pattern (< → <), da dangerouslySetInnerHTML verwendet wird.
+const JSON_LD = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      name: "Luis B.",
+      url: "https://zntx.de",
+      sameAs: ["https://www.linkedin.com/in/luis-b-668750319/"],
+    },
+    {
+      "@type": "WebSite",
+      name: "zntx",
+      url: "https://zntx.de",
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -58,6 +82,12 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif.variable} h-full antialiased dark`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(JSON_LD).replace(/</g, "\\u003c"),
+          }}
+        />
         <GlobalMatrixBackground />
         <Logo />
         <SmoothScroll>

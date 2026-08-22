@@ -50,7 +50,7 @@ export const PROJECTS: ProjectNode[] = [
     challenge:
       "Ein Backend für zwei grundverschiedene Clients konsistent halten, ohne Logik zu duplizieren — und OTA-Updates für die Mobile-App liefern, ohne auf App-Store-Review-Zyklen zu warten.",
     outcome:
-      "Ein Produkt, das Gesundheitsdaten so behandelt, wie es das Gesetz verlangt — nicht weil ein Audit das später gefordert hätte, sondern weil es von Anfang an so gebaut wurde. DSGVO-Rechte (Auskunft, Löschung, Datenübertragbarkeit) sind inzwischen echter Selfservice, nicht nur Zusage auf Anfrage.",
+      "Ein Produkt, das Gesundheitsdaten von Anfang an mit DSGVO-Anforderungen im Datenmodell verankert — nicht nachträglich aufgesetzt, sondern von Beginn an so gebaut. DSGVO-Rechte (Auskunft, Löschung, Datenübertragbarkeit) sind inzwischen echter Selfservice, nicht nur Zusage auf Anfrage.",
   },
   {
     id: "ravepuls",
@@ -65,7 +65,7 @@ export const PROJECTS: ProjectNode[] = [
     context:
       "Event-Discovery für die Rave-Szene einer Stadt — die Information existiert, ist aber über Dutzende Social-Media-Kanäle und Venue-Websites verstreut. Bewusst kein kommerzielles Projekt, sondern Community-Nutzen im Vordergrund.",
     contribution:
-      "Ein Telegram-Userbot liest konfigurierte Kanäle passiv mit, Browser-Automation (Browserless/Chromium) scraped Venue-Websites, die client-seitig rendern — beide Wege laufen in dieselbe Dedup-/Extraktions-Pipeline. Öffentliche Formulare mit Cloudflare Turnstile und eigener CSP gegen Missbrauch gehärtet. Eigenständige EU-AI-Act-Konformität inklusive Kennzeichnung KI-gestützt erzeugter Inhalte. Extraktions-Ergebnisse laufen inzwischen durch ein Punktesystem mit Auto-Publish ab einer Vertrauensschwelle, zusätzlich abgesichert durch einen Neutralitäts-Guard (erkennt und blockt politische Partei-/Organisationsnamen) und einen Genre-Scope-Guard. Events werden automatisiert mit echten Flyer-Bildern, Hashtags und Kurzlinks auf Instagram gepostet.",
+      "Ein Telegram-Userbot liest konfigurierte Kanäle passiv mit, Browser-Automation (Browserless/Chromium) scraped Venue-Websites, die client-seitig rendern — beide Wege laufen in dieselbe Dedup-/Extraktions-Pipeline. Öffentliche Formulare mit Cloudflare Turnstile und eigener CSP gegen Missbrauch gehärtet. EU-AI-Act-Anforderungen berücksichtigt, inklusive Kennzeichnung KI-gestützt erzeugter Inhalte. Extraktions-Ergebnisse laufen inzwischen durch ein Punktesystem mit Auto-Publish ab einer Vertrauensschwelle, zusätzlich abgesichert durch einen Neutralitäts-Guard (erkennt und blockt politische Partei-/Organisationsnamen) und einen Genre-Scope-Guard. Events werden automatisiert mit echten Flyer-Bildern, Hashtags und Kurzlinks auf Instagram gepostet.",
     challenge:
       "Eine vollständige Domain-Migration (.eu → .de) mitten im Betrieb, ohne kaputte Links, Duplicate Content oder verlorene Nutzer.",
     outcome:
@@ -246,7 +246,7 @@ export const ROLE_FIT = [
   },
   {
     role: "Security-/Compliance-bewusste Entwicklung",
-    evidence: "DSGVO Art. 9 bei Gesundheitsdaten, EU-AI-Act-Konformität (ravepuls), Kill-Switches bei echtem Kapitalrisiko, eigene Guardrail-Hooks",
+    evidence: "DSGVO Art. 9 bei Gesundheitsdaten, EU-AI-Act-Anforderungen berücksichtigt (ravepuls), Kill-Switches bei echtem Kapitalrisiko, eigene Guardrail-Hooks",
   },
 ];
 
@@ -266,7 +266,7 @@ export const HERO = {
   kicker: "§00 — SYSTEMS ON RECORD",
   headline: "Zwei Server, sieben Systeme, ein Betreiber.",
   subline:
-    "Hauptberuflich im Lagerbereich tätig. Nebenbei: produktive Infrastruktur, die im laufenden Betrieb steht — nicht nur konzipiert.",
+    "Entwickle und betreibe produktive Web- und Server-Systeme — sieben Systeme auf zwei eigenen Servern, im laufenden Betrieb, nicht nur konzipiert. Beruflich aktuell im Lagerbereich, nebenbei volle Infrastruktur-Verantwortung.",
 };
 
 export const BIO = {
