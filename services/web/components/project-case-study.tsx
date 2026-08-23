@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef, type PointerEvent } from "react";
 import { motion, type Variants } from "motion/react";
 import type { ProjectNode } from "@/lib/content";
 import type { LiveStatus } from "@/lib/status";
@@ -80,24 +79,10 @@ export function ProjectCaseStudyBody({
   project: ProjectNode;
   live?: LiveStatus | null;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  function onPointerMove(e: PointerEvent<HTMLDivElement>) {
-    const rect = ref.current?.getBoundingClientRect();
-    if (!rect) return;
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    ref.current!.style.setProperty("--x", `${x}%`);
-    ref.current!.style.setProperty("--y", `${y}%`);
-  }
-
   const lead = SIGNATURE_LEAD[project.id];
 
   return (
     <motion.div
-      ref={ref}
-      onPointerMove={onPointerMove}
-      className="spotlight"
       initial="hidden"
       animate="visible"
       variants={container}
