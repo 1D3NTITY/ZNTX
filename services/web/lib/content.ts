@@ -46,7 +46,7 @@ export const PROJECTS: ProjectNode[] = [
     context:
       "Ein Multi-Platform-Produkt für Ernährungs- und Trainingsdaten — echte Gesundheitsdaten, nicht Fitness-Tracking zum Spaß. Sobald DSGVO Art. 9 greift, ist nachträglich eingebauter Datenschutz keine Option.",
     contribution:
-      "FastAPI-Backend als gemeinsames Fundament für die Next.js-Web-App und die Expo/React-Native-Mobile-App, mit Zugriffskontrolle, Export- und Löschfunktion direkt im Datenmodell verankert. Releases über Alembic-Migrationen, feste Sprint-/Versionierungsdisziplin, n8n für Automatisierung im Hintergrund. Seitdem erweitert um Passwort-Selfservice mit 2FA, granulare OAuth-Scope-Trennung für die Google-Fit-/Kalender-Anbindung und mehrere Security-Härtungen — dazu neue Produktfunktionen wie eigene Trainingsprogramm-Erstellung.",
+      "FastAPI-Backend als gemeinsames Fundament für die Next.js-Web-App und die Expo/React-Native-Mobile-App, mit Zugriffskontrolle, Export- und Löschfunktion direkt im Datenmodell verankert. Releases über Alembic-Migrationen, feste Sprint-/Versionierungsdisziplin, n8n für Automatisierung im Hintergrund. Seitdem erweitert um Passwort-Selfservice mit 2FA (inklusive TOTP-Replay-Schutz und 2FA-Pflicht auch beim Google-Login), lokale JWKS-Verifikation von Google-ID-Tokens statt blindem Vertrauen, echten OAuth-State-CSRF-Schutz und Admin-Funktionen für Nutzerverwaltung (Sperren/Löschen). CI-Pipeline mit Lint-/Type-/Test-/Build-Gates neu aufgesetzt, kompletter Altlasten-Lint-Bestand bereinigt. Die Google-Fit-Anbindung wurde entfernt, nachdem Google die zugrunde liegende API angekündigt abschaltet — ein erzwungener, kein freiwilliger Architektur-Schwenk.",
     challenge:
       "Ein Backend für zwei grundverschiedene Clients konsistent halten, ohne Logik zu duplizieren — und OTA-Updates für die Mobile-App liefern, ohne auf App-Store-Review-Zyklen zu warten.",
     outcome:
@@ -65,11 +65,11 @@ export const PROJECTS: ProjectNode[] = [
     context:
       "Event-Discovery für die Rave-Szene einer Stadt — die Information existiert, ist aber über Dutzende Social-Media-Kanäle und Venue-Websites verstreut. Bewusst kein kommerzielles Projekt, sondern Community-Nutzen im Vordergrund.",
     contribution:
-      "Ein Telegram-Userbot liest konfigurierte Kanäle passiv mit, Browser-Automation (Browserless/Chromium) scraped Venue-Websites, die client-seitig rendern — beide Wege laufen in dieselbe Dedup-/Extraktions-Pipeline. Öffentliche Formulare mit Cloudflare Turnstile und eigener CSP gegen Missbrauch gehärtet. EU-AI-Act-Anforderungen berücksichtigt, inklusive Kennzeichnung KI-gestützt erzeugter Inhalte. Extraktions-Ergebnisse laufen inzwischen durch ein Punktesystem mit Auto-Publish ab einer Vertrauensschwelle, zusätzlich abgesichert durch einen Neutralitäts-Guard (erkennt und blockt politische Partei-/Organisationsnamen) und einen Genre-Scope-Guard. Events werden automatisiert mit echten Flyer-Bildern, Hashtags und Kurzlinks auf Instagram gepostet.",
+      "Ein Telegram-Userbot liest konfigurierte Kanäle passiv mit, Browser-Automation (Browserless/Chromium) scraped Venue-Websites, die client-seitig rendern — beide Wege laufen in dieselbe Dedup-/Extraktions-Pipeline. Öffentliche Formulare mit Cloudflare Turnstile und eigener CSP gegen Missbrauch gehärtet. EU-AI-Act-Anforderungen berücksichtigt, inklusive Kennzeichnung KI-gestützt erzeugter Inhalte. Extraktions-Ergebnisse laufen inzwischen durch ein Punktesystem mit Auto-Publish ab einer Vertrauensschwelle, zusätzlich abgesichert durch einen Neutralitäts-Guard (erkennt und blockt politische Partei-/Organisationsnamen sowie FLINTA-Events, verhindert dass spekulative KI-Aussagen als Fakt veröffentlicht werden) und einen Genre-Scope-Guard. Events werden automatisiert mit echten Flyer-Bildern, Hashtags und Kurzlinks auf Instagram gepostet. Ein volles Sicherheitsaudit in fünf Phasen brachte u. a. eine Nonce-basierte CSP (kein unsafe-inline/unsafe-eval mehr), Härtung des Flyer-Uploads gegen Content-Type-Spoofing und einen Patch gegen mehrere bekannte Next.js-Sicherheitslücken.",
     challenge:
       "Eine vollständige Domain-Migration (.eu → .de) mitten im Betrieb, ohne kaputte Links, Duplicate Content oder verlorene Nutzer.",
     outcome:
-      "ravepuls.de läuft live, aggregiert automatisiert, bleibt gegen Missbrauch und Fehlklassifikation gehärtet (Neutralitäts-/Genre-Guards) — und hält die EU-AI-Act-Vorgaben nicht nur ein, sondern sichtbar: KI-Kennzeichnung im UI, echtes Stock-Foto statt KI-generiertem Hero-Banner.",
+      "ravepuls.de läuft live, aggregiert automatisiert, bleibt gegen Missbrauch und Fehlklassifikation gehärtet (Neutralitäts-/Genre-Guards) — und hält die EU-AI-Act-Vorgaben nicht nur ein, sondern sichtbar: KI-Kennzeichnung im UI, echtes Stock-Foto statt KI-generiertem Hero-Banner. DSGVO-Rechte (Auskunft/Löschung, Art. 17/20) sind echter Selfservice im Account-Bereich, nicht nur Zusage auf Anfrage.",
   },
   {
     id: "matrix-chat",
@@ -113,17 +113,37 @@ export const PROJECTS: ProjectNode[] = [
     id: "motortown",
     name: "Motor Town: Behind the Wheel",
     role: "Privater Gameserver",
-    status: "internal",
+    status: "live",
     accentColor: "var(--project-motortown)",
-    stack: ["systemd", "Wine/Proton", "SteamCMD"],
+    server: "server-2",
+    since: "August 2026",
+    stack: ["systemd", "Wine/Proton", "SteamCMD", "ufw"],
     context:
       "Ein privater Dedicated-Server für 'Motor Town: Behind the Wheel' (Steam) für einen kleinen, festen Freundeskreis (max. 10–20 Spieler) — bewusst kein öffentliches, wachsendes Projekt wie die anderen Systeme.",
     contribution:
-      "Der Windows-only Server-Prozess läuft über Wine/Proton unter Linux, verwaltet als systemd-Service statt als Docker-Container — anders als der Rest der Infrastruktur, bewusst so gewählt, weil Wine in einem Container zusätzliche Komplexität ohne echten Nutzen bringen würde.",
+      "Der Windows-only Server-Prozess läuft über Wine/Proton unter Linux, verwaltet als systemd-Service statt als Docker-Container — anders als der Rest der Infrastruktur, bewusst so gewählt, weil Wine in einem Container zusätzliche Komplexität ohne echten Nutzen bringen würde. Läuft unter einem eigenen, unprivilegierten Linux-User, technisch sauber isoliert vom WCP/Arma-Server auf demselben physischen Server — eigener Service, eigene freigegebene Ports (ufw, gezielt nur die benötigten UDP/TCP-Ports für Motor Town). Tägliche Backups laufen zuverlässig.",
     challenge:
       "Einen Windows-Server-Prozess stabil unter Linux betreiben (Wine/Proton statt nativer Linux-Build) und dabei bewusst von der sonst durchgängigen Docker-Architektur der anderen Projekte abweichen, wo es technisch die bessere Wahl ist.",
     outcome:
-      "Läuft stabil für den eigenen Freundeskreis — zeigt, dass die Linux-/Ops-Skills nicht an 'alles läuft in Docker' hängen, sondern die passende Betriebsform je Workload wählen.",
+      "Läuft stabil und produktiv für den eigenen Freundeskreis, sauber isoliert vom Nachbarserver, mit funktionierenden täglichen Backups — zeigt, dass die Linux-/Ops-Skills nicht an 'alles läuft in Docker' hängen, sondern die passende Betriebsform je Workload wählen.",
+  },
+  {
+    id: "buchhaltung",
+    name: "Buchhaltungs-/Steuerassistent",
+    role: "Interner KI-Assistent",
+    status: "internal",
+    accentColor: "var(--project-buchhaltung)",
+    server: "server-1",
+    since: "August 2026",
+    stack: ["FastAPI", "Next.js", "Postgres", "Mistral (OCR/LLM)", "FastBill API", "Docker Compose"],
+    context:
+      "Ein interner KI-Buchhaltungs-/Steuerassistent für das eigene Kleinunternehmen — kombiniert Geschäftsbuchhaltung (FastBill-Orchestrierung) und private Finanzen/Steueroptimierung in einer Oberfläche, statt beides getrennt in Excel-Tabellen zu pflegen.",
+    contribution:
+      "Beleg-Ingestion per Upload oder E-Mail, Mistral-OCR/LLM-Strukturierung, automatischer Push nach FastBill. Eigenes Privat-Modul mit von Grund auf implementierter Steuerrücklage-Berechnung (§ 32a EStG), Kleinunternehmergrenze-Tracker und ELSTER-Feldreferenz. Intelligence-Layer für Cashflow-Analyse, Anomalie-Erkennung und fehlende-Nachweise-Erkennung, dazu Budget-Tracking mit Bank-CSV-Import und ein kontext-geerdeter Chat-Assistent. Ledger/GoBD/E-Rechnung/DATEV-Export laufen bewusst über die FastBill-„Solo“-API (Buy statt Build, nach Abwägung mehrerer KI-Zweitmeinungen) statt selbst gebaut. Dazu ein komplett eigenständiges Hobby/Equipment-Modul: Equipment-Verwaltung, Resell-Tracker mit Finanzkopplung, Gig-/Setlist-Builder, P&L-Dashboard, Automatisierung, Webhooks, lokales Backup/Export.",
+    challenge:
+      "Ein eigenes 40-Punkte-Sicherheitsaudit deckte auf, dass interne Beleg-/Hobby-Endpunkte versehentlich von außen über Caddy erreichbar waren — selbst gefunden und behoben, zusammen mit Prompt-Injection-Härtung für den Chat-Assistenten und Content-Type-Allowlisting für Uploads.",
+    outcome:
+      "Live verifiziertes System mit DSGVO-konformer Löschung/Export und bestandenem Backup-/Restore-Test — kein Prototyp, sondern der tatsächlich genutzte Buchhaltungs-Workflow.",
   },
   {
     id: "qntx",
@@ -138,11 +158,11 @@ export const PROJECTS: ProjectNode[] = [
     context:
       "Ein Krypto-Trading-Bot, der Entscheidungen nicht auf Bauchgefühl trifft — bei echtem Kapitalrisiko reicht 'sieht gut aus' nicht.",
     contribution:
-      "Kraken-Anbindung über CCXT, 13 orthogonale Handelssignale (technische Analyse, Marktkontext, u. a. Binance-Liquidationskaskaden), 8-Modell-KI-Sentiment-Ensemble mit Mehrheitsentscheid und Ausfallschutz — kein Single-Point-of-Failure bei einem ausgefallenen Modell. Gewichtstuning Walk-Forward-validiert per Optuna. Eigene Funding-Rate- und DeFi-Datensammlung sowie Gate-Effectiveness-Tracking zur weiteren Signal-Validierung. Dashboard erweitert um Config-Version-Tracking, Entry-Snapshots je Trade, MAE/MFE-Tracking und einen Data-Quality-Audit, dazu ein Shadow-Threshold-Tool für die Analyse von Near-Miss-Trades knapp unterhalb einer Auslöseschwelle.",
+      "Kraken-Anbindung über CCXT, 13 orthogonale Handelssignale (technische Analyse, Marktkontext, u. a. Binance-Liquidationskaskaden), 8-Modell-KI-Sentiment-Ensemble mit Mehrheitsentscheid und Ausfallschutz — kein Single-Point-of-Failure bei einem ausgefallenen Modell. Gewichtstuning Walk-Forward-validiert per Optuna. Eigene Funding-Rate- und DeFi-Datensammlung sowie Gate-Effectiveness-Tracking zur weiteren Signal-Validierung, inzwischen als vom Handelssystem entkoppelte Hintergrunddienste. Dashboard komplett auf eine neue, modulare Oberfläche mit einheitlichem Design-System und Accessibility-Pass umgestellt, erweitert um Config-Version-Tracking, Entry-Snapshots je Trade, MAE/MFE-Tracking und einen Data-Quality-Audit, dazu ein Shadow-Threshold-Tool für die Analyse von Near-Miss-Trades knapp unterhalb einer Auslöseschwelle. Research läuft strukturiert in einem eigenen Research-Ledger statt in Rohtext.",
     challenge:
-      "Strategien vor echtem Kapitaleinsatz per Walk-Forward-Backtesting prüfen und eine mehrstufige Risikokette bauen (Stop-Loss, Trailing-Stop, Kill-Switch, Circuit-Breaker), die auch bei komplettem Modellausfall greift.",
+      "Strategien vor echtem Kapitaleinsatz per Walk-Forward-Backtesting prüfen und eine mehrstufige Risikokette bauen (Stop-Loss, Trailing-Stop, Kill-Switch, Circuit-Breaker), die auch bei komplettem Modellausfall greift. Ein eigenes ~150-Punkte-Sicherheitsaudit deckte dabei u. a. eine fehlerhafte Fee-Berechnung auf (Maker- statt Taker-Satz) und führte zu unabhängigeren Kill-Switch-/Rollback-Mechanismen.",
     outcome:
-      "Aktuell in strukturierter Paper-Trading-Phase mit dokumentierten, harten Go-Live-Kriterien — inzwischen zusätzlich abgesichert durch Config-Versionierung, Trade-Level-Diagnostik und Near-Miss-Analyse, bewusst noch nicht live, bis die Kriterien erfüllt sind.",
+      "Aktuell in strukturierter Paper-Trading-Phase mit dokumentierten, harten Go-Live-Kriterien — inzwischen zusätzlich abgesichert durch Config-Versionierung, Trade-Level-Diagnostik, Near-Miss-Analyse und ein eigenes Sicherheitsaudit, bewusst noch nicht live, bis die Kriterien erfüllt sind. Ein externer, nicht-autoritativer Review-Assistent gibt inzwischen eine zusätzliche Zweitmeinung im Code-Review, ohne eigene Entscheidungsbefugnis.",
     note: "Bewusst kein 'einfach live schalten' — Go-Live-Kriterien sind schriftlich fixiert, nicht verhandelbar.",
   },
   {
@@ -224,7 +244,7 @@ export const CROSS_CUTTING_SKILLS: SkillCategory[] = [
   },
 ];
 
-// Konkrete Einsatzbereiche, aus den 7 Projekten oben abgeleitet — keine
+// Konkrete Einsatzbereiche, aus den Projekten oben abgeleitet — keine
 // Erfindung, sondern Zusammenfassung dessen, was die Case-Studies bereits
 // belegen. Beantwortet "wofür ist das geeignet", nicht nur "was kann er".
 export const ROLE_FIT = [
@@ -264,9 +284,9 @@ export const HERO = {
   name: "Luis B.",
   roleTagline: "Backend-/Full-Stack-Entwicklung · Server-/Infrastruktur-Administration",
   kicker: "§00 — SYSTEMS ON RECORD",
-  headline: "Zwei Server, sieben Systeme, ein Betreiber.",
+  headline: "Zwei Server, acht Systeme, ein Betreiber.",
   subline:
-    "Entwickle und betreibe produktive Web- und Server-Systeme — sieben Systeme auf zwei eigenen Servern, im laufenden Betrieb, nicht nur konzipiert. Beruflich aktuell im Lagerbereich, nebenbei volle Infrastruktur-Verantwortung.",
+    "Entwickle und betreibe produktive Web- und Server-Systeme — acht Systeme auf zwei eigenen Servern, im laufenden Betrieb, nicht nur konzipiert. Beruflich aktuell im Lagerbereich, nebenbei volle Infrastruktur-Verantwortung.",
 };
 
 export const BIO = {
