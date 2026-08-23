@@ -64,18 +64,25 @@ export function DashboardRow({
           onClick={onToggle}
           aria-expanded={isOpen}
           aria-controls={panelId}
-          className="flex w-full flex-col gap-1 py-5 text-left outline-none focus-visible:ring-2 focus-visible:ring-accent-dim"
+          className={`flex w-full flex-col gap-1 py-5 pl-4 text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-accent-dim ${
+            isOpen ? "border-l-2 border-accent" : "border-l-2 border-transparent"
+          }`}
         >
           <span className="flex w-full items-center gap-3">
+            {/* Knoten-Marker statt reinem Punkt (Redesign 2026-08-23) — Ring +
+                Glow, docked-an-die-Topologie-Linie-Optik statt Akkordeon-Bullet. */}
             <span
               aria-hidden="true"
-              className="h-2.5 w-2.5 shrink-0 rounded-full"
+              className="relative h-3 w-3 shrink-0 rounded-full ring-2 ring-offset-2 ring-offset-background"
               style={{
                 backgroundColor: dotColor ?? "var(--foreground-muted)",
-                boxShadow: dotColor ? `0 0 8px ${dotColor}` : "none",
+                boxShadow: dotColor ? `0 0 10px ${dotColor}` : "none",
+                ["--tw-ring-color" as string]: dotColor
+                  ? `color-mix(in srgb, ${dotColor} 40%, transparent)`
+                  : "var(--border)",
               }}
             />
-            <span className="min-w-0 flex-1 truncate font-serif text-lg font-semibold text-foreground sm:text-xl">
+            <span className="min-w-0 flex-1 truncate font-sans text-lg font-semibold tracking-tight text-foreground sm:text-xl">
               {title}
             </span>
             <span
@@ -116,7 +123,11 @@ export function DashboardRow({
             onUpdate={() => lenis?.resize()}
             className="overflow-hidden"
           >
-            <div className="pb-8">{children}</div>
+            {/* Scanline-Rahmen statt reinem Akkordeon-Look (Redesign 2026-08-23) —
+                Optik einer aufgeklappten technischen Konsole, Mechanik unverändert. */}
+            <div className="technical-grid ml-4 border-l-2 border-accent-dim pb-8 pl-6">
+              {children}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

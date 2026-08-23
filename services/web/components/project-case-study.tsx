@@ -3,6 +3,8 @@
 import { useRef, type PointerEvent } from "react";
 import { motion, type Variants } from "motion/react";
 import type { ProjectNode } from "@/lib/content";
+import type { LiveStatus } from "@/lib/status";
+import { formatLiveStatus } from "@/lib/labels";
 
 const container: Variants = {
   hidden: {},
@@ -34,7 +36,50 @@ const SIGNATURE_LEAD: Record<
 // dashboard-row.tsx in eine aufgeklappte Zeile eingebettet (Header/Status/
 // Datum übernimmt die Zeile selbst). War vorher eine eigene, per Scroll
 // erreichte Section (`<CaseStudy>` in einer statischen Liste).
-export function ProjectCaseStudyBody({ project }: { project: ProjectNode }) {
+// Proof-Block: echte Live-Betriebsdaten statt Text-Behauptungen (Redesign "Live Infrastructure
+// Atlas", 2026-08-23). `live` kommt server-seitig aus lib/status.ts, kann `null` sein (Fetch
+// fehlgeschlagen/Timeout) — dann ehrlicher Fallback-Hinweis statt erfundener Daten, die
+// statischen Projekt-Fakten (Kontext/Beitrag/etc.) darunter bleiben in jedem Fall verlässlich.
+function ProofBlock({ live }: { live: LiveStatus | null }) {
+  const formatted = formatLiveStatus(live);
+
+  if (!formatted) {
+    return (
+      <p className="mb-6 font-mono text-xs text-foreground-muted">
+        {"> Live-Status aktuell nicht abrufbar"}
+      </p>
+    );
+  }
+
+  const dotColor =
+    live?.status === "operational"
+      ? "var(--status-online)"
+      : live?.status === "degraded"
+        ? "var(--status-paper)"
+        : "#f87171";
+
+  return (
+    <p className="mb-6 flex flex-wrap items-center gap-2 font-mono text-xs">
+      <span
+        aria-hidden="true"
+        className="h-1.5 w-1.5 shrink-0 rounded-full"
+        style={{ backgroundColor: dotColor, boxShadow: `0 0 6px ${dotColor}` }}
+      />
+      <span className="uppercase tracking-widest text-foreground">{formatted.label}</span>
+      {formatted.detail && (
+        <span className="text-foreground-muted">· {formatted.detail}</span>
+      )}
+    </p>
+  );
+}
+
+export function ProjectCaseStudyBody({
+  project,
+  live = null,
+}: {
+  project: ProjectNode;
+  live?: LiveStatus | null;
+}) {
   const ref = useRef<HTMLDivElement>(null);
 
   function onPointerMove(e: PointerEvent<HTMLDivElement>) {
@@ -57,6 +102,10 @@ export function ProjectCaseStudyBody({ project }: { project: ProjectNode }) {
       animate="visible"
       variants={container}
     >
+      <motion.div variants={item}>
+        <ProofBlock live={live} />
+      </motion.div>
+
       {lead && (
         <motion.div variants={item} className="mb-8">
           <p className="font-mono text-xs uppercase tracking-widest text-accent">

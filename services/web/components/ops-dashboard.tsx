@@ -7,14 +7,19 @@ import { DashboardRow } from "@/components/dashboard-row";
 import { ProjectCaseStudyBody } from "@/components/project-case-study";
 import { OperatorProfileBody } from "@/components/operator-profile-body";
 import { ContactForm } from "@/components/contact-form";
+import { SystemTopologyLine } from "@/components/system-topology-line";
+import type { LiveStatus } from "@/lib/status";
 
-// Live-Ops-Leitstand (Konzept A, 2026-07-24) — ersetzt die bisherige
-// Scroll-Erzählung (Hero → Signature Moment → Case-Studies → Skills → Bio →
-// Kontakt nacheinander) durch eine Status-Liste: alle Systeme sofort
-// sichtbar, Besucher klappt gezielt auf statt sich durchzuscrollen. Bildet
-// ab, wie Luis seine eigene Infrastruktur tatsächlich überwacht (Übersicht
-// zuerst, Details auf Anfrage) statt Prosa-Dokument mit Deko.
-export function OpsDashboard() {
+// "Live Infrastructure Atlas" (Redesign 2026-08-23, ersetzt Konzept A vom 2026-07-24) — die
+// Systemliste bekommt eine sichtbare zentrale Verbindung (SystemTopologyLine) statt reiner
+// Akkordeon-Liste, jede Zeile zeigt echte Live-Betriebsdaten statt nur Text-Behauptungen.
+// Akkordeon-Mechanik selbst (Öffnen/Schließen, Lenis-Resize, aria) bleibt unverändert — nur
+// Optik + Live-Daten-Anbindung sind neu.
+export function OpsDashboard({
+  statuses,
+}: {
+  statuses: Record<string, LiveStatus | null>;
+}) {
   const [openId, setOpenId] = useState<string | null>(null);
 
   function toggle(id: string) {
@@ -29,11 +34,23 @@ export function OpsDashboard() {
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-16 lg:px-0 lg:py-24">
       <header className="mb-12">
+        {/* Hero-Intro (Redesign 2026-08-23): "zntx" + Cursor, der kurz in zwei vertikale
+            Linien auseinandergeht — Symbol für die 2 Server. Rein dekorativ (aria-hidden),
+            Name/Headline darunter sind sofort im Markup, nicht durch die Animation gated.
+            prefers-reduced-motion greift automatisch über die globale Media-Query
+            (globals.css) — Elemente stehen dann sofort im Endzustand. */}
+        <div aria-hidden="true" className="mb-4 flex items-center gap-3 font-mono text-sm text-foreground-muted">
+          <span>zntx</span>
+          <span className="relative inline-flex h-4 w-3 items-center justify-center">
+            <span className="hero-cursor-split-left absolute h-4 w-px bg-accent" />
+            <span className="hero-cursor-split-right absolute h-4 w-px bg-accent" />
+          </span>
+        </div>
         <p className="font-mono text-sm font-semibold text-foreground">{HERO.name}</p>
         <p className="mt-1 font-mono text-xs uppercase tracking-widest text-accent">
           {HERO.kicker}
         </p>
-        <h1 className="mt-2 font-serif text-3xl font-semibold leading-tight text-foreground sm:text-4xl">
+        <h1 className="mt-2 font-sans text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
           {HERO.headline}
         </h1>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-foreground-muted sm:text-base">
@@ -62,20 +79,22 @@ export function OpsDashboard() {
       </header>
 
       <div id="systems">
-        {PROJECTS.map((project) => (
-          <div key={project.id} id={`row-${project.id}`}>
-            <DashboardRow
-              dotColor={project.accentColor}
-              title={project.name}
-              meta={formatProjectMeta(project)}
-              teaser={project.context}
-              isOpen={openId === project.id}
-              onToggle={() => toggle(project.id)}
-            >
-              <ProjectCaseStudyBody project={project} />
-            </DashboardRow>
-          </div>
-        ))}
+        <SystemTopologyLine>
+          {PROJECTS.map((project) => (
+            <div key={project.id} id={`row-${project.id}`}>
+              <DashboardRow
+                dotColor={project.accentColor}
+                title={project.name}
+                meta={formatProjectMeta(project)}
+                teaser={project.context}
+                isOpen={openId === project.id}
+                onToggle={() => toggle(project.id)}
+              >
+                <ProjectCaseStudyBody project={project} live={statuses[project.id] ?? null} />
+              </DashboardRow>
+            </div>
+          ))}
+        </SystemTopologyLine>
 
         <div id="row-operator">
           <DashboardRow

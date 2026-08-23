@@ -1,17 +1,26 @@
 @import "tailwindcss";
 
 /* Dark-Theme ist Default, nicht nur bei prefers-color-scheme — das Konzept
-   (Control-Room / Netzwerkkarte) trägt nicht im Light-Mode. */
+   (Control-Room / Netzwerkkarte) trägt nicht im Light-Mode.
+
+   Farbwechsel Redesign "Live Infrastructure Atlas" (2026-08-23, Review-Feedback: Terminal-
+   Ästhetik wirkt austauschbar): leichter Blaustich statt neutralem Schwarz, gebrochenes statt
+   reinem Weiß — ZNTX-Rot bleibt exklusiv für Bedienelemente/aktive Datenwege reserviert, taucht
+   nirgends mehr dekorativ auf. */
 :root {
-  --background: #08090c;
-  --surface: #0f1216;
-  --border: #1e242b;
-  --foreground: #e4e7eb;
-  --foreground-muted: #8b96a3;
+  --background: #05060a;
+  --surface: #0b0e15;
+  --border: #1b212e;
+  --foreground: #e8eaf1;
+  --foreground-muted: #8991a6;
   --accent: #ff1e3c;
   --accent-dim: #7a0f1f;
   --status-online: #4ade80;
   --status-paper: #facc15;
+  /* Scanline/Grid-Hintergrund (ersetzt Matrix-Rain-Textwallpaper — siehe technical-grid-
+     background.tsx). Sehr niedrige Opazität, reines CSS, keine DOM-Text-Knoten. */
+  --grid-line: rgba(140, 160, 200, 0.05);
+  --scanline: rgba(140, 160, 200, 0.035);
 
   /* Projekt-Akzentfarben für den Live-Ops-Leitstand (Konzept A, 2026-07-24).
      ravepuls/qntx/arma sind Luis' fest vorgegebene Farben, nicht verhandelbar.
@@ -62,38 +71,40 @@ body {
   50% { opacity: 0.75; }
 }
 
-/* Hero-Hintergrund: echte vertikale Matrix-Rain (Feedback: horizontaler
-   Ticker war weder als "Matrix" erkennbar noch bei niedriger Opazität
-   sichtbar). Spalten aus echten Tokens (lib/hero-fragments.ts), Cyan-Akzent
-   mit spürbarer, aber dem Vordergrund-Text untergeordneter Sichtbarkeit
-   (Kontrast über das Scrim-Panel in hero.tsx sichergestellt, nicht über
-   Beinahe-Unsichtbarkeit des Effekts selbst). */
-.hero-matrix-col {
-  color: var(--accent);
-  text-shadow: 0 0 6px color-mix(in srgb, var(--accent) 55%, transparent);
+/* Technischer Grid/Scanline-Hintergrund (Redesign 2026-08-23) — ersetzt die vorherige
+   Matrix-Rain-Textwallpaper (Hunderte echte DOM-Text-Knoten, siehe technical-grid-
+   background.tsx-Kommentar). Reines CSS: feines Raster + horizontale Scanlines,
+   keine Textknoten, kein SEO-/Accessibility-Ballast mehr im Hintergrund. */
+.technical-grid {
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+    repeating-linear-gradient(
+      0deg,
+      var(--scanline) 0px,
+      var(--scanline) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  background-size: 64px 64px, 64px 64px, auto;
 }
 
-@keyframes matrix-fall {
-  from { transform: translateY(-110%); }
-  to { transform: translateY(110%); }
+/* Hero-Intro: Unterstrich hinter "zntx_" teilt sich kurz in zwei vertikale Linien (Symbol für
+   die 2 Server) bevor Headline/Subline einblenden. Siehe ops-dashboard.tsx für die Steuerung
+   (skip bei prefers-reduced-motion, siehe Media-Query unten). */
+@keyframes hero-split-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-0.6em); }
 }
-
-/* Signatur-Glyphen (ZNTX, siehe matrix-rain.tsx) — fallen wie normale
-   Matrix-Tokens (kein eigenes Transform, verhindert die Stutter-Kollision
-   mit matrix-fall, siehe Feedback zu glitch-flicker weiter oben im Projekt).
-   Animiert nur opacity/filter: ruhig, dann kurzer heller Doppel-Glitch. */
-@keyframes signature-glitch {
-  0%, 42% { opacity: 0.45; filter: brightness(1) drop-shadow(0 0 0 transparent); }
-  46% { opacity: 1; filter: brightness(2.4) drop-shadow(0 0 8px var(--accent)); }
-  50% { opacity: 0.55; filter: brightness(1.2) drop-shadow(0 0 2px var(--accent)); }
-  54% { opacity: 1; filter: brightness(2.6) drop-shadow(0 0 10px var(--accent)); }
-  60%, 100% { opacity: 0.45; filter: brightness(1) drop-shadow(0 0 0 transparent); }
+@keyframes hero-split-right {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(0.6em); }
 }
-
-.matrix-signature-glyph {
-  color: var(--foreground);
-  font-weight: 700;
-  animation: signature-glitch 7s ease-in-out infinite;
+.hero-cursor-split-left {
+  animation: hero-split-left 0.5s ease-out 0.3s forwards;
+}
+.hero-cursor-split-right {
+  animation: hero-split-right 0.5s ease-out 0.3s forwards;
 }
 
 /* Spotlight-Hover für Case-Study-Blöcke: der Maus folgende, sehr dezente
