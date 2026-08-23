@@ -123,9 +123,11 @@ export function DashboardRow({
             onUpdate={() => lenis?.resize()}
             className="overflow-hidden"
           >
-            {/* Scanline-Rahmen statt reinem Akkordeon-Look (Redesign 2026-08-23) —
-                Optik einer aufgeklappten technischen Konsole, Mechanik unverändert. */}
-            <div className="technical-grid ml-4 border-l-2 border-accent-dim pb-8 pl-6">
+            {/* Nur der Rahmen (Optik einer aufgeklappten Konsole), kein Scanline-Textur-
+                Hintergrund mehr direkt hinter dem Text — Feedback: Gitterlinien hinter
+                dichtem Fließtext wirkten überladen/unruhig statt "technisch". Der
+                Scanline-Hintergrund bleibt als reines Seiten-Ambiente in TechnicalGridBackground. */}
+            <div className="ml-4 border-l-2 border-accent-dim pb-8 pl-6">
               {children}
             </div>
           </motion.div>
