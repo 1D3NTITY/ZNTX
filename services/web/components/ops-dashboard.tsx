@@ -2,19 +2,44 @@
 
 import { useState } from "react";
 import { PROJECTS, HERO, LINKS } from "@/lib/content";
-import { formatProjectMeta } from "@/lib/labels";
+import { formatProjectMeta, formatLiveStatus } from "@/lib/labels";
 import { DashboardRow } from "@/components/dashboard-row";
 import { ProjectCaseStudyBody } from "@/components/project-case-study";
 import { OperatorProfileBody } from "@/components/operator-profile-body";
 import { ContactForm } from "@/components/contact-form";
-import { SystemTopologyLine } from "@/components/system-topology-line";
 import type { LiveStatus } from "@/lib/status";
 
-// "Live Infrastructure Atlas" (Redesign 2026-08-23, ersetzt Konzept A vom 2026-07-24) — die
-// Systemliste bekommt eine sichtbare zentrale Verbindung (SystemTopologyLine) statt reiner
-// Akkordeon-Liste, jede Zeile zeigt echte Live-Betriebsdaten statt nur Text-Behauptungen.
-// Akkordeon-Mechanik selbst (Öffnen/Schließen, Lenis-Resize, aria) bleibt unverändert — nur
-// Optik + Live-Daten-Anbindung sind neu.
+// Kompaktes Live-Status-Badge direkt auf der geschlossenen Karte (Redesign 2026-08-23 v2) —
+// nur Punkt + Label, keine Deploy-/Sync-Details (die stehen im aufgeklappten Proof-Block,
+// siehe project-case-study.tsx). Zeigt echte Daten schon vor dem Klick, statt sie zu verstecken.
+function LiveBadge({ live }: { live: LiveStatus | null }) {
+  const formatted = formatLiveStatus(live);
+  if (!formatted) return null;
+  const dotColor =
+    live?.status === "operational"
+      ? "var(--status-online)"
+      : live?.status === "degraded"
+        ? "var(--status-paper)"
+        : "#f87171";
+  return (
+    <span className="flex items-center gap-1.5 font-mono text-xs text-foreground-muted">
+      <span
+        aria-hidden="true"
+        className="h-1.5 w-1.5 shrink-0 rounded-full"
+        style={{ backgroundColor: dotColor }}
+      />
+      {formatted.label}
+    </span>
+  );
+}
+
+// "Live Infrastructure Atlas" (Redesign 2026-08-23) — Projekte als responsives Karten-Grid
+// (1 Spalte mobil, 2 Desktop) statt Linien-Liste; jede Karte zeigt echte Live-Betriebsdaten
+// statt nur Text-Behauptungen. Vorversion nutzte eine Topologie-Linie durch eine Einspalten-
+// Liste — Feedback nach Live-Check: zu viele parallele Akzent-Linien + der Grid-Hintergrund
+// lasen sich als generische "AI-Slop"-Website-Bausteine (siehe Plan-Datei für Quellen). Karten-
+// Grid + ein einzelner, projektfarbiger Rahmen im offenen Zustand ersetzen das. Akkordeon-
+// Mechanik selbst (Öffnen/Schließen, Lenis-Resize, aria) bleibt unverändert.
 export function OpsDashboard({
   statuses,
 }: {
@@ -78,24 +103,26 @@ export function OpsDashboard({
         </div>
       </header>
 
-      <div id="systems">
-        <SystemTopologyLine>
-          {PROJECTS.map((project) => (
-            <div key={project.id} id={`row-${project.id}`}>
-              <DashboardRow
-                dotColor={project.accentColor}
-                title={project.name}
-                meta={formatProjectMeta(project)}
-                teaser={project.context}
-                isOpen={openId === project.id}
-                onToggle={() => toggle(project.id)}
-              >
-                <ProjectCaseStudyBody project={project} live={statuses[project.id] ?? null} />
-              </DashboardRow>
-            </div>
-          ))}
-        </SystemTopologyLine>
+      <div id="systems" className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {PROJECTS.map((project) => (
+          <div key={project.id} id={`row-${project.id}`} className="contents">
+            <DashboardRow
+              dotColor={project.accentColor}
+              title={project.name}
+              meta={formatProjectMeta(project)}
+              liveBadge={<LiveBadge live={statuses[project.id] ?? null} />}
+              teaser={project.context}
+              isOpen={openId === project.id}
+              onToggle={() => toggle(project.id)}
+              fullWidthWhenOpen
+            >
+              <ProjectCaseStudyBody project={project} live={statuses[project.id] ?? null} />
+            </DashboardRow>
+          </div>
+        ))}
+      </div>
 
+      <div className="mt-4 flex flex-col gap-4">
         <div id="row-operator">
           <DashboardRow
             title="Operator-Profil"

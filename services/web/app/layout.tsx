@@ -3,7 +3,6 @@ import { Geist, Geist_Mono, Source_Serif_4 } from "next/font/google";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { Footer } from "@/components/footer";
 import { Logo } from "@/components/logo";
-import { TechnicalGridBackground } from "@/components/technical-grid-background";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -88,7 +87,6 @@ export default function RootLayout({
             __html: JSON.stringify(JSON_LD).replace(/</g, "\\u003c"),
           }}
         />
-        <TechnicalGridBackground />
         <Logo />
         <SmoothScroll>
           {children}

@@ -17,10 +17,6 @@
   --accent-dim: #7a0f1f;
   --status-online: #4ade80;
   --status-paper: #facc15;
-  /* Scanline/Grid-Hintergrund (ersetzt Matrix-Rain-Textwallpaper — siehe technical-grid-
-     background.tsx). Sehr niedrige Opazität, reines CSS, keine DOM-Text-Knoten. */
-  --grid-line: rgba(140, 160, 200, 0.05);
-  --scanline: rgba(140, 160, 200, 0.035);
 
   /* Projekt-Akzentfarben für den Live-Ops-Leitstand (Konzept A, 2026-07-24).
      ravepuls/qntx/arma sind Luis' fest vorgegebene Farben, nicht verhandelbar.
@@ -72,23 +68,10 @@ body {
   50% { opacity: 0.75; }
 }
 
-/* Technischer Grid/Scanline-Hintergrund (Redesign 2026-08-23) — ersetzt die vorherige
-   Matrix-Rain-Textwallpaper (Hunderte echte DOM-Text-Knoten, siehe technical-grid-
-   background.tsx-Kommentar). Reines CSS: feines Raster + horizontale Scanlines,
-   keine Textknoten, kein SEO-/Accessibility-Ballast mehr im Hintergrund. */
-.technical-grid {
-  background-image:
-    linear-gradient(var(--grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
-    repeating-linear-gradient(
-      0deg,
-      var(--scanline) 0px,
-      var(--scanline) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-  background-size: 64px 64px, 64px 64px, auto;
-}
+/* Kein Deko-Hintergrundmuster mehr (Redesign 2026-08-23 v2) — weder Matrix-Rain-Textwallpaper
+   noch das später eingeführte Grid-/Scanline-Muster. Beides las sich nach Feedback als
+   generischer "AI-Slop"-Website-Baustein (siehe Plan-Datei für Quellen). Bewusste Entscheidung:
+   reines --background Solid-Dunkel, kein Ersatz-Pattern. */
 
 /* Hero-Intro: Unterstrich hinter "zntx_" teilt sich kurz in zwei vertikale Linien (Symbol für
    die 2 Server) bevor Headline/Subline einblenden. Siehe ops-dashboard.tsx für die Steuerung

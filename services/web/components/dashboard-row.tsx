@@ -4,26 +4,38 @@ import { useEffect, useId, type ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useLenis } from "lenis/react";
 
-// Eine Zeile im Live-Ops-Leitstand (Konzept A, 2026-07-24) — Button-Header
-// (Punkt/Titel/Status/Kontext-Teaser) + aufklappbarer Inhalt. Ersetzt die
-// bisherige Scroll-Navigation (dossier-nav.tsx/network-graph.tsx) komplett:
-// die Zeilen SIND jetzt die Navigation.
+// Eine Karte im Projekt-Grid (Redesign 2026-08-23 v2 — Umbau von Linien-Liste zu Karten-Grid,
+// siehe ops-dashboard.tsx). Button-Header (Punkt/Titel/Status/Live-Badge/Kontext-Teaser) +
+// aufklappbarer Inhalt.
+//
+// Vorherige Version nutzte eine Topologie-Linie + Rand-Linien beim Öffnen — Feedback nach Live-
+// Check: zu viele parallele Linien, Grid-Hintergrund + Linien-Optik las sich wie generische
+// "AI-Slop"-Website-Bausteine (siehe Plan, Quellen: 925studios AI-Slop-Guide, Aceternity-UI-
+// Grid-Komponenten als Negativbeispiel). Jetzt: eine Karte, ein Rahmen — im offenen Zustand
+// wechselt der Rahmen zur jeweiligen Projekt-Akzentfarbe (dotColor) statt zum globalen
+// --accent-Rot, das bleibt exklusiv für Bedienelemente.
 export function DashboardRow({
   dotColor,
   title,
   meta,
+  liveBadge,
   teaser,
   isOpen,
   onToggle,
+  fullWidthWhenOpen = false,
   children,
 }: {
-  /** CSS-Farbwert für den Status-Punkt; undefined → neutraler Punkt. */
+  /** CSS-Farbwert für den Status-Punkt und den Karten-Rahmen im offenen Zustand; undefined → neutral. */
   dotColor?: string;
   title: string;
   meta?: string;
+  /** Kompaktes Live-Status-Element, direkt auf der geschlossenen Karte sichtbar. */
+  liveBadge?: ReactNode;
   teaser?: string;
   isOpen: boolean;
   onToggle: () => void;
+  /** true innerhalb eines Grids: Karte spannt beim Öffnen über die volle Breite (sm:col-span-2). */
+  fullWidthWhenOpen?: boolean;
   children: ReactNode;
 }) {
   const panelId = useId();
@@ -33,53 +45,39 @@ export function DashboardRow({
   // Bug gefunden (Feedback 2026-07-25, "Scrollen geht gefühlt garnicht mehr"):
   // Lenis (smooth-scroll.tsx) merkt sich die Dokumenthöhe und aktualisiert sie
   // nicht automatisch, wenn eine Zeile per Motion-Höhenanimation auf-/zuklappt
-  // — die Seite wächst (z. B. 1192px → 2470px beim Öffnen), aber Lenis' interne
-  // Scroll-Grenzen bleiben auf dem alten, kürzeren Wert stehen. Ergebnis: der
-  // Nutzer hängt fest, sobald irgendeine Zeile offen ist — also praktisch immer,
-  // das ist ja die Kerninteraktion dieser Seite. onUpdate hält Lenis während der
-  // Animation laufend synchron, der Effect fängt den reduced-motion-Fall ab (da
-  // ohne Übergang kein Animate-Frame feuert).
+  // — die Seite wächst, aber Lenis' interne Scroll-Grenzen bleiben auf dem alten,
+  // kürzeren Wert stehen. onUpdate hält Lenis während der Animation laufend
+  // synchron, der Effect fängt den reduced-motion-Fall ab (da ohne Übergang kein
+  // Animate-Frame feuert). Unverändert aus der Vorversion übernommen.
   useEffect(() => {
     const t = setTimeout(() => lenis?.resize(), reducedMotion ? 0 : 300);
     return () => clearTimeout(t);
   }, [isOpen, lenis, reducedMotion]);
 
   return (
-    <div className="border-t border-border first:border-t-0">
-      {/* Zwei feste Zeilen statt einer einzigen wrap-Flex-Reihe (Bug gefunden
-          2026-07-25, Feedback "unsauber ... Zeilenumbruch"): Titel + Toggle
-          waren in derselben Flex-Zeile wie Meta/Teaser, bei langen Titeln
-          (z. B. "WCP / Arma-Community-Server") brach das mittendrin um und
-          der Toggle sprang auf eine eigene Zeile. Jetzt: Titel-Zeile bricht
-          nie, Meta/Teaser stehen fest darunter, Meta selbst nowrap. */}
-      {/* h2 umschließt den Button (WAI-ARIA-Accordion-Standardmuster) statt
-          umgekehrt — Bug gefunden 2026-07-27: die 8 Zeilen-Titel waren reine
-          <span>, dadurch gab es auf der ganzen Seite nur noch ein einziges
-          <h1> und keine Überschriften-Struktur mehr (SEO-/Screenreader-
-          Regression durch den Dashboard-Umbau). className="contents" nimmt
-          dem h2 seine eigene Box, ändert also nichts am Layout. */}
+    <div
+      className={`rounded-lg border transition-colors ${fullWidthWhenOpen && isOpen ? "sm:col-span-2" : ""}`}
+      style={{ borderColor: isOpen ? (dotColor ?? "var(--foreground-muted)") : "var(--border)" }}
+    >
+      {/* h2 umschließt den Button (WAI-ARIA-Accordion-Standardmuster) statt umgekehrt —
+          Bug gefunden 2026-07-27: reine <span>-Titel hatten die Seite auf ein einziges <h1>
+          reduziert, keine Überschriften-Struktur mehr. className="contents" nimmt dem h2
+          seine eigene Box, ändert nichts am Layout. Unverändert aus der Vorversion. */}
       <h2 className="contents">
         <button
           type="button"
           onClick={onToggle}
           aria-expanded={isOpen}
           aria-controls={panelId}
-          className={`flex w-full flex-col gap-1 py-5 pl-4 text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-accent-dim ${
-            isOpen ? "border-l-2 border-accent" : "border-l-2 border-transparent"
-          }`}
+          className="flex w-full flex-col gap-1 p-5 text-left outline-none focus-visible:ring-2 focus-visible:ring-accent-dim"
         >
           <span className="flex w-full items-center gap-3">
-            {/* Knoten-Marker statt reinem Punkt (Redesign 2026-08-23) — Ring +
-                Glow, docked-an-die-Topologie-Linie-Optik statt Akkordeon-Bullet. */}
             <span
               aria-hidden="true"
-              className="relative h-3 w-3 shrink-0 rounded-full ring-2 ring-offset-2 ring-offset-background"
+              className="h-3 w-3 shrink-0 rounded-full"
               style={{
                 backgroundColor: dotColor ?? "var(--foreground-muted)",
-                boxShadow: dotColor ? `0 0 10px ${dotColor}` : "none",
-                ["--tw-ring-color" as string]: dotColor
-                  ? `color-mix(in srgb, ${dotColor} 40%, transparent)`
-                  : "var(--border)",
+                boxShadow: dotColor ? `0 0 8px ${dotColor}` : "none",
               }}
             />
             <span className="min-w-0 flex-1 truncate font-sans text-lg font-semibold tracking-tight text-foreground sm:text-xl">
@@ -94,18 +92,19 @@ export function DashboardRow({
               +
             </span>
           </span>
-          {(meta || teaser) && (
-            <span className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 pl-[1.375rem]">
+          {(meta || liveBadge) && (
+            <span className="flex flex-wrap items-center gap-x-3 gap-y-1 pl-[1.375rem]">
               {meta && (
-                <span className="font-mono text-[11px] uppercase tracking-widest text-foreground-muted sm:whitespace-nowrap">
+                <span className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
                   {meta}
                 </span>
               )}
-              {teaser && (
-                <span className="hidden min-w-0 flex-1 truncate text-sm text-foreground-muted sm:block">
-                  {teaser}
-                </span>
-              )}
+              {liveBadge}
+            </span>
+          )}
+          {teaser && (
+            <span className="block min-w-0 truncate pl-[1.375rem] text-sm text-foreground-muted">
+              {teaser}
             </span>
           )}
         </button>
@@ -123,13 +122,7 @@ export function DashboardRow({
             onUpdate={() => lenis?.resize()}
             className="overflow-hidden"
           >
-            {/* Nur der Rahmen (Optik einer aufgeklappten Konsole), kein Scanline-Textur-
-                Hintergrund mehr direkt hinter dem Text — Feedback: Gitterlinien hinter
-                dichtem Fließtext wirkten überladen/unruhig statt "technisch". Der
-                Scanline-Hintergrund bleibt als reines Seiten-Ambiente in TechnicalGridBackground. */}
-            <div className="ml-4 border-l-2 border-accent-dim pb-8 pl-6">
-              {children}
-            </div>
+            <div className="px-5 pb-5">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>
