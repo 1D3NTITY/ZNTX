@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { PROJECTS, LINKS } from "@/lib/content";
 import { formatProjectMeta } from "@/lib/labels";
@@ -83,6 +84,19 @@ export default async function ProjectPage({
         </p>
         <p className="mt-3 max-w-xl pl-6 text-sm text-foreground-muted">{project.role}</p>
       </header>
+
+      {project.screenshot && (
+        <div className="relative mb-10 aspect-[3/2] w-full overflow-hidden rounded-lg border border-border">
+          <Image
+            src={project.screenshot}
+            alt={`Screenshot: ${project.name}`}
+            fill
+            className="object-cover object-top"
+            sizes="(min-width: 1024px) 768px, 100vw"
+            priority
+          />
+        </div>
+      )}
 
       <ProjectCaseStudyBody project={project} live={live} />
 

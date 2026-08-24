@@ -29,6 +29,14 @@ export type ProjectNode = {
    * Farbe zu erfinden.
    */
   accentColor?: string;
+  /**
+   * Optional: Pfad unter public/screenshots/ — echter Screenshot der Live-Anwendung, kein
+   * Mockup/Stockfoto. Nur gesetzt, wo tatsächlich ein aussagekräftiger Screenshot existiert
+   * (z.B. login-gated Produkte ohne öffentliche Seite bleiben ohne, statt einen leeren
+   * Login-Screen zu zeigen). Bei sensiblen/internen Tools (buchhaltung) nur mit klar sichtbarem
+   * Demo-Daten-Hinweis im Bild selbst verwenden.
+   */
+  screenshot?: string;
 };
 
 // Reihenfolge = Reihenfolge im Fließtext. zntx zuletzt (Meta-Projekt: "du liest es gerade").
@@ -61,6 +69,7 @@ export const PROJECTS: ProjectNode[] = [
     server: "server-1",
     since: "Juli 2026",
     url: "https://ravepuls.de",
+    screenshot: "/screenshots/ravepuls.png",
     stack: ["FastAPI", "Next.js", "Telethon", "Browserless/Chromium", "Cloudflare Turnstile", "Instagram-Automation"],
     context:
       "Event-Discovery für die Rave-Szene einer Stadt — die Information existiert, ist aber über Dutzende Social-Media-Kanäle und Venue-Websites verstreut. Bewusst kein kommerzielles Projekt, sondern Community-Nutzen im Vordergrund.",
@@ -135,6 +144,7 @@ export const PROJECTS: ProjectNode[] = [
     accentColor: "var(--project-buchhaltung)",
     server: "server-1",
     since: "August 2026",
+    screenshot: "/screenshots/buchhaltung.png",
     stack: ["FastAPI", "Next.js", "Postgres", "Mistral (OCR/LLM)", "FastBill API", "Docker Compose"],
     context:
       "Ein interner KI-Buchhaltungs-/Steuerassistent für das eigene Kleinunternehmen — kombiniert Geschäftsbuchhaltung (FastBill-Orchestrierung) und private Finanzen/Steueroptimierung in einer Oberfläche, statt beides getrennt in Excel-Tabellen zu pflegen.",
