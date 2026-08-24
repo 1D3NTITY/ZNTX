@@ -4,7 +4,7 @@ import { useState } from "react";
 import { PROJECTS, HERO, LINKS } from "@/lib/content";
 import { formatProjectMeta, formatLiveStatus } from "@/lib/labels";
 import { DashboardRow } from "@/components/dashboard-row";
-import { ProjectCaseStudyBody } from "@/components/project-case-study";
+import { ProjectCard } from "@/components/project-card";
 import { OperatorProfileBody } from "@/components/operator-profile-body";
 import { ContactForm } from "@/components/contact-form";
 import type { LiveStatus } from "@/lib/status";
@@ -33,13 +33,13 @@ function LiveBadge({ live }: { live: LiveStatus | null }) {
   );
 }
 
-// "Live Infrastructure Atlas" (Redesign 2026-08-23) — Projekte als responsives Karten-Grid
-// (1 Spalte mobil, 2 Desktop) statt Linien-Liste; jede Karte zeigt echte Live-Betriebsdaten
-// statt nur Text-Behauptungen. Vorversion nutzte eine Topologie-Linie durch eine Einspalten-
-// Liste — Feedback nach Live-Check: zu viele parallele Akzent-Linien + der Grid-Hintergrund
-// lasen sich als generische "AI-Slop"-Website-Bausteine (siehe Plan-Datei für Quellen). Karten-
-// Grid + ein einzelner, projektfarbiger Rahmen im offenen Zustand ersetzen das. Akkordeon-
-// Mechanik selbst (Öffnen/Schließen, Lenis-Resize, aria) bleibt unverändert.
+// "Live Infrastructure Atlas" (Redesign 2026-08-23, Karten-Grid v2 am 2026-08-24) — Projekte
+// als responsives Karten-Grid (1 Spalte mobil, 2 Desktop), jede Karte zeigt echte Live-
+// Betriebsdaten statt nur Text-Behauptungen. Karten verlinken jetzt auf eigene Projekt-Seiten
+// (app/projekte/[slug]/page.tsx) statt inline aufzuklappen — Inline-Aufklappen über die volle
+// Grid-Breite verschob die Nachbar-Karten (Reflow), von Luis live als "verwirrend/unprofessionell"
+// erlebt, per Recherche bestätigtes UX-Anti-Pattern. Operator-Profil/Kontakt sind keine
+// "Projekte" und bleiben als Akkordeon-Zeilen (DashboardRow) auf der Startseite.
 export function OpsDashboard({
   statuses,
 }: {
@@ -105,20 +105,15 @@ export function OpsDashboard({
 
       <div id="systems" className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {PROJECTS.map((project) => (
-          <div key={project.id} id={`row-${project.id}`} className="contents">
-            <DashboardRow
-              dotColor={project.accentColor}
-              title={project.name}
-              meta={formatProjectMeta(project)}
-              liveBadge={<LiveBadge live={statuses[project.id] ?? null} />}
-              teaser={project.context}
-              isOpen={openId === project.id}
-              onToggle={() => toggle(project.id)}
-              fullWidthWhenOpen
-            >
-              <ProjectCaseStudyBody project={project} live={statuses[project.id] ?? null} />
-            </DashboardRow>
-          </div>
+          <ProjectCard
+            key={project.id}
+            href={`/projekte/${project.id}`}
+            dotColor={project.accentColor}
+            title={project.name}
+            meta={formatProjectMeta(project)}
+            liveBadge={<LiveBadge live={statuses[project.id] ?? null} />}
+            teaser={project.context}
+          />
         ))}
       </div>
 
