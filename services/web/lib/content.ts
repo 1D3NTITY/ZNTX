@@ -50,6 +50,7 @@ export const PROJECTS: ProjectNode[] = [
     server: "server-1",
     since: "Mai 2026",
     url: "https://app.zentrix-solutions.eu",
+    screenshot: "/screenshots/foodapp.png",
     stack: ["FastAPI", "Next.js", "Expo / React Native", "Postgres", "Redis", "Alembic", "n8n"],
     context:
       "Ein Multi-Platform-Produkt für Ernährungs- und Trainingsdaten — echte Gesundheitsdaten, nicht Fitness-Tracking zum Spaß. Sobald DSGVO Art. 9 greift, ist nachträglich eingebauter Datenschutz keine Option.",
