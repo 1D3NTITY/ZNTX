@@ -22,11 +22,11 @@ function LiveBadge({ live }: { live: LiveStatus | null }) {
         ? "var(--status-paper)"
         : "#f87171";
   return (
-    <span className="flex items-center gap-1.5 font-mono text-xs text-foreground-muted">
+    <span className="badge font-mono text-xs text-foreground-muted">
       <span
         aria-hidden="true"
         className="h-1.5 w-1.5 shrink-0 rounded-full"
-        style={{ backgroundColor: dotColor }}
+        style={{ backgroundColor: dotColor, boxShadow: `0 0 6px ${dotColor}` }}
       />
       {formatted.label}
     </span>
@@ -89,7 +89,7 @@ export function OpsDashboard({
           <button
             type="button"
             onClick={openContact}
-            className="glass-pill flex items-center gap-2.5 py-2 pl-5 pr-2 font-mono text-xs font-semibold uppercase tracking-widest text-foreground transition-opacity hover:opacity-90"
+            className="glass-pill flex items-center gap-2.5 py-2 pl-5 pr-2 font-mono text-xs font-semibold uppercase tracking-widest text-foreground transition-opacity duration-300 hover:opacity-90"
           >
             Kontakt aufnehmen
             <span
@@ -103,7 +103,7 @@ export function OpsDashboard({
             href={LINKS.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-full border border-border px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-foreground-muted transition-colors hover:border-accent hover:text-accent"
+            className="glass rounded-full px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-foreground-muted transition-all duration-300 hover:border-accent hover:text-accent hover:shadow-[0_0_16px_color-mix(in_srgb,var(--accent)_20%,transparent)]"
           >
             LinkedIn ↗
           </a>

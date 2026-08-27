@@ -59,14 +59,16 @@ function ProofBlock({ live }: { live: LiveStatus | null }) {
 
   return (
     <p className="mb-6 flex flex-wrap items-center gap-2 font-mono text-xs">
-      <span
-        aria-hidden="true"
-        className="h-1.5 w-1.5 shrink-0 rounded-full"
-        style={{ backgroundColor: dotColor, boxShadow: `0 0 6px ${dotColor}` }}
-      />
-      <span className="uppercase tracking-widest text-foreground">{formatted.label}</span>
+      <span className="badge text-foreground">
+        <span
+          aria-hidden="true"
+          className="h-1.5 w-1.5 shrink-0 rounded-full"
+          style={{ backgroundColor: dotColor, boxShadow: `0 0 6px ${dotColor}` }}
+        />
+        <span className="uppercase tracking-widest">{formatted.label}</span>
+      </span>
       {formatted.detail && (
-        <span className="text-foreground-muted">· {formatted.detail}</span>
+        <span className="text-foreground-muted">{formatted.detail}</span>
       )}
     </p>
   );
