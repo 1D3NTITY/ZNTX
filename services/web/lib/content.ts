@@ -111,11 +111,10 @@ export const PROJECTS: ProjectNode[] = [
     id: "wcp-arma",
     name: "WCP / Arma-Community-Server",
     role: "Discord-Bot + Gameserver-Ops",
-    status: "live",
+    status: "archived",
     accentColor: "var(--project-arma)",
     server: "server-2",
     since: "Ende Mai / Anfang Juni 2026",
-    url: "https://zblt.eu",
     stack: ["discord.py", "OAuth2", "RCON", "Pterodactyl/Wings", "Docker"],
     context:
       "Ein Arma-Reforger-Gameserver brauchte mehr als einen Standard-Discord-Bot — echte Integration mit dem laufenden Server, nicht nur Rollenverwaltung.",
@@ -124,7 +123,7 @@ export const PROJECTS: ProjectNode[] = [
     challenge:
       "Live-Spieler-Tracking über dieselbe RCON-Verbindung wie die Server-Steuerung — stabil genug für Dauerbetrieb, nicht nur gelegentliche Admin-Befehle.",
     outcome:
-      "Läuft seit Monaten produktiv — kein Demo, kein totes Side-Project.",
+      "Lief mehrere Monate produktiv, bewusst offline genommen, nachdem sich abzeichnete, dass das Projekt keinen echten Mehrwert mehr bringt — kein gescheitertes Vorhaben, sondern eine bewusste Priorisierungsentscheidung.",
   },
   {
     id: "motortown",
