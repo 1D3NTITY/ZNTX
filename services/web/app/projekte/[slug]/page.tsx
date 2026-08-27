@@ -86,15 +86,20 @@ export default async function ProjectPage({
       </header>
 
       {project.screenshot && (
-        <div className="relative mb-10 aspect-[3/2] w-full overflow-hidden rounded-lg border border-border">
-          <Image
-            src={project.screenshot}
-            alt={`Screenshot: ${project.name}`}
-            fill
-            className="object-cover object-top"
-            sizes="(min-width: 1024px) 768px, 100vw"
-            priority
-          />
+        <div className="mb-10">
+          <div className="relative aspect-[3/2] w-full overflow-hidden rounded-lg border border-border">
+            <Image
+              src={project.screenshot}
+              alt={`Screenshot: ${project.name}`}
+              fill
+              className="object-cover object-top"
+              sizes="(min-width: 1024px) 768px, 100vw"
+              priority
+            />
+          </div>
+          {project.screenshotCaption && (
+            <p className="mt-2 text-xs text-foreground-muted">{project.screenshotCaption}</p>
+          )}
         </div>
       )}
 

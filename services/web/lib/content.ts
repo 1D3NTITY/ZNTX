@@ -37,6 +37,13 @@ export type ProjectNode = {
    * Demo-Daten-Hinweis im Bild selbst verwenden.
    */
   screenshot?: string;
+  /**
+   * Optional: kurze Einordnungszeile direkt unter dem Screenshot. Nur nutzen, wenn das Bild
+   * ohne Kontext missverständlich wäre (z.B. qntx: "No Edge Found"-Research-Badges sind
+   * methodisch korrekt verworfene Hypothesen, nicht "der Bot funktioniert nicht" — für einen
+   * flüchtigen Blick aber sonst missverständlich).
+   */
+  screenshotCaption?: string;
 };
 
 // Reihenfolge = Reihenfolge im Fließtext. zntx zuletzt (Meta-Projekt: "du liest es gerade").
@@ -165,6 +172,9 @@ export const PROJECTS: ProjectNode[] = [
     server: "server-2",
     since: "Juli 2026",
     url: "https://qntx.zblt.eu",
+    screenshot: "/screenshots/qntx.png",
+    screenshotCaption:
+      "Research-Ledger: \"No Edge Found\" bedeutet, eine Hypothese wurde sauber getestet und verworfen — nicht, dass das System nicht funktioniert. Genau diese Disziplin, auch negative Ergebnisse offen zu dokumentieren statt sie zu verstecken, ist der Punkt.",
     stack: ["CCXT", "Optuna", "Walk-Forward-Backtesting", "8-Modell-KI-Ensemble"],
     context:
       "Ein Krypto-Trading-Bot, der Entscheidungen nicht auf Bauchgefühl trifft — bei echtem Kapitalrisiko reicht 'sieht gut aus' nicht.",
