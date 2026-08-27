@@ -2,44 +2,29 @@
 
 import { useState } from "react";
 import { PROJECTS, HERO, LINKS } from "@/lib/content";
-import { formatProjectMeta, formatLiveStatus } from "@/lib/labels";
 import { DashboardRow } from "@/components/dashboard-row";
-import { ProjectCard } from "@/components/project-card";
+import { ServerRack } from "@/components/server-rack";
+import { RackSlot } from "@/components/rack-slot";
 import { OperatorProfileBody } from "@/components/operator-profile-body";
 import { ContactForm } from "@/components/contact-form";
 import type { LiveStatus } from "@/lib/status";
 
-// Kompaktes Live-Status-Badge direkt auf der geschlossenen Karte (Redesign 2026-08-23 v2) —
-// nur Punkt + Label, keine Deploy-/Sync-Details (die stehen im aufgeklappten Proof-Block,
-// siehe project-case-study.tsx). Zeigt echte Daten schon vor dem Klick, statt sie zu verstecken.
-function LiveBadge({ live }: { live: LiveStatus | null }) {
-  const formatted = formatLiveStatus(live);
-  if (!formatted) return null;
-  const dotColor =
-    live?.status === "operational"
-      ? "var(--status-online)"
-      : live?.status === "degraded"
-        ? "var(--status-paper)"
-        : "#f87171";
-  return (
-    <span className="badge font-mono text-xs text-foreground-muted">
-      <span
-        aria-hidden="true"
-        className="h-1.5 w-1.5 shrink-0 rounded-full"
-        style={{ backgroundColor: dotColor, boxShadow: `0 0 6px ${dotColor}` }}
-      />
-      {formatted.label}
-    </span>
-  );
-}
+// Konzept F ("Zwei Racks", 2026-08-27) — ersetzt die vorherige Karten-Grid durch eine 1:1-Karte
+// der echten Zwei-Server-Infrastruktur: zwei ServerRack-Komponenten, sortiert nach dem
+// tatsächlichen server-Feld in content.ts. Grund für den erneuten Umbau: die vorherige
+// Alumica-Template-Adaption (siehe Git-Log) führte zu einem generischen "sieht aus wie jedes
+// andere Copy-Paste-Template"-Ergebnis — Luis' Entscheidung war, stattdessen ein Konzept aus
+// dem eigenen Inhalt abzuleiten (siehe docs/plans/redesign-concepts-2026-08-27.md, Konzept F).
+// Slots verlinken weiterhin auf die bestehenden Projekt-Seiten (app/projekte/[slug]/page.tsx),
+// kein neues Panel-System — vermeidet das bekannte Reflow-Problem komplett. Operator-Profil/
+// Kontakt sind keine "Projekte" und bleiben als Akkordeon-Zeilen (DashboardRow) unterhalb.
+const SERVER_1_PROJECTS = PROJECTS.filter((p) => p.server === "server-1");
+const SERVER_2_PROJECTS = PROJECTS.filter((p) => p.server === "server-2");
+// Projekte ohne server-Feld (aktuell nur n8n-automation, historisch — verursachte den Server-
+// Reset, gehört ehrlicherweise keinem der beiden aktiven Racks) landen in einer separaten,
+// gedimmten Archiv-Ablage statt künstlich einem Server zugeordnet zu werden.
+const ARCHIVED_PROJECTS = PROJECTS.filter((p) => !p.server);
 
-// "Live Infrastructure Atlas" (Redesign 2026-08-23, Karten-Grid v2 am 2026-08-24) — Projekte
-// als responsives Karten-Grid (1 Spalte mobil, 2 Desktop), jede Karte zeigt echte Live-
-// Betriebsdaten statt nur Text-Behauptungen. Karten verlinken jetzt auf eigene Projekt-Seiten
-// (app/projekte/[slug]/page.tsx) statt inline aufzuklappen — Inline-Aufklappen über die volle
-// Grid-Breite verschob die Nachbar-Karten (Reflow), von Luis live als "verwirrend/unprofessionell"
-// erlebt, per Recherche bestätigtes UX-Anti-Pattern. Operator-Profil/Kontakt sind keine
-// "Projekte" und bleiben als Akkordeon-Zeilen (DashboardRow) auf der Startseite.
 export function OpsDashboard({
   statuses,
 }: {
@@ -57,7 +42,7 @@ export function OpsDashboard({
   }
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-6 py-16 lg:px-0 lg:py-24">
+    <div className="mx-auto w-full max-w-3xl px-6 py-16 lg:max-w-4xl lg:px-0 lg:py-24">
       <header className="mb-12">
         {/* Hero-Intro (Redesign 2026-08-23): "zntx" + Cursor, der kurz in zwei vertikale
             Linien auseinandergeht — Symbol für die 2 Server. Rein dekorativ (aria-hidden),
@@ -110,19 +95,23 @@ export function OpsDashboard({
         </div>
       </header>
 
-      <div id="systems" className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {PROJECTS.map((project) => (
-          <ProjectCard
-            key={project.id}
-            href={`/projekte/${project.id}`}
-            dotColor={project.accentColor}
-            title={project.name}
-            meta={formatProjectMeta(project)}
-            liveBadge={<LiveBadge live={statuses[project.id] ?? null} />}
-            teaser={project.context}
-          />
-        ))}
+      <div id="systems" className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <ServerRack label="Server 1" projects={SERVER_1_PROJECTS} statuses={statuses} />
+        <ServerRack label="Server 2" projects={SERVER_2_PROJECTS} statuses={statuses} />
       </div>
+
+      {ARCHIVED_PROJECTS.length > 0 && (
+        <div className="mt-4">
+          <p className="mb-2 font-mono text-xs uppercase tracking-widest text-foreground-muted">
+            Archiv — kein Server mehr zugeordnet
+          </p>
+          <div className="flex flex-col gap-2">
+            {ARCHIVED_PROJECTS.map((project) => (
+              <RackSlot key={project.id} project={project} dimmed />
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="mt-4 flex flex-col gap-4">
         <div id="row-operator">

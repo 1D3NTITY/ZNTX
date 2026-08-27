@@ -160,6 +160,18 @@ body {
   to { --glass-pill-angle: 360deg; }
 }
 
+/* Lüftungsschlitz-Textur für die Rack-Slots (Konzept F, 2026-08-27) — rein dekorativ
+   (aria-hidden im Markup), reine CSS-Streifen statt Bildmaterial. */
+.rack-vents {
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--border) 0px,
+    var(--border) 2px,
+    transparent 2px,
+    transparent 5px
+  );
+}
+
 /* Hero-Intro: Unterstrich hinter "zntx_" teilt sich kurz in zwei vertikale Linien (Symbol für
    die 2 Server) bevor Headline/Subline einblenden. Siehe ops-dashboard.tsx für die Steuerung
    (skip bei prefers-reduced-motion, siehe Media-Query unten). */
