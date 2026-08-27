@@ -7,10 +7,10 @@ import Link from "next/link";
 // Führende "/" vor den Ankern (wie schon in footer.tsx etabliert): funktioniert dadurch auch von
 // /impressum, /datenschutz oder /projekte/[slug] aus korrekt (navigiert erst zur Startseite).
 const LINKS = [
-  { href: "/", label: "Start" },
-  { href: "/#systems", label: "Projekte" },
-  { href: "/#row-operator", label: "Profil" },
-  { href: "/#row-contact", label: "Kontakt" },
+  { href: "/", label: "Start", active: true },
+  { href: "/#systems", label: "Projekte", active: false },
+  { href: "/#row-operator", label: "Profil", active: false },
+  { href: "/#row-contact", label: "Kontakt", active: false },
 ];
 
 export function Nav() {
@@ -23,7 +23,10 @@ export function Nav() {
         <Link
           key={link.href}
           href={link.href}
-          className="rounded-full px-3 py-1 font-mono text-xs uppercase tracking-widest text-foreground-muted transition-colors duration-300 hover:text-accent"
+          aria-current={link.active ? "page" : undefined}
+          className={`rounded-full px-3 py-1 font-mono text-xs uppercase tracking-widest transition-colors duration-300 hover:text-accent ${
+            link.active ? "text-accent" : "text-foreground-muted"
+          }`}
         >
           {link.label}
         </Link>
