@@ -304,7 +304,12 @@ export const HERO = {
   name: "Luis B.",
   roleTagline: "Backend-/Full-Stack-Entwicklung · Server-/Infrastruktur-Administration",
   kicker: "§00 — SYSTEMS ON RECORD",
-  headline: "Zwei Server, acht Systeme, ein Betreiber.",
+  // Zweizeilig für den Gradient-Headline-Stil (Alumica-Adaption 2026-08-27): erste Zeile
+  // gedämpfter Weiß-Grau-Verlauf (Kontext), zweite Zeile kräftiger Orange-Rot-Verlauf (die
+  // eigentliche Kennzahl/Aussage) — statt einer durchgehend einfarbigen Zeile. Zusammen
+  // ergeben beide weiterhin den vollständigen Satz "Zwei Server, acht Systeme, ein Betreiber."
+  headlineLead: "Zwei Server,",
+  headlineEmphasis: "acht Systeme, ein Betreiber.",
   subline:
     "Entwickle und betreibe produktive Web- und Server-Systeme — acht Systeme auf zwei eigenen Servern, im laufenden Betrieb, nicht nur konzipiert. Beruflich aktuell im Lagerbereich, nebenbei volle Infrastruktur-Verantwortung.",
 };

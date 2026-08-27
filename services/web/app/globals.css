@@ -90,6 +90,16 @@ body {
   color: transparent;
 }
 
+/* Gedämpfte Variante für die erste Headline-Zeile (Kontext-Teil) — Weiß-Grau statt Orange-Rot,
+   damit die zweite Zeile (.text-gradient-accent) als eigentliche Aussage heraussticht statt
+   die ganze Headline einfarbig-orange wirkt. */
+.text-gradient-muted {
+  background: linear-gradient(135deg, var(--foreground), var(--foreground-muted));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
 /* Dezente Glasfläche für Badge/Logo-Chrome — blur + leicht transparente Fläche + dünner
    heller Rand statt kompletter Deckung, damit der Matrix-Rain-Hintergrund durchscheint. */
 .glass {
@@ -99,17 +109,42 @@ body {
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* Glass-Pill für den Primary-CTA: wie .glass, zusätzlich Pill-Form + statischer (nicht
-   rotierender) Gradient-Rand über den klassischen Doppel-Hintergrund-Trick
-   (padding-box/border-box) — kein Pseudo-Element, keine Animation nötig. Bewusst statisch:
-   ein rotierender Rand wäre nach dem gerade erst entfernten maus-folgenden Glow-Effekt wieder
-   ein Schritt Richtung "generische KI-Website"-Optik. */
+/* Glass-Pill für den Primary-CTA: Pill-Form + rotierender Gradient-Rand (Feedback 2026-08-27:
+   die erste, bewusst statische Version wirkte zu flach — genau der "besondere Touch" aus der
+   Alumica-Vorlage fehlte). Ring läuft über ein ::before mit conic-gradient + animiertem
+   @property --angle, sitzt hinter dem eigentlichen Button-Hintergrund (nur der ~1.5px-Rand
+   bleibt sichtbar). Läuft automatisch über die bestehende prefers-reduced-motion-Regel weiter
+   unten in dieser Datei ein (animation-duration: 0.01ms), kein Extra-Code nötig. */
+@property --glass-pill-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
 .glass-pill {
-  background:
-    linear-gradient(var(--surface), var(--surface)) padding-box,
-    linear-gradient(135deg, var(--accent-orange), var(--accent)) border-box;
-  border: 1.5px solid transparent;
+  position: relative;
+  z-index: 0;
+  background: var(--surface);
   border-radius: 9999px;
+  box-shadow: 0 0 16px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+.glass-pill::before {
+  content: "";
+  position: absolute;
+  inset: -1.5px;
+  z-index: -1;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--glass-pill-angle),
+    var(--accent-orange),
+    var(--accent),
+    var(--accent-dim),
+    var(--accent),
+    var(--accent-orange)
+  );
+  animation: glass-pill-rotate 4s linear infinite;
+}
+@keyframes glass-pill-rotate {
+  to { --glass-pill-angle: 360deg; }
 }
 
 /* Hero-Intro: Unterstrich hinter "zntx_" teilt sich kurz in zwei vertikale Linien (Symbol für

@@ -75,8 +75,9 @@ export function OpsDashboard({
         <p className="glass mt-3 inline-block rounded-full px-3 py-1 font-mono text-xs uppercase tracking-widest text-accent">
           {HERO.kicker}
         </p>
-        <h1 className="text-gradient-accent mt-3 font-sans text-3xl font-semibold tracking-tight sm:text-4xl">
-          {HERO.headline}
+        <h1 className="mt-3 font-sans text-3xl font-semibold tracking-tight sm:text-4xl">
+          <span className="text-gradient-muted block">{HERO.headlineLead}</span>
+          <span className="text-gradient-accent block">{HERO.headlineEmphasis}</span>
         </h1>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-foreground-muted sm:text-base">
           {HERO.subline}
