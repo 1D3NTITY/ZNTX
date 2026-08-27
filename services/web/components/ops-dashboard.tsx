@@ -72,10 +72,10 @@ export function OpsDashboard({
           </span>
         </div>
         <p className="font-mono text-sm font-semibold text-foreground">{HERO.name}</p>
-        <p className="mt-1 font-mono text-xs uppercase tracking-widest text-accent">
+        <p className="glass mt-3 inline-block rounded-full px-3 py-1 font-mono text-xs uppercase tracking-widest text-accent">
           {HERO.kicker}
         </p>
-        <h1 className="mt-2 font-sans text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+        <h1 className="text-gradient-accent mt-3 font-sans text-3xl font-semibold tracking-tight sm:text-4xl">
           {HERO.headline}
         </h1>
         <p className="mt-3 max-w-xl text-sm leading-relaxed text-foreground-muted sm:text-base">
@@ -88,15 +88,21 @@ export function OpsDashboard({
           <button
             type="button"
             onClick={openContact}
-            className="rounded bg-accent px-5 py-2.5 font-mono text-xs font-semibold uppercase tracking-widest text-background transition-opacity hover:opacity-90"
+            className="glass-pill flex items-center gap-2.5 py-2 pl-5 pr-2 font-mono text-xs font-semibold uppercase tracking-widest text-foreground transition-opacity hover:opacity-90"
           >
-            Kontakt aufnehmen →
+            Kontakt aufnehmen
+            <span
+              aria-hidden="true"
+              className="flex h-6 w-6 items-center justify-center rounded-full bg-accent text-background"
+            >
+              →
+            </span>
           </button>
           <a
             href={LINKS.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded border border-border px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-foreground-muted transition-colors hover:border-accent hover:text-accent"
+            className="rounded-full border border-border px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-foreground-muted transition-colors hover:border-accent hover:text-accent"
           >
             LinkedIn ↗
           </a>

@@ -5,16 +5,22 @@
 
    Farbwechsel Redesign "Live Infrastructure Atlas" (2026-08-23, Review-Feedback: Terminal-
    Ästhetik wirkt austauschbar): leichter Blaustich statt neutralem Schwarz, gebrochenes statt
-   reinem Weiß — ZNTX-Rot bleibt exklusiv für Bedienelemente/aktive Datenwege reserviert, taucht
-   nirgends mehr dekorativ auf. */
+   reinem Weiß — Akzentfarbe bleibt exklusiv für Bedienelemente/aktive Datenwege reserviert,
+   taucht nirgends mehr dekorativ auf.
+
+   Farbton-Update (2026-08-27, Alumica-Stil-Adaption): Akzent von reinem Rot zu warmem
+   Orange-Rot verschoben — automatischer, kohärenter Effekt auf alle Stellen, die --accent/
+   --accent-dim bereits nutzen (Links, Focus-Ringe, Hover-Borders). --accent-orange neu als
+   heller Verlaufs-Endpunkt für Gradient-Text/-Ränder (Hero-Headline, Primary-CTA). */
 :root {
   --background: #05060a;
   --surface: #0b0e15;
   --border: #1b212e;
   --foreground: #e8eaf1;
   --foreground-muted: #8991a6;
-  --accent: #ff1e3c;
-  --accent-dim: #7a0f1f;
+  --accent: #ea580c;
+  --accent-dim: #7a2e0a;
+  --accent-orange: #ff8a00;
   --status-online: #4ade80;
   --status-paper: #facc15;
 
@@ -49,6 +55,7 @@
   --color-foreground-muted: var(--foreground-muted);
   --color-accent: var(--accent);
   --color-accent-dim: var(--accent-dim);
+  --color-accent-orange: var(--accent-orange);
   --color-status-online: var(--status-online);
   --color-status-paper: var(--status-paper);
   --font-sans: var(--font-geist-sans);
@@ -72,6 +79,38 @@ body {
    noch das später eingeführte Grid-/Scanline-Muster. Beides las sich nach Feedback als
    generischer "AI-Slop"-Website-Baustein (siehe Plan-Datei für Quellen). Bewusste Entscheidung:
    reines --background Solid-Dunkel, kein Ersatz-Pattern. */
+
+/* Alumica-Stil-Adaption (2026-08-27) — nur die Optik übernommen (Gradient-Text, Glass-Flächen),
+   keine der inhaltlich unpassenden Elemente (Video, erfundene Nav, Fake-Social-Proof, siehe
+   Plan-Datei). Gradient-Text via background-clip, keine Bildmasken/JS nötig. */
+.text-gradient-accent {
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Dezente Glasfläche für Badge/Logo-Chrome — blur + leicht transparente Fläche + dünner
+   heller Rand statt kompletter Deckung, damit der Matrix-Rain-Hintergrund durchscheint. */
+.glass {
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+  border: 1px solid color-mix(in srgb, white 12%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Glass-Pill für den Primary-CTA: wie .glass, zusätzlich Pill-Form + statischer (nicht
+   rotierender) Gradient-Rand über den klassischen Doppel-Hintergrund-Trick
+   (padding-box/border-box) — kein Pseudo-Element, keine Animation nötig. Bewusst statisch:
+   ein rotierender Rand wäre nach dem gerade erst entfernten maus-folgenden Glow-Effekt wieder
+   ein Schritt Richtung "generische KI-Website"-Optik. */
+.glass-pill {
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    linear-gradient(135deg, var(--accent-orange), var(--accent)) border-box;
+  border: 1.5px solid transparent;
+  border-radius: 9999px;
+}
 
 /* Hero-Intro: Unterstrich hinter "zntx_" teilt sich kurz in zwei vertikale Linien (Symbol für
    die 2 Server) bevor Headline/Subline einblenden. Siehe ops-dashboard.tsx für die Steuerung

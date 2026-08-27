@@ -24,7 +24,7 @@ export function ProjectCard({
   return (
     <Link
       href={href}
-      className="group rounded-lg border border-border p-5 outline-none transition-colors hover:border-[var(--card-accent,var(--foreground-muted))] focus-visible:ring-2 focus-visible:ring-accent-dim"
+      className="group rounded-lg border border-border p-5 outline-none transition-all hover:border-[var(--card-accent,var(--foreground-muted))] hover:bg-[color-mix(in_srgb,var(--card-accent,transparent)_7%,var(--surface))] hover:backdrop-blur-sm focus-visible:ring-2 focus-visible:ring-accent-dim"
       style={{ ["--card-accent" as string]: dotColor }}
     >
       <span className="flex w-full items-center gap-3">

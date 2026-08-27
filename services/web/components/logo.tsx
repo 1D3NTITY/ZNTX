@@ -23,7 +23,7 @@ export function Logo() {
     // statt zurück zur eigentlichen Seite (Feedback 2026-07-27).
     <Link
       href="/"
-      className="fixed left-4 top-4 z-40 rounded border border-border bg-background/70 px-2.5 py-1 font-mono text-sm font-semibold tracking-widest text-accent backdrop-blur-sm transition-colors hover:border-accent-dim"
+      className="glass fixed left-4 top-4 z-40 rounded px-2.5 py-1 font-mono text-sm font-semibold tracking-widest text-accent transition-colors hover:border-accent-dim"
     >
       {FULL.slice(0, chars)}
       <span className="animate-pulse">_</span>
