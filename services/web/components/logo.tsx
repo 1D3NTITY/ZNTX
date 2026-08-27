@@ -23,8 +23,14 @@ export function Logo() {
     // statt zurück zur eigentlichen Seite (Feedback 2026-07-27).
     <Link
       href="/"
-      className="glass fixed left-4 top-4 z-40 rounded px-2.5 py-1 font-mono text-sm font-semibold tracking-widest text-accent transition-colors hover:border-accent-dim"
+      className="glass fixed left-4 top-4 z-40 flex items-center gap-2 rounded px-2.5 py-1 font-mono text-sm font-semibold tracking-widest text-accent transition-colors hover:border-accent-dim"
     >
+      <span
+        aria-hidden="true"
+        className="flex h-4 w-4 shrink-0 items-center justify-center rounded-[4px] bg-foreground"
+      >
+        <span className="logo-diamond h-1.5 w-1.5 bg-background" />
+      </span>
       {FULL.slice(0, chars)}
       <span className="animate-pulse">_</span>
     </Link>

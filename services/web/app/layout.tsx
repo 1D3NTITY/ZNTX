@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Source_Serif_4 } from "next/font/google";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { Footer } from "@/components/footer";
 import { Logo } from "@/components/logo";
+import { Nav } from "@/components/nav";
 import { MatrixRainCanvas } from "@/components/matrix-rain-canvas";
 import "./globals.css";
 
@@ -90,6 +91,7 @@ export default function RootLayout({
         />
         <MatrixRainCanvas />
         <Logo />
+        <Nav />
         <SmoothScroll>
           {children}
           <Footer />

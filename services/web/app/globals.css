@@ -178,6 +178,18 @@ body {
   animation: hero-split-right 0.5s ease-out 0.3s forwards;
 }
 
+/* Rotierender Diamant-Icon-Mark im Logo (Alumica-Adaption, 2026-08-27 v3) — eigenständiges,
+   nicht-erfundenes Gestaltungselement (kein Fake-Content wie Video/Avatar-Bild), reine CSS-
+   Animation. 45deg Start-/405deg-Endwinkel statt 0/360, damit die Form durchgehend als Diamant
+   erkennbar bleibt (ein um 45° gedrehtes Quadrat), nicht nur kurz beim Passieren dieses Winkels. */
+@keyframes logo-diamond-spin {
+  from { transform: rotate(45deg); }
+  to { transform: rotate(405deg); }
+}
+.logo-diamond {
+  animation: logo-diamond-spin 6s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
