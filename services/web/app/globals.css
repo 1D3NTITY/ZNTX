@@ -172,6 +172,38 @@ body {
   );
 }
 
+/* Aurora-Hintergrund (2026-08-28) — ersetzt den Matrix-Rain-Canvas. Große, verschwommene
+   Farbflächen in den Seiten-eigenen Akzenttönen statt Fremdfarben, niedrige Opazität, damit
+   Fließtext/Racks lesbar bleiben. Läuft über die bestehende prefers-reduced-motion-Regel
+   weiter unten automatisch ein (animation-duration: 0.01ms). */
+.aurora-blob {
+  position: absolute;
+  height: 42vw;
+  width: 42vw;
+  min-height: 380px;
+  min-width: 380px;
+  border-radius: 9999px;
+  filter: blur(110px);
+  opacity: 0.16;
+  will-change: transform;
+}
+.aurora-blob-1 { animation: aurora-drift-1 24s ease-in-out infinite; }
+.aurora-blob-2 { animation: aurora-drift-2 30s ease-in-out infinite; }
+.aurora-blob-3 { animation: aurora-drift-3 26s ease-in-out infinite; opacity: 0.12; }
+
+@keyframes aurora-drift-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(6vw, 4vw) scale(1.12); }
+}
+@keyframes aurora-drift-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-5vw, -3vw) scale(1.06); }
+}
+@keyframes aurora-drift-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(4vw, -5vw) scale(0.92); }
+}
+
 /* Hero-Intro: Unterstrich hinter "zntx_" teilt sich kurz in zwei vertikale Linien (Symbol für
    die 2 Server) bevor Headline/Subline einblenden. Siehe ops-dashboard.tsx für die Steuerung
    (skip bei prefers-reduced-motion, siehe Media-Query unten). */

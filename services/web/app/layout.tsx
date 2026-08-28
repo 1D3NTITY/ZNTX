@@ -4,7 +4,7 @@ import { SmoothScroll } from "@/components/smooth-scroll";
 import { Footer } from "@/components/footer";
 import { Logo } from "@/components/logo";
 import { Nav } from "@/components/nav";
-import { MatrixRainCanvas } from "@/components/matrix-rain-canvas";
+import { AuroraBackground } from "@/components/aurora-background";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -89,7 +89,7 @@ export default function RootLayout({
             __html: JSON.stringify(JSON_LD).replace(/</g, "\\u003c"),
           }}
         />
-        <MatrixRainCanvas />
+        <AuroraBackground />
         <Logo />
         <Nav />
         <SmoothScroll>
