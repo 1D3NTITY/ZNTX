@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion, useReducedMotion, type Variants } from "motion/react";
 import { PROJECTS, HERO, LINKS } from "@/lib/content";
 import { DashboardRow } from "@/components/dashboard-row";
 import { ServerRack } from "@/components/server-rack";
@@ -8,6 +9,69 @@ import { RackSlot } from "@/components/rack-slot";
 import { OperatorProfileBody } from "@/components/operator-profile-body";
 import { ContactForm } from "@/components/contact-form";
 import type { LiveStatus } from "@/lib/status";
+
+// Eintritts-Animation beim Laden (2026-08-29) — Headline baut sich wortweise auf, danach
+// Subline/Buttons/Racks gestaffelt. Eigene, seriöse Motion-Technik statt der abgelehnten
+// Video-/Mockup-Bild-Elemente aus den zuletzt geteilten Template-Prompts — nutzt die bereits
+// im Projekt etablierte motion/react-Variants-Pattern (siehe operator-profile-body.tsx,
+// project-case-study.tsx), kein neues Animations-System.
+//
+// Bug gefunden (Playwright-Verifikation mit reducedMotion:"reduce"): `initial={reducedMotion
+// ? false : "hidden"}` verursacht einen echten Hydration-Mismatch. useReducedMotion() liest
+// clientseitig synchron aus matchMedia() bereits im allerersten Render (kein Effect-Delay wie
+// sonst bei window-abhängigen Hooks) — SSR kennt die Client-Präferenz aber grundsätzlich nicht
+// und rendert deterministisch mit reducedMotion=null. Für Besucher mit aktiviertem Reduced-
+// Motion widersprechen sich Server- und Client-Erststand dadurch sofort. Fix: `initial` hängt
+// NIE von reducedMotion ab (immer "hidden", auf Server und Client identisch) — reducedMotion
+// beeinflusst stattdessen nur die Transition-Dauer (wird erst nach dem Mount ausgewertet, kein
+// Teil des Hydration-Vergleichs, daher unkritisch).
+const heroContainer: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } },
+};
+const heroItem: Variants = {
+  hidden: { opacity: 0, y: 14 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } },
+};
+const wordContainer: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.055 } },
+};
+const wordItem: Variants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
+};
+
+function AnimatedWords({
+  text,
+  delay = 0,
+  reducedMotion,
+}: {
+  text: string;
+  delay?: number;
+  reducedMotion: boolean | null;
+}) {
+  const words = text.split(" ");
+  return (
+    <motion.span
+      variants={wordContainer}
+      initial="hidden"
+      animate="visible"
+      transition={{ delayChildren: reducedMotion ? 0 : delay, staggerChildren: reducedMotion ? 0 : undefined }}
+    >
+      {words.map((word, i) => (
+        <motion.span
+          key={i}
+          variants={wordItem}
+          transition={reducedMotion ? { duration: 0 } : undefined}
+          className="inline-block mr-[0.28em]"
+        >
+          {word}
+        </motion.span>
+      ))}
+    </motion.span>
+  );
+}
 
 // Konzept F ("Zwei Racks", 2026-08-27) — ersetzt die vorherige Karten-Grid durch eine 1:1-Karte
 // der echten Zwei-Server-Infrastruktur: zwei ServerRack-Komponenten, sortiert nach dem
@@ -31,6 +95,7 @@ export function OpsDashboard({
   statuses: Record<string, LiveStatus | null>;
 }) {
   const [openId, setOpenId] = useState<string | null>(null);
+  const reducedMotion = useReducedMotion();
 
   function toggle(id: string) {
     setOpenId((current) => (current === id ? null : id));
@@ -57,48 +122,85 @@ export function OpsDashboard({
           </span>
         </div>
         <p className="font-mono text-sm font-semibold text-foreground">{HERO.name}</p>
-        <p className="glass mt-3 inline-block rounded-full px-3 py-1 font-mono text-xs uppercase tracking-widest text-accent">
-          {HERO.kicker}
-        </p>
-        <h1 className="mt-3 font-sans text-3xl font-semibold tracking-tight sm:text-4xl">
-          <span className="text-gradient-muted block">{HERO.headlineLead}</span>
-          <span className="text-gradient-accent block">{HERO.headlineEmphasis}</span>
-        </h1>
-        <p className="mt-3 max-w-xl text-sm leading-relaxed text-foreground-muted sm:text-base">
-          {HERO.subline}
-        </p>
-        <p className="mt-2 max-w-xl font-mono text-xs uppercase tracking-widest text-foreground-muted">
-          {HERO.roleTagline}
-        </p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={openContact}
-            className="glass-pill flex items-center gap-2.5 py-2 pl-5 pr-2 font-mono text-xs font-semibold uppercase tracking-widest text-foreground transition-opacity duration-300 hover:opacity-90"
+        <motion.div
+          variants={heroContainer}
+          initial="hidden"
+          animate="visible"
+          transition={{ staggerChildren: reducedMotion ? 0 : 0.12 }}
+        >
+          <motion.p
+            variants={heroItem}
+            transition={reducedMotion ? { duration: 0 } : undefined}
+            className="glass mt-3 inline-block rounded-full px-3 py-1 font-mono text-xs uppercase tracking-widest text-accent"
           >
-            Kontakt aufnehmen
-            <span
-              aria-hidden="true"
-              className="flex h-6 w-6 items-center justify-center rounded-full bg-accent text-background"
-            >
-              →
+            {HERO.kicker}
+          </motion.p>
+          <h1 className="mt-3 font-sans text-3xl font-semibold tracking-tight sm:text-4xl">
+            <span className="text-gradient-muted block">
+              <AnimatedWords text={HERO.headlineLead} delay={0.15} reducedMotion={reducedMotion} />
             </span>
-          </button>
-          <a
-            href={LINKS.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="glass rounded-full px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-foreground-muted transition-all duration-300 hover:border-accent hover:text-accent hover:shadow-[0_0_16px_color-mix(in_srgb,var(--accent)_20%,transparent)]"
+            <span className="text-gradient-accent block">
+              <AnimatedWords text={HERO.headlineEmphasis} delay={0.3} reducedMotion={reducedMotion} />
+            </span>
+          </h1>
+          <motion.p
+            variants={heroItem}
+            transition={reducedMotion ? { duration: 0 } : undefined}
+            className="mt-3 max-w-xl text-sm leading-relaxed text-foreground-muted sm:text-base"
           >
-            LinkedIn ↗
-          </a>
-        </div>
+            {HERO.subline}
+          </motion.p>
+          <motion.p
+            variants={heroItem}
+            transition={reducedMotion ? { duration: 0 } : undefined}
+            className="mt-2 max-w-xl font-mono text-xs uppercase tracking-widest text-foreground-muted"
+          >
+            {HERO.roleTagline}
+          </motion.p>
+          <motion.div
+            variants={heroItem}
+            transition={reducedMotion ? { duration: 0 } : undefined}
+            className="mt-6 flex flex-wrap gap-3"
+          >
+            <button
+              type="button"
+              onClick={openContact}
+              className="glass-pill flex items-center gap-2.5 py-2 pl-5 pr-2 font-mono text-xs font-semibold uppercase tracking-widest text-foreground transition-opacity duration-300 hover:opacity-90"
+            >
+              Kontakt aufnehmen
+              <span
+                aria-hidden="true"
+                className="flex h-6 w-6 items-center justify-center rounded-full bg-accent text-background"
+              >
+                →
+              </span>
+            </button>
+            <a
+              href={LINKS.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="glass rounded-full px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-foreground-muted transition-all duration-300 hover:border-accent hover:text-accent hover:shadow-[0_0_16px_color-mix(in_srgb,var(--accent)_20%,transparent)]"
+            >
+              LinkedIn ↗
+            </a>
+          </motion.div>
+        </motion.div>
       </header>
 
-      <div id="systems" className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <motion.div
+        id="systems"
+        className="grid grid-cols-1 gap-6 lg:grid-cols-2"
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={
+          reducedMotion
+            ? { duration: 0 }
+            : { duration: 0.5, ease: "easeOut", delay: 0.55 }
+        }
+      >
         <ServerRack label="Server 1" projects={SERVER_1_PROJECTS} statuses={statuses} />
         <ServerRack label="Server 2" projects={SERVER_2_PROJECTS} statuses={statuses} />
-      </div>
+      </motion.div>
 
       {ARCHIVED_PROJECTS.length > 0 && (
         <div className="mt-4">
