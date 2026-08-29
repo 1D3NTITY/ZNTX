@@ -8,10 +8,14 @@ import { RackSlot } from "@/components/rack-slot";
 // keine erfundene Zuordnung.
 export function ServerRack({
   label,
+  description,
   projects,
   statuses,
 }: {
   label: string;
+  /** Kurze, ehrliche Beschreibung der Workload-Art (Idee aus einem Lovable-Vergleichsentwurf,
+   *  2026-08-29) — z.B. "Web-Apps, Datenbanken, Matrix-Homeserver". */
+  description?: string;
   projects: ProjectNode[];
   statuses: Record<string, LiveStatus | null>;
 }) {
@@ -20,9 +24,13 @@ export function ServerRack({
       {/* Befestigungspunkte oben — rein dekorativ, Rack-Optik. */}
       <span aria-hidden="true" className="absolute left-2 top-2 h-1.5 w-1.5 rounded-full bg-border" />
       <span aria-hidden="true" className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-border" />
-      <h2 className="mb-3 text-center font-mono text-xs font-semibold uppercase tracking-widest text-foreground-muted">
+      <h2 className="text-center font-mono text-xs font-semibold uppercase tracking-widest text-foreground-muted">
         {label}
       </h2>
+      {description && (
+        <p className="mb-3 text-center text-xs text-foreground-muted">{description}</p>
+      )}
+      {!description && <div className="mb-3" />}
       <div className="flex flex-col gap-2">
         {projects.map((project) => (
           <RackSlot key={project.id} project={project} live={statuses[project.id] ?? null} />

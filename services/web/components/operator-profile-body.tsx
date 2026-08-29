@@ -59,6 +59,23 @@ export function OperatorProfileBody() {
         {BIO.note}
       </motion.p>
 
+      {/* Ehrlichkeits-Hinweis (Idee aus einem Lovable-Vergleichsentwurf, 2026-08-29, dort "Zur
+          Ehrlichkeit" genannt) — bisher stand das nur klein auf /datenschutz, jetzt zusätzlich
+          prominent im Profil selbst. Jede Projekt-Seite hat inzwischen zudem eine eigene
+          "Was davon meine Arbeit ist"-Zeile (lib/content.ts myWork-Feld). */}
+      <motion.div variants={item} className="mt-8 max-w-2xl rounded-md border border-border bg-surface p-5">
+        <p className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
+          Zur Ehrlichkeit
+        </p>
+        <p className="mt-2 text-sm leading-relaxed text-foreground">
+          Das meiste an Text auf dieser Seite entsteht im Zusammenspiel mit KI-Werkzeugen — die
+          dargestellten Systeme, Daten und Zeiträume sind davon unberührt: sie beschreiben echte,
+          selbst betriebene Infrastruktur, keine generierten Inhalte. Architektur, Betrieb und
+          Sicherheitsentscheidungen liegen bei mir; jede Projekt-Seite nennt zusätzlich konkret,
+          was davon meine eigene Arbeit ist.
+        </p>
+      </motion.div>
+
       <motion.dl variants={item} className="mt-10 divide-y divide-border border-y border-border">
         {CROSS_CUTTING_SKILLS.map((group) => (
           <div

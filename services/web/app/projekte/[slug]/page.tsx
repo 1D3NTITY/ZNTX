@@ -105,6 +105,15 @@ export default async function ProjectPage({
 
       <ProjectCaseStudyBody project={project} live={live} />
 
+      {project.myWork && (
+        <div className="mt-8 rounded-md border border-border bg-surface p-5">
+          <p className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
+            Was davon meine Arbeit ist
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-foreground">{project.myWork}</p>
+        </div>
+      )}
+
       <div className="mt-12 border-t border-border pt-8">
         <Link
           href="/#row-contact"

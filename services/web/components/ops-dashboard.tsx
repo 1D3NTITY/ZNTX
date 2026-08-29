@@ -88,6 +88,19 @@ const SERVER_2_PROJECTS = PROJECTS.filter((p) => p.server === "server-2");
 // Reset, gehört ehrlicherweise keinem der beiden aktiven Racks) landen in einer separaten,
 // gedimmten Archiv-Ablage statt künstlich einem Server zugeordnet zu werden.
 const ARCHIVED_PROJECTS = PROJECTS.filter((p) => !p.server);
+// Echte, aus PROJECTS berechnete Kennzahl (Lovable-Vergleichsentwurf, 2026-08-29, hatte eine
+// Kennzahlen-Leiste — Idee übernommen, Wert aber selbst neu/ehrlich definiert statt geraten).
+// zntx selbst zählt hier bewusst nicht mit — gleiche Konvention wie bei HERO.headlineEmphasis
+// ("acht Systeme" = PROJECTS.length minus das Meta-Projekt zntx), sonst widersprächen sich
+// Kennzahlen-Leiste und Headline (Bug gefunden bei der Verifikation: zeigte zunächst "7 von 9").
+// "im Betrieb" = alles außer explizit archiviert, nicht nur status "live".
+const REAL_SYSTEMS = PROJECTS.filter((p) => p.id !== "zntx");
+const SYSTEMS_IN_OPERATION = REAL_SYSTEMS.filter((p) => p.status !== "archived").length;
+
+const SERVER_DESCRIPTIONS: Record<"server-1" | "server-2", string> = {
+  "server-1": "Web-Apps, Datenbanken, Matrix-Homeserver, dieses Portfolio selbst.",
+  "server-2": "Gameserver und automatisierte Trading-/Community-Workloads.",
+};
 
 export function OpsDashboard({
   statuses,
@@ -184,8 +197,57 @@ export function OpsDashboard({
               LinkedIn ↗
             </a>
           </motion.div>
+          {/* Kennzahlen-Leiste (Idee aus einem Lovable-Vergleichsentwurf, 2026-08-29) — echte,
+              aus content.ts berechnete/statische Werte, kein erfundenes Marketing-KPI. */}
+          <motion.div
+            variants={heroItem}
+            transition={reducedMotion ? { duration: 0 } : undefined}
+            className="mt-8 grid max-w-xl grid-cols-1 gap-px overflow-hidden rounded-lg border border-border sm:grid-cols-3"
+          >
+            <div className="bg-surface p-4">
+              <p className="font-mono text-[11px] uppercase tracking-widest text-foreground-muted">
+                Maschinen
+              </p>
+              <p className="mt-1 text-sm font-semibold text-foreground">2 physische Root-Server</p>
+            </div>
+            <div className="bg-surface p-4">
+              <p className="font-mono text-[11px] uppercase tracking-widest text-foreground-muted">
+                Systeme im Betrieb
+              </p>
+              <p className="mt-1 text-sm font-semibold text-foreground">
+                {SYSTEMS_IN_OPERATION} von {REAL_SYSTEMS.length}
+              </p>
+            </div>
+            <div className="bg-surface p-4">
+              <p className="font-mono text-[11px] uppercase tracking-widest text-foreground-muted">
+                Verantwortung
+              </p>
+              <p className="mt-1 text-sm font-semibold text-foreground">Alleinbetrieb</p>
+            </div>
+          </motion.div>
         </motion.div>
       </header>
+
+      {/* Status-Legende (Idee aus einem Lovable-Vergleichsentwurf, 2026-08-29) — erklärt die
+          LED-Zustände statt sie vorauszusetzen. */}
+      <div className="mb-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[11px] text-foreground-muted">
+        <span className="flex items-center gap-1.5">
+          <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "var(--status-online)" }} />
+          operational — läuft, Live-Daten vorhanden
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "var(--status-paper)" }} />
+          degraded — eingeschränkt
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="h-1.5 w-1.5 rounded-full border border-foreground-muted" />
+          keine Live-Daten — kein öffentlicher Status
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-foreground-muted opacity-40" />
+          archiviert — bewusst abgeschaltet
+        </span>
+      </div>
 
       <motion.div
         id="systems"
@@ -198,8 +260,18 @@ export function OpsDashboard({
             : { duration: 0.5, ease: "easeOut", delay: 0.55 }
         }
       >
-        <ServerRack label="Server 1" projects={SERVER_1_PROJECTS} statuses={statuses} />
-        <ServerRack label="Server 2" projects={SERVER_2_PROJECTS} statuses={statuses} />
+        <ServerRack
+          label="Server 1"
+          description={SERVER_DESCRIPTIONS["server-1"]}
+          projects={SERVER_1_PROJECTS}
+          statuses={statuses}
+        />
+        <ServerRack
+          label="Server 2"
+          description={SERVER_DESCRIPTIONS["server-2"]}
+          projects={SERVER_2_PROJECTS}
+          statuses={statuses}
+        />
       </motion.div>
 
       {ARCHIVED_PROJECTS.length > 0 && (

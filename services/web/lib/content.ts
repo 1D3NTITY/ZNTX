@@ -44,6 +44,14 @@ export type ProjectNode = {
    * flüchtigen Blick aber sonst missverständlich).
    */
   screenshotCaption?: string;
+  /**
+   * Optional: kurze Attributions-Zeile "was davon meine eigene Arbeit ist" — direkt aus den
+   * bereits vorhandenen contribution/challenge-Fakten oben zusammengefasst, keine neuen
+   * Behauptungen. Macht explizit, was KI-unterstützt entstand (meist: Fließtext) und was
+   * eigene Architektur-/Betriebsarbeit ist (Idee aus einem Lovable-Vergleichsentwurf,
+   * 2026-08-29 — dort "Was davon meine Arbeit ist" genannt).
+   */
+  myWork?: string;
 };
 
 // Reihenfolge = Reihenfolge im Fließtext. zntx zuletzt (Meta-Projekt: "du liest es gerade").
@@ -67,6 +75,8 @@ export const PROJECTS: ProjectNode[] = [
       "Ein Backend für zwei grundverschiedene Clients konsistent halten, ohne Logik zu duplizieren — und OTA-Updates für die Mobile-App liefern, ohne auf App-Store-Review-Zyklen zu warten.",
     outcome:
       "Ein Produkt, das Gesundheitsdaten von Anfang an mit DSGVO-Anforderungen im Datenmodell verankert — nicht nachträglich aufgesetzt, sondern von Beginn an so gebaut. DSGVO-Rechte (Auskunft, Löschung, Datenübertragbarkeit) sind inzwischen echter Selfservice, nicht nur Zusage auf Anfrage.",
+    myWork:
+      "Backend-Architektur, Datenmodell, DSGVO-Umsetzung und die Security-Härtungen sind meine eigene Arbeit — Entscheidungen, nicht nur Text.",
   },
   {
     id: "ravepuls",
@@ -87,6 +97,8 @@ export const PROJECTS: ProjectNode[] = [
       "Eine vollständige Domain-Migration (.eu → .de) mitten im Betrieb, ohne kaputte Links, Duplicate Content oder verlorene Nutzer.",
     outcome:
       "ravepuls.de läuft live, aggregiert automatisiert, bleibt gegen Missbrauch und Fehlklassifikation gehärtet (Neutralitäts-/Genre-Guards) — und hält die EU-AI-Act-Vorgaben nicht nur ein, sondern sichtbar: KI-Kennzeichnung im UI, echtes Stock-Foto statt KI-generiertem Hero-Banner. DSGVO-Rechte (Auskunft/Löschung, Art. 17/20) sind echter Selfservice im Account-Bereich, nicht nur Zusage auf Anfrage.",
+    myWork:
+      "Architektur, die Extraktions-Pipeline, alle Guard-Mechanismen und das fünfphasige Sicherheitsaudit sind meine eigene Arbeit.",
   },
   {
     id: "matrix-chat",
@@ -106,6 +118,7 @@ export const PROJECTS: ProjectNode[] = [
       "Eine Nicht-Standard-Infra (Rust-Binary statt gewohntem Web-Stack) sauber in dieselbe Caddy-Architektur integrieren wie alle anderen Projekte — plus zwei Cross-Plattform-Bridges stabil am selben Server betreiben.",
     outcome:
       "Läuft seit dem Deploy ohne offene Registrierung oder Federation-Angriffsfläche — Infra-Betrieb, der über Web-Apps mit Postgres hinausgeht.",
+    myWork: "Kompletter Betrieb — Server-Setup, Bridges, Härtung — ist meine eigene Arbeit, kein Managed-Service.",
   },
   {
     id: "wcp-arma",
@@ -124,6 +137,8 @@ export const PROJECTS: ProjectNode[] = [
       "Live-Spieler-Tracking über dieselbe RCON-Verbindung wie die Server-Steuerung — stabil genug für Dauerbetrieb, nicht nur gelegentliche Admin-Befehle.",
     outcome:
       "Lief mehrere Monate produktiv, bewusst offline genommen, nachdem sich abzeichnete, dass das Projekt keinen echten Mehrwert mehr bringt — kein gescheitertes Vorhaben, sondern eine bewusste Priorisierungsentscheidung.",
+    myWork:
+      "Der komplette Discord-Bot (~5000 Zeilen) und die RCON-Integration sind meine eigene Arbeit, ebenso die Entscheidung, ihn abzuschalten.",
   },
   {
     id: "motortown",
@@ -142,6 +157,7 @@ export const PROJECTS: ProjectNode[] = [
       "Einen Windows-Server-Prozess stabil unter Linux betreiben (Wine/Proton statt nativer Linux-Build) und dabei bewusst von der sonst durchgängigen Docker-Architektur der anderen Projekte abweichen, wo es technisch die bessere Wahl ist.",
     outcome:
       "Läuft stabil und produktiv für den eigenen Freundeskreis, sauber isoliert vom Nachbarserver, mit funktionierenden täglichen Backups — zeigt, dass die Linux-/Ops-Skills nicht an 'alles läuft in Docker' hängen, sondern die passende Betriebsform je Workload wählen.",
+    myWork: "Setup, Wine/systemd-Betrieb und die Isolierung vom Nachbarserver sind meine eigene Arbeit.",
   },
   {
     id: "buchhaltung",
@@ -161,6 +177,8 @@ export const PROJECTS: ProjectNode[] = [
       "Ein eigenes 40-Punkte-Sicherheitsaudit deckte auf, dass interne Beleg-/Hobby-Endpunkte versehentlich von außen über Caddy erreichbar waren — selbst gefunden und behoben, zusammen mit Prompt-Injection-Härtung für den Chat-Assistenten und Content-Type-Allowlisting für Uploads.",
     outcome:
       "Live verifiziertes System mit DSGVO-konformer Löschung/Export und bestandenem Backup-/Restore-Test — kein Prototyp, sondern der tatsächlich genutzte Buchhaltungs-Workflow.",
+    myWork:
+      "Architektur, Datenmodell, Sicherheitsaudit und der selbst gefundene Fehler sind meine eigene Arbeit — die Texte, die der Assistent selbst generiert, sind KI-Output, das System drumherum nicht.",
   },
   {
     id: "qntx",
@@ -184,6 +202,8 @@ export const PROJECTS: ProjectNode[] = [
     outcome:
       "Aktuell in strukturierter Paper-Trading-Phase mit dokumentierten, harten Go-Live-Kriterien — inzwischen zusätzlich abgesichert durch Config-Versionierung, Trade-Level-Diagnostik, Near-Miss-Analyse und ein eigenes Sicherheitsaudit, bewusst noch nicht live, bis die Kriterien erfüllt sind. Ein externer, nicht-autoritativer Review-Assistent gibt inzwischen eine zusätzliche Zweitmeinung im Code-Review, ohne eigene Entscheidungsbefugnis.",
     note: "Bewusst kein 'einfach live schalten' — Go-Live-Kriterien sind schriftlich fixiert, nicht verhandelbar.",
+    myWork:
+      "Signalarchitektur, Risikoketten und das eigene Sicherheitsaudit sind meine eigene Arbeit — die KI-Modelle liefern Input, ich entscheide die Regeln, nach denen sie genutzt werden.",
   },
   {
     id: "n8n-automation",
@@ -201,6 +221,8 @@ export const PROJECTS: ProjectNode[] = [
       "Eine wachsende Automatisierungs-Infrastruktur sicher und wartbar zu halten, während parallel weiter experimentiert und erweitert wurde — am Ende eskalierte das so weit, dass der komplette Root-Server zurückgesetzt werden musste.",
     outcome:
       "Der Server wurde komplett neu aufgesetzt — bewusst sauberer und strukturierter als vorher. Die Disziplin, die sich durch die anderen Projekte auf dieser Seite zieht (Secrets-Hygiene, isolierte DBs, eigene Guardrail-Hooks), hat hier ihren Ursprung: einmal etwas komplett verloren zu haben, sitzt tiefer als jede Best-Practice-Checkliste.",
+    myWork:
+      "Der Aufbau, der Fehler und der Neuaufbau danach sind meine eigene Arbeit — hier ist die Disziplin entstanden, die die anderen Projekte trägt.",
   },
   {
     id: "zntx",
@@ -220,6 +242,8 @@ export const PROJECTS: ProjectNode[] = [
       "KI-gestützte Entwicklung nutzen, ohne ihr blind zu vertrauen — die Guardrails mussten selbst gebaut werden, es gab kein fertiges Tool dafür.",
     outcome:
       "zntx.de läuft, mit echter Produktions-Pipeline dahinter. Der Unterschied zwischen 'KI schreibt Code' und 'KI schreibt Code mit echten Leitplanken' ist genau das, was hier den Unterschied macht.",
+    myWork:
+      "Infrastruktur, Guardrail-Hooks und alle Architekturentscheidungen dieser Seite sind meine eigene Arbeit — der Fließtext entsteht mit KI-Unterstützung, das System dahinter nicht.",
   },
 ];
 
