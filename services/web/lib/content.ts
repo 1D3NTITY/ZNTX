@@ -325,7 +325,7 @@ export const LINKS = {
 // oben) ohne Klick in die Operator-Profil-Zeile scannbar — die zwei am besten
 // belegten Rollen aus ROLE_FIT, nicht alle fünf (sonst keine Tagline mehr).
 export const HERO = {
-  name: "Luis B.",
+  name: "Luis",
   roleTagline: "Backend-/Full-Stack-Entwicklung · Server-/Infrastruktur-Administration",
   kicker: "§00 — SYSTEMS ON RECORD",
   // Zweizeilig für den Gradient-Headline-Stil (Alumica-Adaption 2026-08-27): erste Zeile

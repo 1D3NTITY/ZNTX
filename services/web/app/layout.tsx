@@ -60,7 +60,7 @@ const JSON_LD = {
   "@graph": [
     {
       "@type": "Person",
-      name: "Luis B.",
+      name: "Luis",
       url: "https://zntx.de",
       sameAs: ["https://www.linkedin.com/in/luis-b-668750319/"],
     },
