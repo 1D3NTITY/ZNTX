@@ -68,9 +68,11 @@ export function OperatorProfileBody() {
           Zur Ehrlichkeit
         </p>
         <p className="mt-2 text-sm leading-relaxed text-foreground">
-          Das meiste an Text auf dieser Seite entsteht im Zusammenspiel mit KI-Werkzeugen — die
-          dargestellten Systeme, Daten und Zeiträume sind davon unberührt: sie beschreiben echte,
-          selbst betriebene Infrastruktur, keine generierten Inhalte. Architektur, Betrieb und
+          Diese Website — Code, Design und der meiste Text — hat Claude (Anthropics
+          KI-Coding-Agent) für mich gebaut, unter meiner Anleitung und Abnahme. Das steht hier
+          bewusst offen, nicht nur zwischen den Zeilen. Die dargestellten Systeme, Daten und
+          Zeiträume sind davon unberührt: sie beschreiben echte, selbst betriebene
+          Infrastruktur, keine generierten Inhalte. Architektur-, Betriebs- und
           Sicherheitsentscheidungen liegen bei mir; jede Projekt-Seite nennt zusätzlich konkret,
           was davon meine eigene Arbeit ist.
         </p>

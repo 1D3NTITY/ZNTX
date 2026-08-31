@@ -243,7 +243,7 @@ export const PROJECTS: ProjectNode[] = [
     outcome:
       "zntx.de läuft, mit echter Produktions-Pipeline dahinter. Der Unterschied zwischen 'KI schreibt Code' und 'KI schreibt Code mit echten Leitplanken' ist genau das, was hier den Unterschied macht.",
     myWork:
-      "Infrastruktur, Guardrail-Hooks und alle Architekturentscheidungen dieser Seite sind meine eigene Arbeit — der Fließtext entsteht mit KI-Unterstützung, das System dahinter nicht.",
+      "Infrastruktur, Guardrail-Hooks und alle Architektur-/Produktentscheidungen dieser Seite sind meine eigene Arbeit — der komplette Code und die meisten Texte hat Claude gebaut, unter meiner Anleitung und Abnahme. Das darf hier klar stehen, nicht nur zwischen den Zeilen.",
   },
 ];
 

@@ -39,8 +39,9 @@ export default function DatenschutzPage() {
           Inhalte & KI-Unterstützung
         </h2>
         <p className="mt-2">
-          Das meiste an Text auf dieser Seite entsteht im Zusammenspiel mit KI-Werkzeugen —
-          die dargestellten Systeme, Daten und Zeiträume sind davon unberührt: sie beschreiben
+          Diese Website — Code, Design und der meiste Text — wurde von Claude (Anthropics
+          KI-Coding-Agent) gebaut, unter Anleitung und Abnahme des Betreibers. Die
+          dargestellten Systeme, Daten und Zeiträume sind davon unberührt: sie beschreiben
           echte, selbst betriebene Infrastruktur, keine generierten Inhalte. Bild-, Audio- oder
           Videomaterial wird auf dieser Seite nicht eingesetzt.
         </p>
