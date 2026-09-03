@@ -11,18 +11,27 @@
    Farbton-Update (2026-08-27, Alumica-Stil-Adaption): Akzent von reinem Rot zu warmem
    Orange-Rot verschoben — automatischer, kohärenter Effekt auf alle Stellen, die --accent/
    --accent-dim bereits nutzen (Links, Focus-Ringe, Hover-Borders). --accent-orange neu als
-   heller Verlaufs-Endpunkt für Gradient-Text/-Ränder (Hero-Headline, Primary-CTA). */
+   heller Verlaufs-Endpunkt für Gradient-Text/-Ränder (Hero-Headline, Primary-CTA).
+
+   Amber-Phosphor-CRT (2026-09-03, Entscheidung Luis): Wunsch war eine "Deep-Dark-Hacker"-
+   Anmutung wie bei alten Cheat-Provider-Seiten, aber ausdrücklich nicht austauschbar. Deshalb
+   bewusst NICHT das übliche Neon-Cyan/Giftgrün, das dort jede zweite Seite verwendet, sondern
+   der Bernstein-Phosphor alter Röhrenmonitore — historisch echt, optisch selten, und anschluss-
+   fähig an das bereits vorhandene Orange (keine Bruchstelle zum bisherigen Stand). Blaustich im
+   Untergrund weicht warmem Schwarz, damit das Amber-Leuchten nicht gegen kühles Grau arbeitet. */
 :root {
-  --background: #05060a;
-  --surface: #0b0e15;
-  --border: #1b212e;
-  --foreground: #e8eaf1;
-  --foreground-muted: #8991a6;
-  --accent: #ea580c;
-  --accent-dim: #7a2e0a;
-  --accent-orange: #ff8a00;
+  --background: #050301;
+  --surface: #0d0904;
+  --border: #2a1e10;
+  --foreground: #f2e8dc;
+  --foreground-muted: #9c8a72;
+  --accent: #ff9d2f;
+  --accent-dim: #7a4410;
+  --accent-orange: #ffd9a0;
   --status-online: #4ade80;
   --status-paper: #facc15;
+  /* Glühkern für Bloom-Effekte — hellste Stufe des Phosphors, nur für Leucht-Schichten. */
+  --accent-core: #ffe9c7;
 
   /* Projekt-Akzentfarben für den Live-Ops-Leitstand (Konzept A, 2026-07-24).
      ravepuls/qntx/arma sind Luis' fest vorgegebene Farben, nicht verhandelbar.
@@ -56,6 +65,7 @@
   --color-accent: var(--accent);
   --color-accent-dim: var(--accent-dim);
   --color-accent-orange: var(--accent-orange);
+  --color-accent-core: var(--accent-core);
   --color-status-online: var(--status-online);
   --color-status-paper: var(--status-paper);
   --font-sans: var(--font-geist-sans);
@@ -156,6 +166,20 @@ body {
   );
   animation: glass-pill-rotate 4s linear infinite;
 }
+/* Deckt die Innenfläche wieder ab, sodass vom rotierenden Verlauf nur der ~1.5px-Rand übrig
+   bleibt. Nötig, weil ein Kind mit negativem z-index laut CSS-Malreihenfolge zwar unter dem
+   Text, aber ÜBER dem eigenen Hintergrund des Elements liegt — die conic-gradient-Fläche
+   überdeckte den dunklen Button-Grund also vollständig. Mit dem hellen Amber-Phosphor stand
+   dadurch heller Text auf hellem Verlauf (unlesbar, WCAG-Verstoß). ::after liegt in DOM-
+   Reihenfolge nach ::before und gewinnt bei gleichem z-index. */
+.glass-pill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--surface);
+}
 @keyframes glass-pill-rotate {
   to { --glass-pill-angle: 360deg; }
 }
@@ -234,11 +258,104 @@ body {
   animation: logo-diamond-spin 6s linear infinite;
 }
 
+/* ── Amber-Phosphor-CRT-Schichten (2026-09-03) ──────────────────────────────────────────────
+   Ziel laut Luis: "deep dark hacker", aber einzigartig statt Vorlagen-Look. Der Unterschied
+   zwischen billigem und teurem Glow liegt in der Schichtung: NICHT ein flacher Verlauf, sondern
+   Scanlines + Korn + Vignette + reaktives Licht übereinander. Alle Schichten sind rein
+   dekorativ, liegen per pointer-events:none über dem Inhalt und tragen nie Information —
+   Screenreader/Tastatur sehen davon nichts. */
+
+/* Feine horizontale Zeilenstruktur eines Röhrenmonitors. Sehr niedrige Deckkraft: soll
+   spürbar, nicht lesbar sein — bei zu hohem Kontrast wird Fließtext anstrengend. */
+.crt-scanlines {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.22) 0px,
+    rgba(0, 0, 0, 0.22) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: multiply;
+}
+
+/* Filmkorn als inline-SVG-Rauschen (data:-URI, kein externer Request — CSP-konform und
+   keine zusätzliche Netzwerklast). Bricht die perfekte Glätte digitaler Flächen auf, das
+   ist der Hauptgrund, warum echte Retro-Optik "analog" wirkt statt nach CSS-Verlauf. */
+.crt-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity: 0.045;
+}
+
+/* Röhren-Vignette: Ränder fallen ab wie bei einer gewölbten Bildröhre. */
+.crt-vignette {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 55%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+}
+
+/* Mausreaktives Spotlight — folgt dem Cursor über --spot-x/--spot-y (gesetzt in
+   crt-overlay.tsx). Das ist der Effekt, der "teuer" wirkt: Licht, das auf den Besucher
+   reagiert, kann eine statische Vorlage nicht. Fällt ohne JS sauber auf die Bildschirmmitte
+   zurück (Startwert 50%/50%), dann ist es einfach ein ruhiger Lichtkegel. */
+.crt-spotlight {
+  background: radial-gradient(
+    600px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    color-mix(in srgb, var(--accent) 10%, transparent) 0%,
+    transparent 70%
+  );
+  transition: background 120ms linear;
+}
+
+/* Phosphor-Nachleuchten für Typografie. Mehrstufig (eng+weit) statt ein einzelner Schatten —
+   ein Radius allein sieht nach Weichzeichner aus, zwei nach echtem Leuchtkern. */
+.glow-amber {
+  text-shadow:
+    0 0 6px color-mix(in srgb, var(--accent) 55%, transparent),
+    0 0 22px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.glow-amber-strong {
+  text-shadow:
+    0 0 4px color-mix(in srgb, var(--accent-core) 80%, transparent),
+    0 0 16px color-mix(in srgb, var(--accent) 60%, transparent),
+    0 0 46px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+/* Bloom für Verlaufs-Text (.text-gradient-*): dort ist die Schriftfarbe transparent und der
+   Verlauf per background-clip eingestanzt — ein text-shadow würde die Glyphenform hinter dem
+   Verlauf zeichnen und matschig wirken. drop-shadow filtert stattdessen die tatsächlich
+   gerenderten Pixel inklusive Verlauf, dadurch leuchtet der Farbton mit, den man auch sieht. */
+.glow-bloom {
+  filter:
+    drop-shadow(0 0 14px color-mix(in srgb, var(--accent) 45%, transparent))
+    drop-shadow(0 0 40px color-mix(in srgb, var(--accent) 25%, transparent));
+}
+
+/* Sanftes Pulsieren des Phosphors — echte Röhren sind nie absolut konstant. Bewusst extrem
+   dezent (3 % Helligkeitshub), sonst wird es zum Blink-Effekt und damit billig/störend. */
+@keyframes phosphor-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.97; }
+}
+.phosphor-live {
+  animation: phosphor-flicker 4s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  /* Das Spotlight ist bewegungsgetrieben (folgt der Maus) — bei reduzierter Bewegung wird es
+     zur ruhigen, statischen Aufhellung statt zum wandernden Lichtkegel. */
+  .crt-spotlight {
+    background: radial-gradient(
+      900px circle at 50% 30%,
+      color-mix(in srgb, var(--accent) 7%, transparent) 0%,
+      transparent 70%
+    ) !important;
   }
 }

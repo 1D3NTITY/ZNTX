@@ -22,12 +22,20 @@ function LiveLed({ live }: { live: LiveStatus | null }) {
   return (
     <span
       aria-hidden="true"
-      className="h-2 w-2 shrink-0 rounded-full"
+      // phosphor-live: minimales Helligkeits-Flackern, nur bei Slots mit echten Live-Daten —
+      // dadurch bewegt sich sichtbar genau das, was auch wirklich lebt.
+      className={`h-2 w-2 shrink-0 rounded-full ${formatted ? "phosphor-live" : ""}`}
       style={{
         backgroundColor: dotColor,
-        boxShadow: formatted ? `0 0 6px ${dotColor}` : "none",
+        // Zweistufiger Schein (Kern + Hof) statt eines einzelnen Radius — siehe .glow-amber
+        // in globals.css, gleiche Begründung: ein Radius wirkt nach Weichzeichner.
+        boxShadow: formatted ? `0 0 5px ${dotColor}, 0 0 14px ${dotColor}` : "none",
       }}
-      title={formatted ? formatted.label : undefined}
+      title={
+        formatted
+          ? [formatted.label, formatted.detail].filter(Boolean).join(" — ")
+          : undefined
+      }
     />
   );
 }
@@ -42,6 +50,14 @@ export function RackSlot({
   /** Für die Archiv-Ablage (Projekte ohne server-Feld) — gedimmter Look, keine LED. */
   dimmed?: boolean;
 }) {
+  // Die Detailzeile ("Deploy vor 10 Tagen · Sync vor 6 Std") wurde bisher zwar berechnet, aber
+  // verworfen — sichtbar war nur der LED-Punkt. Genau daran scheiterte der Eindruck von
+  // "echter, laufender Infrastruktur" (Wow-Effekt-Diagnose 2026-09-03, siehe
+  // docs/plans/live-wow-2026-09-03.md): ohne bewegliche Zahlen ist die Seite von einem
+  // statischen Portfolio nicht unterscheidbar. Fehlt der Wert, bleibt die Zeile weg — kein
+  // Platzhalter, keine erfundene Angabe.
+  const liveDetail = dimmed ? null : formatLiveStatus(live ?? null)?.detail ?? null;
+
   return (
     <Link
       href={`/projekte/${project.id}`}
@@ -64,6 +80,11 @@ export function RackSlot({
         <span className="block truncate font-mono text-[11px] uppercase tracking-widest text-foreground-muted">
           {formatProjectMeta(project)}
         </span>
+        {liveDetail && (
+          <span className="mt-0.5 block truncate font-mono text-[11px] text-accent/80">
+            {liveDetail}
+          </span>
+        )}
       </span>
       <span
         aria-hidden="true"

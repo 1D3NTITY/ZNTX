@@ -84,3 +84,21 @@ export function formatLiveStatus(
   if (sync) parts.push(`Sync ${sync}`);
   return { label, detail: parts.length > 0 ? parts.join(" · ") : null };
 }
+
+/**
+ * Uhrzeit des Status-Snapshots (lib/status.ts, StatusSnapshot.fetchedAt) für die "Stand"-Zeile.
+ * Zeitzone ist bewusst fest verdrahtet statt Umgebungs-abhängig: die Formatierung passiert
+ * serverseitig und muss beim Hydrieren exakt denselben String ergeben — ein aus der Client-
+ * Zeitzone abgeleiteter Wert würde für Besucher außerhalb Europe/Berlin abweichen und genau
+ * die Hydration-Mismatch-Klasse auslösen, die in diesem Projekt schon zweimal zugeschlagen hat.
+ */
+export function formatSnapshotTime(iso: string): string | null {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toLocaleTimeString("de-DE", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZone: "Europe/Berlin",
+  });
+}

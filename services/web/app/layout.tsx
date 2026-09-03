@@ -5,6 +5,7 @@ import { Footer } from "@/components/footer";
 import { Logo } from "@/components/logo";
 import { Nav } from "@/components/nav";
 import { AuroraBackground } from "@/components/aurora-background";
+import { CrtOverlay } from "@/components/crt-overlay";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -96,6 +97,10 @@ export default function RootLayout({
           {children}
           <Footer />
         </SmoothScroll>
+        {/* CRT-Schichten ganz zuletzt: liegen als reines Dekor über allem (z-30,
+            pointer-events:none), dürfen aber nie zwischen Nutzer und Bedienelemente geraten —
+            deshalb kein z-Index oberhalb der fixierten Nav/Logo-Chrome. */}
+        <CrtOverlay />
       </body>
     </html>
   );

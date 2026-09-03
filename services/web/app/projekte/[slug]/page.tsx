@@ -15,6 +15,12 @@ import { ProjectCaseStudyBody } from "@/components/project-case-study";
 // indexierbar/verlinkbar — bei diesem Content-Umfang (mehrere Absätze pro Projekt) laut
 // Recherche (Smashing Magazine Modal-vs-Page-Entscheidungsbaum) ohnehin die passendere Wahl
 // als ein Modal.
+// Ohne dies wären die Seiten reines SSG: der Live-Status würde zum Build-Zeitpunkt einfrieren
+// und eine Relativangabe wie "Sync vor 5 Std." stünde dauerhaft fest, obwohl sie altert. Mit
+// der Regenerierung alle 60 s bleiben die Angaben wahr. Die Last nach außen deckelt weiterhin
+// das Modul-Memo in lib/status.ts.
+export const revalidate = 60;
+
 export function generateStaticParams() {
   return PROJECTS.map((project) => ({ slug: project.id }));
 }
@@ -53,7 +59,7 @@ export default async function ProjectPage({
   const project = PROJECTS.find((p) => p.id === slug);
   if (!project) notFound();
 
-  const statuses = await getProjectStatuses();
+  const { statuses } = await getProjectStatuses();
   const live = statuses[project.id] ?? null;
 
   return (

@@ -8,6 +8,7 @@ import { ServerRack } from "@/components/server-rack";
 import { RackSlot } from "@/components/rack-slot";
 import { OperatorProfileBody } from "@/components/operator-profile-body";
 import { ContactForm } from "@/components/contact-form";
+import { LiveTerminal } from "@/components/live-terminal";
 import type { LiveStatus } from "@/lib/status";
 
 // Eintritts-Animation beim Laden (2026-08-29) — Headline baut sich wortweise auf, danach
@@ -104,8 +105,13 @@ const SERVER_DESCRIPTIONS: Record<"server-1" | "server-2", string> = {
 
 export function OpsDashboard({
   statuses,
+  fetchedAtLabel,
 }: {
   statuses: Record<string, LiveStatus | null>;
+  /** Serverseitig formatierte Uhrzeit des Status-Snapshots — bewusst als fertiger String
+   *  hereingereicht, nicht clientseitig aus einem ISO-Wert berechnet (Zeitzonen-/Hydration-
+   *  Falle, siehe formatSnapshotTime in lib/labels.ts). */
+  fetchedAtLabel: string | null;
 }) {
   const [openId, setOpenId] = useState<string | null>(null);
   const reducedMotion = useReducedMotion();
@@ -152,7 +158,7 @@ export function OpsDashboard({
             <span className="text-gradient-muted block">
               <AnimatedWords text={HERO.headlineLead} delay={0.15} reducedMotion={reducedMotion} />
             </span>
-            <span className="text-gradient-accent block">
+            <span className="text-gradient-accent glow-bloom block">
               <AnimatedWords text={HERO.headlineEmphasis} delay={0.3} reducedMotion={reducedMotion} />
             </span>
           </h1>
@@ -228,6 +234,16 @@ export function OpsDashboard({
         </motion.div>
       </header>
 
+      {/* Live-Terminal (2026-09-03) — der Beleg dafür, dass diese Seite wirklich mit den
+          Servern spricht. Steht bewusst VOR den Racks: die Live-Frage ist das Erste, was
+          hier beantwortet werden soll. */}
+      <LiveTerminal
+        statuses={statuses}
+        fetchedAtLabel={fetchedAtLabel}
+        operationalCount={SYSTEMS_IN_OPERATION}
+        totalCount={REAL_SYSTEMS.length}
+      />
+
       {/* Status-Legende (Idee aus einem Lovable-Vergleichsentwurf, 2026-08-29) — erklärt die
           LED-Zustände statt sie vorauszusetzen. */}
       <div className="mb-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[11px] text-foreground-muted">
@@ -248,6 +264,15 @@ export function OpsDashboard({
           archiviert — bewusst abgeschaltet
         </span>
       </div>
+
+      {/* Beweis der Frische: ohne Zeitstempel ist "live" eine Behauptung. Bewusst als "Stand"
+          beschriftet, nicht als "jetzt" — durch revalidate:60 sind die Daten bis zu eine
+          Minute alt, und das soll die Seite nicht schönreden. */}
+      {fetchedAtLabel && (
+        <p className="mb-3 font-mono text-[11px] text-accent/80">
+          Live-Daten abgerufen um {fetchedAtLabel} · erneuert sich alle 60 Sekunden
+        </p>
+      )}
 
       <motion.div
         id="systems"

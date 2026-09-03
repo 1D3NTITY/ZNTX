@@ -33,6 +33,17 @@ export type BadgeLiveStatus = {
 
 export type LiveStatus = BasicLiveStatus | UptimeLiveStatus | BadgeLiveStatus;
 
+/**
+ * Ein Abruf-Ergebnis hat fachlich immer einen Zeitpunkt — ohne den lässt sich in der UI nicht
+ * ehrlich behaupten, die Daten seien gerade erst geholt worden. Wichtig: wegen `revalidate: 60`
+ * (siehe fetchOne) ist `fetchedAt` der Zeitpunkt des letzten *echten* Abrufs, nicht der des
+ * Seitenaufrufs — die UI beschriftet das deshalb als "Stand", nicht als "jetzt".
+ */
+export type StatusSnapshot = {
+  statuses: Record<string, LiveStatus | null>;
+  fetchedAt: string;
+};
+
 // Achtung: foodapp läuft unter der api.-Subdomain, nicht unter der app.-Domain aus
 // PROJECTS[].url in content.ts (das ist die SPA-URL, ein anderer Host).
 const STATUS_ENDPOINTS: Record<string, { url: string; schema: LiveStatus["schema"] }> = {
@@ -74,8 +85,23 @@ function parseResponse(schema: LiveStatus["schema"], data: unknown): LiveStatus 
 
 async function fetchOne(id: string, url: string, schema: LiveStatus["schema"]): Promise<LiveStatus | null> {
   try {
+    // `cache: "no-store"` statt `next: { revalidate: 60 }` — bewusst, wegen eines echten
+    // Ehrlichkeits-Bugs (gefunden 2026-09-03):
+    //
+    // Mit fetch-seitigem `revalidate` legt Next die Antwort in den Data Cache. Läuft die
+    // Neuvalidierung später in einen Fehler (hier: api.zentrix-solutions.eu löst seit dem
+    // 24.08. per DNS nicht mehr auf), liefert Next die ALTE, erfolgreiche Antwort weiter
+    // (stale-while-revalidate). Aus Sicht dieses Moduls ist der Fetch damit erfolgreich —
+    // der try/catch-Fallback auf `null` greift nie. Folge: Die Seite meldete foodapp
+    // wochenlang als "operational", obwohl der Dienst gar nicht erreichbar war. Genau das
+    // verbietet die Grundregel dieses Projekts (nie Daten behaupten, die nicht real sind).
+    //
+    // Mit no-store geht jeder Aufruf wirklich ans Netz; fällt ein Dienst aus, wird daraus
+    // ehrlich `null` → "keine Live-Daten". Die Drosselung übernimmt das Modul-Memo in
+    // getProjectStatuses() weiter unten (höchstens ein Abfragedurchlauf pro Minute), nicht
+    // mehr das Framework.
     const res = await fetch(url, {
-      next: { revalidate: 60 },
+      cache: "no-store",
       signal: AbortSignal.timeout(3000),
     });
     if (!res.ok) return null;
@@ -91,15 +117,52 @@ async function fetchOne(id: string, url: string, schema: LiveStatus["schema"]): 
  * Ergebnis landet im initialen HTML, kein CORS, kein Client-Bundle-Overhead. Next dedupliziert/
  * cached über `revalidate: 60`, damit nicht jeder Seitenaufruf alle 5 externen Services anfragt.
  */
-export async function getProjectStatuses(): Promise<Record<string, LiveStatus | null>> {
+/**
+ * Selbst verwalteter Kurzzeit-Cache statt Framework-Caching.
+ *
+ * Warum nicht Next's Data Cache: dessen Fehlerverhalten war genau der Bug (siehe fetchOne) —
+ * bei fehlgeschlagener Neuvalidierung wird die letzte erfolgreiche Antwort weitergereicht, und
+ * eine tote Maschine erscheint weiter als "läuft". Hier wird stattdessen das *Ergebnis*
+ * gespeichert, inklusive Fehlschlägen: fällt ein Dienst aus, ist der gemerkte Wert `null` und
+ * die Seite sagt ehrlich "keine Live-Daten".
+ *
+ * Ein Modul-Level-Memo ist hier zulässig, weil dieser Dienst als genau ein langlebiger
+ * Container läuft (Docker Compose, eine Instanz) — bei horizontaler Skalierung hätte jede
+ * Instanz ihren eigenen Zähler, was hier folgenlos wäre (nur mehr Abfragen, nie falsche Daten).
+ *
+ * Effekt: Egal wie viel Verkehr die Seite hat, die fünf Dienste werden höchstens einmal pro
+ * Minute angefragt.
+ */
+const SNAPSHOT_TTL_MS = 60_000;
+let memo: { at: number; value: StatusSnapshot } | null = null;
+/** Verhindert, dass parallele Anfragen beim Ablauf gleichzeitig losfetchen (Thundering Herd). */
+let inFlight: Promise<StatusSnapshot> | null = null;
+
+export async function getProjectStatuses(): Promise<StatusSnapshot> {
+  if (memo && Date.now() - memo.at < SNAPSHOT_TTL_MS) return memo.value;
+  if (inFlight) return inFlight;
+
+  inFlight = fetchAllStatuses()
+    .then((value) => {
+      memo = { at: Date.now(), value };
+      return value;
+    })
+    .finally(() => {
+      inFlight = null;
+    });
+
+  return inFlight;
+}
+
+async function fetchAllStatuses(): Promise<StatusSnapshot> {
   const entries = Object.entries(STATUS_ENDPOINTS);
   const results = await Promise.allSettled(
     entries.map(([id, { url, schema }]) => fetchOne(id, url, schema))
   );
-  const out: Record<string, LiveStatus | null> = {};
+  const statuses: Record<string, LiveStatus | null> = {};
   entries.forEach(([id], i) => {
     const r = results[i];
-    out[id] = r.status === "fulfilled" ? r.value : null;
+    statuses[id] = r.status === "fulfilled" ? r.value : null;
   });
-  return out;
+  return { statuses, fetchedAt: new Date().toISOString() };
 }
