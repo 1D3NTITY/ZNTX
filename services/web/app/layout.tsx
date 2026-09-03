@@ -4,7 +4,7 @@ import { SmoothScroll } from "@/components/smooth-scroll";
 import { Footer } from "@/components/footer";
 import { Logo } from "@/components/logo";
 import { Nav } from "@/components/nav";
-import { AuroraBackground } from "@/components/aurora-background";
+import { CircuitBackground } from "@/components/circuit-background";
 import { CrtOverlay } from "@/components/crt-overlay";
 import "./globals.css";
 
@@ -84,13 +84,39 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif.variable} h-full antialiased dark`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        {/* Boot-Intro-Steuerung. Muss als ALLERERSTES im Body stehen und synchron laufen:
+            Die Klasse am <html> entscheidet, ob das Overlay (components/boot-intro.tsx)
+            überhaupt gemalt wird — und diese Entscheidung muss vor dem ersten Bildaufbau
+            fallen. Ein useEffect käme zu spät (gemessen 0,7-2,9 s nach Hydration), das Overlay
+            würde die schon sichtbare Seite nachträglich zudecken.
+            Reines Klassen-Umschalten, kein Inhalt wird hier erzeugt. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{
+var d=document.documentElement;
+var skip=false;
+try{if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)skip=true;}catch(e){}
+try{if(window.sessionStorage.getItem('zntx-boot-seen'))skip=true;}catch(e){}
+if(skip)return;
+d.classList.add('booting');
+try{window.sessionStorage.setItem('zntx-boot-seen','1');}catch(e){}
+var done=false;
+function end(){if(done)return;done=true;
+d.classList.add('boot-out');
+window.setTimeout(function(){d.classList.remove('booting','boot-out');},420);
+window.removeEventListener('keydown',end);window.removeEventListener('pointerdown',end);}
+window.setTimeout(end,1150);
+window.addEventListener('keydown',end);window.addEventListener('pointerdown',end);
+}catch(e){try{document.documentElement.classList.remove('booting');}catch(_){}}})();`,
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(JSON_LD).replace(/</g, "\\u003c"),
           }}
         />
-        <AuroraBackground />
+        <CircuitBackground />
         <Logo />
         <Nav />
         <SmoothScroll>

@@ -196,38 +196,6 @@ body {
   );
 }
 
-/* Aurora-Hintergrund (2026-08-28) — ersetzt den Matrix-Rain-Canvas. Große, verschwommene
-   Farbflächen in den Seiten-eigenen Akzenttönen statt Fremdfarben, niedrige Opazität, damit
-   Fließtext/Racks lesbar bleiben. Läuft über die bestehende prefers-reduced-motion-Regel
-   weiter unten automatisch ein (animation-duration: 0.01ms). */
-.aurora-blob {
-  position: absolute;
-  height: 42vw;
-  width: 42vw;
-  min-height: 380px;
-  min-width: 380px;
-  border-radius: 9999px;
-  filter: blur(110px);
-  opacity: 0.16;
-  will-change: transform;
-}
-.aurora-blob-1 { animation: aurora-drift-1 24s ease-in-out infinite; }
-.aurora-blob-2 { animation: aurora-drift-2 30s ease-in-out infinite; }
-.aurora-blob-3 { animation: aurora-drift-3 26s ease-in-out infinite; opacity: 0.12; }
-
-@keyframes aurora-drift-1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(6vw, 4vw) scale(1.12); }
-}
-@keyframes aurora-drift-2 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-5vw, -3vw) scale(1.06); }
-}
-@keyframes aurora-drift-3 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(4vw, -5vw) scale(0.92); }
-}
-
 /* Hero-Intro: Unterstrich hinter "zntx_" teilt sich kurz in zwei vertikale Linien (Symbol für
    die 2 Server) bevor Headline/Subline einblenden. Siehe ops-dashboard.tsx für die Steuerung
    (skip bei prefers-reduced-motion, siehe Media-Query unten). */
@@ -330,6 +298,90 @@ body {
   filter:
     drop-shadow(0 0 14px color-mix(in srgb, var(--accent) 45%, transparent))
     drop-shadow(0 0 40px color-mix(in srgb, var(--accent) 25%, transparent));
+}
+
+/* Boot-Intro. Standardmäßig unsichtbar: ohne JavaScript (und für Suchmaschinen) existiert das
+   Overlay damit faktisch nicht, der Inhalt ist sofort da. Sichtbar wird es nur, wenn das
+   Inline-Skript in layout.tsx die Klasse `booting` ans <html> hängt — das passiert synchron
+   vor dem ersten Bildaufbau. */
+#boot-intro {
+  display: none;
+}
+html.booting #boot-intro {
+  display: flex;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  align-items: center;
+  justify-content: center;
+  background: var(--background);
+}
+/* Zeilen erscheinen gestaffelt — animation-delay wird pro Zeile inline gesetzt. */
+html.booting #boot-intro .boot-line {
+  opacity: 0;
+  animation: boot-line-in 200ms ease-out forwards;
+}
+@keyframes boot-line-in {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: none; }
+}
+/* CRT-Abschalten: Bild kollabiert zu einer horizontalen Linie und verlischt — der
+   charakteristische Röhrenmonitor-Effekt beim Übergang zur Seite. */
+@keyframes boot-intro-out {
+  0% { transform: scaleY(1); opacity: 1; }
+  55% { transform: scaleY(0.012); opacity: 1; }
+  100% { transform: scaleY(0.012); opacity: 0; }
+}
+html.boot-out #boot-intro {
+  animation: boot-intro-out 420ms ease-in forwards;
+}
+
+/* Leiterbahnen-Hintergrund: rechtwinklige Bahnen mit Lötpunkten, als wiederholbares
+   inline-SVG-Muster (data:-URI, kein externer Request → CSP-konform). Zwei Ebenen mit
+   unterschiedlicher Größe und Geschwindigkeit erzeugen Tiefe, ohne echte 3D-Kosten.
+   Deckkraft absichtlich sehr niedrig — die Ebene liegt hinter Fließtext. */
+/* Bewegt wird per transform, NICHT per background-position: letzteres erzwingt pro Bild ein
+   vollflächiges Neuzeichnen beider Ebenen — gemessen 11 fps. transform läuft dagegen im
+   Compositor der Grafikkarte, ohne Neuzeichnen. Damit die Kachelung beim Verschieben nicht
+   abreißt, ist die Ebene um je eine Kachel größer als der Viewport und wandert um exakt eine
+   Kachelbreite, bevor die Animation neu beginnt — dadurch ist der Sprung unsichtbar. */
+.circuit-layer {
+  position: absolute;
+  top: -260px;
+  left: -260px;
+  width: calc(100% + 520px);
+  height: calc(100% + 520px);
+  background-repeat: repeat;
+  will-change: transform;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260' fill='none' stroke='%23ff9d2f' stroke-width='1'%3E%3Cpath d='M0 40h60v60h80V40h120M40 0v70h60v90h60v100M200 260V150h60V80h-40'/%3E%3Cpath d='M0 200h90v-40h70'/%3E%3Ccircle cx='60' cy='40' r='3' fill='%23ff9d2f' stroke='none'/%3E%3Ccircle cx='140' cy='40' r='3' fill='%23ff9d2f' stroke='none'/%3E%3Ccircle cx='100' cy='160' r='3' fill='%23ff9d2f' stroke='none'/%3E%3Ccircle cx='160' cy='160' r='3' fill='%23ff9d2f' stroke='none'/%3E%3Ccircle cx='260' cy='80' r='3' fill='%23ff9d2f' stroke='none'/%3E%3Ccircle cx='90' cy='200' r='3' fill='%23ff9d2f' stroke='none'/%3E%3C/svg%3E");
+}
+.circuit-near {
+  background-size: 260px 260px;
+  opacity: 0.055;
+  animation: circuit-drift-near 60s linear infinite;
+}
+.circuit-far {
+  background-size: 130px 130px;
+  opacity: 0.03;
+  animation: circuit-drift-far 110s linear infinite;
+}
+/* Verschiebung um genau eine Kachel — danach sieht das Muster identisch aus, der Neustart
+   der Animation ist deshalb nicht wahrnehmbar. */
+@keyframes circuit-drift-near {
+  to { transform: translate3d(260px, 260px, 0); }
+}
+@keyframes circuit-drift-far {
+  to { transform: translate3d(-130px, 130px, 0); }
+}
+
+/* Wanderndes Leuchten entlang der Flussleitungen zwischen den Racks. stroke-dashoffset
+   animiert den "Puls"; die Leitung selbst bleibt statisch sichtbar. */
+@keyframes flow-pulse {
+  to { stroke-dashoffset: -160; }
+}
+.flow-pulse {
+  stroke-dasharray: 5 155;
+  animation: flow-pulse 3.2s linear infinite;
 }
 
 /* Sanftes Pulsieren des Phosphors — echte Röhren sind nie absolut konstant. Bewusst extrem

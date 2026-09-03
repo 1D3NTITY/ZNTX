@@ -1,6 +1,13 @@
 import { OpsDashboard } from "@/components/ops-dashboard";
+import { BootIntro } from "@/components/boot-intro";
+import { PROJECTS } from "@/lib/content";
 import { getProjectStatuses } from "@/lib/status";
 import { formatSnapshotTime } from "@/lib/labels";
+
+// Gleiche Zählweise wie in ops-dashboard.tsx: zntx selbst ist ein Meta-Eintrag und zählt nicht
+// als betriebenes System mit (sonst widerspräche die Boot-Ausgabe der Headline "acht Systeme").
+const REAL_SYSTEMS = PROJECTS.filter((p) => p.id !== "zntx");
+const SYSTEMS_IN_OPERATION = REAL_SYSTEMS.filter((p) => p.status !== "archived").length;
 
 // Diese Seite rendert pro Aufruf (dynamisch), weil die Status-Fetches bewusst ungecacht laufen
 // — sonst würde eine ausgefallene Maschine weiter als "läuft" angezeigt (ausführliche
@@ -11,9 +18,17 @@ import { formatSnapshotTime } from "@/lib/labels";
 // lib/status.ts für Caching (revalidate: 60) und Fallback-Verhalten bei fehlgeschlagenen Fetches.
 export default async function Home() {
   const { statuses, fetchedAt } = await getProjectStatuses();
+  const fetchedAtLabel = formatSnapshotTime(fetchedAt);
   return (
     <main className="flex flex-1 flex-col">
-      <OpsDashboard statuses={statuses} fetchedAtLabel={formatSnapshotTime(fetchedAt)} />
+      {/* Statisches Server-Markup; sichtbar nur über die Klasse, die das Inline-Skript in
+          layout.tsx vor dem ersten Bildaufbau setzt. */}
+      <BootIntro
+        systems={REAL_SYSTEMS.length}
+        operational={SYSTEMS_IN_OPERATION}
+        fetchedAtLabel={fetchedAtLabel}
+      />
+      <OpsDashboard statuses={statuses} fetchedAtLabel={fetchedAtLabel} />
     </main>
   );
 }

@@ -9,6 +9,7 @@ import { RackSlot } from "@/components/rack-slot";
 import { OperatorProfileBody } from "@/components/operator-profile-body";
 import { ContactForm } from "@/components/contact-form";
 import { LiveTerminal } from "@/components/live-terminal";
+import { FlowLines } from "@/components/flow-lines";
 import type { LiveStatus } from "@/lib/status";
 
 // Eintritts-Animation beim Laden (2026-08-29) — Headline baut sich wortweise auf, danach
@@ -124,6 +125,10 @@ export function OpsDashboard({
     setOpenId("contact");
     document.getElementById("row-contact")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
+
+  // Anzahl tatsächlich erreichbarer Systeme — steuert, wie viele Flusspulse laufen dürfen.
+  // Kein geschätzter Wert: gezählt wird, wofür wirklich ein Live-Status vorliegt.
+  const reachableCount = Object.values(statuses).filter(Boolean).length;
 
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-16 lg:max-w-4xl lg:px-0 lg:py-24">
@@ -276,7 +281,7 @@ export function OpsDashboard({
 
       <motion.div
         id="systems"
-        className="grid grid-cols-1 gap-6 lg:grid-cols-2"
+        className="relative grid grid-cols-1 gap-6 lg:grid-cols-2"
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={
@@ -285,6 +290,10 @@ export function OpsDashboard({
             : { duration: 0.5, ease: "easeOut", delay: 0.55 }
         }
       >
+        {/* Liegt hinter den Racks (z-index 0) und füllt die Lücke zwischen ihnen — nur auf
+            breiten Schirmen, wo die beiden Racks nebeneinander stehen und dazwischen
+            überhaupt Platz für eine Verbindung ist. */}
+        <FlowLines activeCount={reachableCount} />
         <ServerRack
           label="Server 1"
           description={SERVER_DESCRIPTIONS["server-1"]}
