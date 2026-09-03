@@ -326,6 +326,12 @@ export const LINKS = {
 // belegten Rollen aus ROLE_FIT, nicht alle fünf (sonst keine Tagline mehr).
 export const HERO = {
   name: "Luis",
+  // Klartext-Einstieg (2026-09-03) — steht laut Zweitmeinungs-Runde (Recruiter-/Designer-Rolle,
+  // ChatGPT, alle unabhängig zum selben Befund gekommen) zu spät: die Flex-Headline darunter
+  // ("Zwei Server, acht Systeme...") ist in 3 Sekunden ohne Vorwissen nicht selbsterklärend,
+  // gerade für ein breites, nicht-technisches Publikum (Instagram/Snap-Bio-Link-Anforderung).
+  // Keine neue Behauptung — reine Vereinfachung von roleTagline/subline unten.
+  plainIntro: "Ich baue und betreibe Webseiten und Server — diese Seite zeigt live, was davon gerade läuft.",
   roleTagline: "Backend-/Full-Stack-Entwicklung · Server-/Infrastruktur-Administration",
   kicker: "§00 — SYSTEMS ON RECORD",
   // Zweizeilig für den Gradient-Headline-Stil (Alumica-Adaption 2026-08-27): erste Zeile

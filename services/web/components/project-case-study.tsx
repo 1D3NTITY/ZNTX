@@ -107,24 +107,33 @@ export function ProjectCaseStudyBody({
         </motion.div>
       )}
 
+      {/* Klartext-Lead vor dem Fachdetail (2026-09-03) — project.context war schon immer die
+          plain-language-Einordnung, stand aber optisch gleichrangig mit dem jargondichten
+          Beitrag/Herausforderung-Text im dl darunter. Herausgezogen, keine Textänderung an den
+          Feldern selbst, nur Struktur (Zweitmeinungs-Runde: "Wand aus Fachjargon ohne
+          Einordnung"). h2 rein für Screenreader-Sprungnavigation (Accessibility-Audit
+          2026-09-03: kein Zwischenheading im Detail-Block). */}
+      <motion.p
+        variants={item}
+        className="mb-6 max-w-prose text-base leading-relaxed text-foreground"
+      >
+        {project.context}
+      </motion.p>
+
+      <h2 className="sr-only">Projektdetails</h2>
       <motion.dl
         variants={item}
         className="grid grid-cols-1 gap-x-10 gap-y-5 sm:grid-cols-[140px_1fr]"
       >
         <dt className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
-          Kontext
-        </dt>
-        <dd className="text-sm leading-relaxed text-foreground">{project.context}</dd>
-
-        <dt className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
           Beitrag
         </dt>
-        <dd className="text-sm leading-relaxed text-foreground">{project.contribution}</dd>
+        <dd className="max-w-prose text-sm leading-relaxed text-foreground">{project.contribution}</dd>
 
         <dt className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
           Herausforderung
         </dt>
-        <dd className="text-sm leading-relaxed text-foreground">{project.challenge}</dd>
+        <dd className="max-w-prose text-sm leading-relaxed text-foreground">{project.challenge}</dd>
 
         <dt className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
           Stack

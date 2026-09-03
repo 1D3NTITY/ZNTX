@@ -69,6 +69,10 @@ export function DashboardRow({
           onClick={onToggle}
           aria-expanded={isOpen}
           aria-controls={panelId}
+          // Ohne aria-label liest ein Screenreader Titel- und Teaser-<span> ohne Trennzeichen
+          // als einen Lauftext vor ("Operator-ProfilWerdegang..." — Accessibility-Audit
+          // 2026-09-03). Überschreibt den berechneten Namen mit einer sauber getrennten Version.
+          aria-label={teaser ? `${title} — ${teaser}` : title}
           className="flex w-full flex-col gap-1 p-5 text-left outline-none focus-visible:ring-2 focus-visible:ring-accent-dim"
         >
           <span className="flex w-full items-center gap-3">

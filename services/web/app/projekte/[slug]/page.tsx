@@ -63,7 +63,7 @@ export default async function ProjectPage({
   const live = statuses[project.id] ?? null;
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-6 py-16 lg:px-0 lg:py-24">
+    <main className="mx-auto w-full max-w-3xl px-6 py-16 lg:px-0 lg:py-24">
       <Link
         href="/"
         className="inline-block font-mono text-xs uppercase tracking-widest text-accent hover:underline"
@@ -136,6 +136,6 @@ export default async function ProjectPage({
           LinkedIn ↗
         </a>
       </div>
-    </div>
+    </main>
   );
 }

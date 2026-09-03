@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PROJECTS, BIO } from "@/lib/content";
 import type { LiveStatus } from "@/lib/status";
 import { formatLiveStatus, formatProjectMeta, SERVER_LABEL } from "@/lib/labels";
+import { useReducedMotionPreference } from "@/lib/use-reduced-motion";
 
 // Live-Terminal (2026-09-03, docs/plans/live-wow-2026-09-03.md) — beantwortet getippte Befehle
 // mit den ECHTEN Daten aus dem Status-Snapshot, nicht mit Attrappen-Strings. Das ist der
@@ -140,20 +141,6 @@ function runCommand(
   }
 }
 
-// Reduced-Motion über useSyncExternalStore statt über einen Effect: Der Wert wird dadurch schon
-// beim Rendern gelesen, sodass sich die Boot-Ausgabe rein *ableiten* lässt und kein setState im
-// Effect-Body nötig ist (ESLint react-hooks/set-state-in-effect — dieselbe Regel, die in diesem
-// Projekt schon einmal einen Umbau erzwungen hat). Beim Hydrieren liefert getServerSnapshot
-// bewusst `false`, identisch zum Server — die tatsächliche Präferenz greift erst im Update
-// danach, wodurch kein Mismatch entstehen kann.
-function subscribeReducedMotion(onChange: () => void) {
-  const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-  mq.addEventListener("change", onChange);
-  return () => mq.removeEventListener("change", onChange);
-}
-const getReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const getReducedMotionServer = () => false;
-
 const LINE_CLASS: Record<Line["kind"], string> = {
   in: "text-foreground",
   out: "text-foreground",
@@ -176,11 +163,9 @@ export function LiveTerminal({
   // useReducedMotion o. ä. im initialen Render. Genau diese Bug-Klasse (Client-Hook löst beim
   // ersten Paint synchron auf, SSR sieht null) hat in diesem Projekt schon zweimal zu
   // Hydration-Mismatches geführt; die Boot-Animation startet deshalb erst im Effect.
-  const reduced = useSyncExternalStore(
-    subscribeReducedMotion,
-    getReducedMotion,
-    getReducedMotionServer
-  );
+  // Geteilter Hook (lib/use-reduced-motion.ts) statt eigener subscribeReducedMotion-Kopie —
+  // dieselbe Logik existierte vorher dreifach unabhängig im Projekt (Security-Review 2026-09-03).
+  const reduced = useReducedMotionPreference();
 
   const boot: Line[] = useMemo(
     () => [
@@ -254,7 +239,7 @@ export function LiveTerminal({
   }
 
   return (
-    <section aria-labelledby="terminal-heading" className="mt-10">
+    <section aria-labelledby="terminal-heading" className="mt-6 sm:mt-10">
       <h2 id="terminal-heading" className="sr-only">
         Interaktives Live-Terminal
       </h2>
@@ -274,7 +259,7 @@ export function LiveTerminal({
 
         <div
           ref={scrollRef}
-          className="h-72 overflow-y-auto px-4 py-4 font-mono text-[12px] leading-relaxed sm:text-[13px]"
+          className="h-56 overflow-y-auto px-4 py-4 font-mono text-[12px] leading-relaxed sm:h-72 sm:text-[13px]"
         >
           {/* aria-live: getippte Antworten werden vorgelesen, ohne dass der Fokus springt. */}
           <div aria-live="polite" aria-atomic="false">
@@ -300,7 +285,7 @@ export function LiveTerminal({
                 onChange={(e) => setValue(e.target.value)}
                 autoComplete="off"
                 spellCheck={false}
-                className="min-w-0 flex-1 bg-transparent text-foreground caret-accent outline-none placeholder:text-foreground-muted/60"
+                className="min-w-0 flex-1 rounded bg-transparent text-foreground caret-accent outline-none placeholder:text-foreground-muted/60 focus-visible:ring-2 focus-visible:ring-accent-dim"
                 placeholder="help"
               />
             </form>

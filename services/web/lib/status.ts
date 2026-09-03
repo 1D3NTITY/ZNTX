@@ -35,9 +35,10 @@ export type LiveStatus = BasicLiveStatus | UptimeLiveStatus | BadgeLiveStatus;
 
 /**
  * Ein Abruf-Ergebnis hat fachlich immer einen Zeitpunkt — ohne den lässt sich in der UI nicht
- * ehrlich behaupten, die Daten seien gerade erst geholt worden. Wichtig: wegen `revalidate: 60`
- * (siehe fetchOne) ist `fetchedAt` der Zeitpunkt des letzten *echten* Abrufs, nicht der des
- * Seitenaufrufs — die UI beschriftet das deshalb als "Stand", nicht als "jetzt".
+ * ehrlich behaupten, die Daten seien gerade erst geholt worden. Wichtig: wegen des 60s-Memos
+ * in getProjectStatuses() (siehe unten) ist `fetchedAt` der Zeitpunkt des letzten *echten*
+ * Abrufs, nicht der des Seitenaufrufs — die UI beschriftet das deshalb als "Stand", nicht
+ * als "jetzt".
  */
 export type StatusSnapshot = {
   statuses: Record<string, LiveStatus | null>;
@@ -113,12 +114,9 @@ async function fetchOne(id: string, url: string, schema: LiveStatus["schema"]): 
 }
 
 /**
- * Server-seitig aufrufen (Server Component), nicht clientseitig pollen — ein Fetch-Punkt,
- * Ergebnis landet im initialen HTML, kein CORS, kein Client-Bundle-Overhead. Next dedupliziert/
- * cached über `revalidate: 60`, damit nicht jeder Seitenaufruf alle 5 externen Services anfragt.
- */
-/**
- * Selbst verwalteter Kurzzeit-Cache statt Framework-Caching.
+ * Selbst verwalteter Kurzzeit-Cache statt Framework-Caching. Server-seitig aufrufen (Server
+ * Component), nicht clientseitig pollen — ein Fetch-Punkt, Ergebnis landet im initialen HTML,
+ * kein CORS, kein Client-Bundle-Overhead.
  *
  * Warum nicht Next's Data Cache: dessen Fehlerverhalten war genau der Bug (siehe fetchOne) —
  * bei fehlgeschlagener Neuvalidierung wird die letzte erfolgreiche Antwort weitergereicht, und

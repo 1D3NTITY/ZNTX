@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useReducedMotionPreference } from "@/lib/use-reduced-motion";
 
 // Amber-Phosphor-CRT-Overlay (2026-09-03) — legt Scanlines, Filmkorn, Vignette und ein
 // mausreaktives Spotlight über die gesamte Seite. Alle Schichten sind rein dekorativ:
@@ -14,17 +15,20 @@ import { useEffect, useRef } from "react";
 // pro Frame passiert.
 export function CrtOverlay() {
   const spotRef = useRef<HTMLDivElement>(null);
+  // useSyncExternalStore statt einmaligem matchMedia-Read beim Mount (Accessibility-Audit
+  // 2026-09-03: ein OS-seitiger Wechsel von Reduced-Motion mitten in der Session wurde vorher
+  // ignoriert, bis zum nächsten Laden). Jetzt reagiert der Effect unten korrekt darauf.
+  const reducedMotion = useReducedMotionPreference();
 
   useEffect(() => {
+    // Bewegungsempfindliche Nutzer bekommen den ruhenden Lichtkegel aus der CSS-Media-Query,
+    // kein cursor-getriebenes Wandern.
+    if (reducedMotion) return;
+
     // Zeigergeräte-Prüfung: Auf Touch-Geräten gibt es keinen schwebenden Cursor, das Spotlight
     // bliebe dort einfach in der Mitte stehen — dann sparen wir uns die Listener komplett.
     const finePointer = window.matchMedia("(pointer: fine)");
     if (!finePointer.matches) return;
-
-    // Bewegungsempfindliche Nutzer bekommen den ruhenden Lichtkegel aus der CSS-Media-Query,
-    // kein cursor-getriebenes Wandern.
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (reduced.matches) return;
 
     let frame = 0;
     const onMove = (e: PointerEvent) => {
@@ -43,7 +47,7 @@ export function CrtOverlay() {
       window.removeEventListener("pointermove", onMove);
       if (frame) cancelAnimationFrame(frame);
     };
-  }, []);
+  }, [reducedMotion]);
 
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-30">

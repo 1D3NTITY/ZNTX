@@ -256,10 +256,14 @@ body {
 
 /* Röhren-Vignette: Ränder fallen ab wie bei einer gewölbten Bildröhre. */
 .crt-vignette {
+  /* Spitzenwert 0.55 → 0.28 (Accessibility-Audit 2026-09-03, echt per Pixel-Sampling gemessen,
+     nicht nur CSS-Werte verglichen): Text nahe der Bildschirmecke — z. B. der Footer — fiel real
+     unter WCAG AA, weil die Vignette dort am stärksten abdunkelt. Strukturell behoben statt nur
+     am Footer, da jeder künftige Text nahe einer Ecke demselben Risiko ausgesetzt wäre. */
   background: radial-gradient(
     ellipse at center,
     transparent 55%,
-    rgba(0, 0, 0, 0.55) 100%
+    rgba(0, 0, 0, 0.28) 100%
   );
 }
 

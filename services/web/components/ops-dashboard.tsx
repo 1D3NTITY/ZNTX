@@ -159,7 +159,14 @@ export function OpsDashboard({
           >
             {HERO.kicker}
           </motion.p>
-          <h1 className="mt-3 font-sans text-3xl font-semibold tracking-tight sm:text-4xl">
+          <motion.p
+            variants={heroItem}
+            transition={reducedMotion ? { duration: 0 } : undefined}
+            className="mt-3 max-w-xl text-base font-medium text-foreground sm:text-lg"
+          >
+            {HERO.plainIntro}
+          </motion.p>
+          <h1 className="mt-4 font-sans text-3xl font-semibold tracking-tight sm:text-4xl">
             <span className="text-gradient-muted block">
               <AnimatedWords text={HERO.headlineLead} delay={0.15} reducedMotion={reducedMotion} />
             </span>
@@ -213,27 +220,31 @@ export function OpsDashboard({
           <motion.div
             variants={heroItem}
             transition={reducedMotion ? { duration: 0 } : undefined}
-            className="mt-8 grid max-w-xl grid-cols-1 gap-px overflow-hidden rounded-lg border border-border sm:grid-cols-3"
+            className="mt-8 grid max-w-xl grid-cols-3 gap-px overflow-hidden rounded-lg border border-border"
           >
-            <div className="bg-surface p-4">
-              <p className="font-mono text-[11px] uppercase tracking-widest text-foreground-muted">
+            {/* grid-cols-3 auch auf Mobile (statt vorher gestapelt) — Teil der Mobile-
+                Straffung 2026-09-03: drei schmale Spalten nebeneinander statt drei volle
+                Zeilen untereinander verkürzen die Seite spürbar bis zu den Racks, ohne
+                Information zu verlieren. */}
+            <div className="bg-surface p-2.5 sm:p-4">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-foreground-muted sm:text-[11px]">
                 Maschinen
               </p>
-              <p className="mt-1 text-sm font-semibold text-foreground">2 physische Root-Server</p>
+              <p className="mt-1 text-xs font-semibold text-foreground sm:text-sm">2 physische Root-Server</p>
             </div>
-            <div className="bg-surface p-4">
-              <p className="font-mono text-[11px] uppercase tracking-widest text-foreground-muted">
+            <div className="bg-surface p-2.5 sm:p-4">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-foreground-muted sm:text-[11px]">
                 Systeme im Betrieb
               </p>
-              <p className="mt-1 text-sm font-semibold text-foreground">
+              <p className="mt-1 text-xs font-semibold text-foreground sm:text-sm">
                 {SYSTEMS_IN_OPERATION} von {REAL_SYSTEMS.length}
               </p>
             </div>
-            <div className="bg-surface p-4">
-              <p className="font-mono text-[11px] uppercase tracking-widest text-foreground-muted">
+            <div className="bg-surface p-2.5 sm:p-4">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-foreground-muted sm:text-[11px]">
                 Verantwortung
               </p>
-              <p className="mt-1 text-sm font-semibold text-foreground">Alleinbetrieb</p>
+              <p className="mt-1 text-xs font-semibold text-foreground sm:text-sm">Alleinbetrieb</p>
             </div>
           </motion.div>
         </motion.div>
@@ -271,8 +282,8 @@ export function OpsDashboard({
       </div>
 
       {/* Beweis der Frische: ohne Zeitstempel ist "live" eine Behauptung. Bewusst als "Stand"
-          beschriftet, nicht als "jetzt" — durch revalidate:60 sind die Daten bis zu eine
-          Minute alt, und das soll die Seite nicht schönreden. */}
+          beschriftet, nicht als "jetzt" — durch das 60s-Memo in lib/status.ts sind die Daten
+          bis zu eine Minute alt, und das soll die Seite nicht schönreden. */}
       {fetchedAtLabel && (
         <p className="mb-3 font-mono text-[11px] text-accent/80">
           Live-Daten abgerufen um {fetchedAtLabel} · erneuert sich alle 60 Sekunden
@@ -325,7 +336,10 @@ export function OpsDashboard({
         <div id="row-operator">
           <DashboardRow
             title="Operator-Profil"
-            teaser="Werdegang, Arbeitsweise, wofür die Skills geeignet sind"
+            // Nennt bewusst einen konkreten Fakt statt nur eine Kategorie (Zweitmeinungs-Runde
+            // 2026-09-03: "null Persönlichkeits-Signal vor dem Aufklappen") — Drohnen-Hobby war
+            // bereits in BIO.passion hinterlegt, stand aber nur im eingeklappten Akkordeon.
+            teaser="Werdegang, Arbeitsweise — nebenbei FPV-Drohnen-Fotografie"
             isOpen={openId === "operator"}
             onToggle={() => toggle("operator")}
           >

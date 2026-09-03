@@ -5,7 +5,11 @@ export function Footer() {
   return (
     <footer className="mx-auto w-full max-w-6xl px-6 py-10">
       <div className="flex flex-col gap-3 border-t border-border pt-6 font-mono text-xs text-foreground-muted sm:flex-row sm:items-center sm:justify-between">
-        <span>© {new Date().getFullYear()} zntx.de</span>
+        {/* text-foreground statt -muted (Accessibility-Audit 2026-09-03): der Footer sitzt in
+            der Bildschirmecke, wo die .crt-vignette am stärksten abdunkelt — echt per
+            Pixel-Sampling gemessen blieb der Kontrast selbst nach Abschwächen der Vignette
+            unter WCAG AA. Direkt am Text behoben statt die Vignette noch weiter zu verwässern. */}
+        <span className="text-foreground">© {new Date().getFullYear()} zntx.de</span>
         <nav className="flex gap-4">
           <a href="#row-contact" className="hover:text-accent">
             Kontakt
