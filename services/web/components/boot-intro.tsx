@@ -21,14 +21,38 @@
 //  • aria-hidden: für Screenreader nicht vorhanden, der eigentliche Inhalt liegt vollständig
 //    im DOM darunter.
 
-function BootLine({ text, index }: { text: string; index: number }) {
+function BootLine({
+  text,
+  index,
+  decode = false,
+}: {
+  text: string;
+  index: number;
+  /** Nur die erste, symbolträchtigste Zeile bekommt das Zeichen-Decode-Flackern (2026-09-04,
+   *  Luis: "richtig krass, glitch, omfg-Faktor") — bewusst nicht auf allen Zeilen, damit die
+   *  Gesamtverzögerung sicher innerhalb des bestehenden ~1150ms-Auto-Dismiss-Budgets bleibt und
+   *  der Effekt als gezielte Signatur wirkt statt als Dauerflimmern. Bleibt server-gerendertes
+   *  reines CSS — Text ist zum Render-Zeitpunkt bekannt, kein Client-JS, kein neues
+   *  Hydration-Risiko in dieser bewusst client-JS-freien Datei (siehe Datei-Kopfkommentar). */
+  decode?: boolean;
+}) {
   return (
     <div
       className="boot-line glow-amber whitespace-pre"
       // Gestaffeltes Erscheinen rein über CSS — kein JavaScript-Timer pro Zeile nötig.
       style={{ animationDelay: `${index * 110}ms` }}
     >
-      {text}
+      {decode
+        ? text.split("").map((char, i) => (
+            <span
+              key={i}
+              className="boot-char"
+              style={{ animationDelay: `${index * 110 + i * 6}ms` }}
+            >
+              {char}
+            </span>
+          ))
+        : text}
     </div>
   );
 }
@@ -56,7 +80,7 @@ export function BootIntro({
     <div id="boot-intro" aria-hidden="true">
       <div className="w-full max-w-md px-8 font-mono text-[12px] leading-relaxed text-accent sm:text-[13px]">
         {lines.map((line, i) => (
-          <BootLine key={i} text={line} index={i} />
+          <BootLine key={i} text={line} index={i} decode={i === 0} />
         ))}
         <div className="mt-4 h-px w-full bg-accent/30" />
         <p className="mt-3 text-[11px] text-foreground-muted">

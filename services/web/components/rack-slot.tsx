@@ -61,10 +61,10 @@ export function RackSlot({
   return (
     <Link
       href={`/projekte/${project.id}`}
-      className={`group flex items-center gap-3 rounded border p-3 outline-none transition-all duration-300 focus-visible:ring-2 focus-visible:ring-accent-dim ${
+      className={`group relative flex items-center gap-3 overflow-hidden rounded border p-3 outline-none transition-all duration-300 focus-visible:ring-2 focus-visible:ring-accent-dim ${
         dimmed
           ? "border-border/60 opacity-60 hover:opacity-90"
-          : "border-border hover:border-[var(--card-accent,var(--foreground-muted))] hover:shadow-[0_0_20px_color-mix(in_srgb,var(--card-accent,transparent)_16%,transparent)]"
+          : "rack-slot-glitch border-border hover:border-[var(--card-accent,var(--foreground-muted))] hover:shadow-[0_0_20px_color-mix(in_srgb,var(--card-accent,transparent)_16%,transparent)]"
       }`}
       style={{ ["--card-accent" as string]: project.accentColor }}
     >

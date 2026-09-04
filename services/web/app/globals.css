@@ -196,6 +196,57 @@ body {
   );
 }
 
+/* Hover-/Focus-Glitch auf Rack-Slots (2026-09-04) — Karte hat gemischten Inhalt (Vents, Name,
+   LED, Meta, Pfeil), kein einzelner Textknoten wie bei .glitch-text — deshalb ein horizontaler
+   Farbriss über die ganze Karte statt eines Text-Duplikats, eingefärbt mit der bereits pro
+   Projekt gesetzten --card-accent-Variable (rack-slot.tsx), damit jedes Projekt in seiner
+   eigenen Akzentfarbe glitcht statt eine neue Farbquelle einzuführen.
+   animation-iteration-count: 1 ist hier der entscheidende Teil: der Burst spielt genau EINMAL
+   pro Hover-/Focus-Eintritt und bleibt danach unsichtbar, selbst wenn der Zeiger lange auf der
+   Karte stehen bleibt — macht "kurzer Burst" statt "Dauerflackern" strukturell garantiert, ganz
+   ohne zusätzliche JS-Guard-Logik. */
+.rack-slot-glitch::before,
+.rack-slot-glitch::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: screen;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--card-accent, var(--accent)) 35%, transparent),
+    transparent
+  );
+}
+.rack-slot-glitch::before {
+  clip-path: inset(15% 0 60% 0);
+}
+.rack-slot-glitch::after {
+  clip-path: inset(65% 0 10% 0);
+}
+.rack-slot-glitch:hover::before,
+.rack-slot-glitch:focus-visible::before {
+  animation: rack-glitch-1 260ms steps(1) 1;
+}
+.rack-slot-glitch:hover::after,
+.rack-slot-glitch:focus-visible::after {
+  animation: rack-glitch-2 260ms steps(1) 1;
+}
+@keyframes rack-glitch-1 {
+  0% { opacity: 0; transform: translate3d(0, 0, 0); }
+  30% { opacity: 0.85; transform: translate3d(-4px, 0, 0); }
+  60% { opacity: 0.85; transform: translate3d(3px, 0, 0); }
+  100% { opacity: 0; transform: translate3d(0, 0, 0); }
+}
+@keyframes rack-glitch-2 {
+  0% { opacity: 0; transform: translate3d(0, 0, 0); }
+  35% { opacity: 0.85; transform: translate3d(4px, 0, 0); }
+  65% { opacity: 0.85; transform: translate3d(-3px, 0, 0); }
+  100% { opacity: 0; transform: translate3d(0, 0, 0); }
+}
+
 /* Hero-Intro: Unterstrich hinter "zntx_" teilt sich kurz in zwei vertikale Linien (Symbol für
    die 2 Server) bevor Headline/Subline einblenden. Siehe ops-dashboard.tsx für die Steuerung
    (skip bei prefers-reduced-motion, siehe Media-Query unten). */
@@ -304,6 +355,67 @@ body {
     drop-shadow(0 0 40px color-mix(in srgb, var(--accent) 25%, transparent));
 }
 
+/* Ambienter Signal-Tear-Glitch (2026-09-04, Luis: "richtig krass, glitch, omfg-Faktor") —
+   bewusst KEIN klassischer rot/cyan-RGB-Split (das wäre VHS-/LCD-Ästhetik, nicht CRT-Phosphor,
+   und würde die Amber-exklusive Farbregel brechen). Stattdessen zwei phasenverschobene
+   Geister-Duplikate des Texts in --accent-orange/--accent-core, die kurz aufblitzen und wieder
+   verschwinden — liest sich als Signal-Riss, bleibt aber eindeutig derselbe Phosphor-Ton.
+   Braucht `data-text="..."` auf dem Zielelement (content: attr(data-text) auf den Pseudo-
+   Elementen) sowie explizite `color` dort, weil .text-gradient-accent `color: transparent`
+   setzt (Verlauf per background-clip) — sonst wäre das Duplikat unsichtbar.
+
+   Fps-Regression gefunden und isoliert (nicht nur vermutet — per Playwright-fps-Messung
+   durchgetestet, gleiche Methode wie beim früheren circuit-background-Fund): eine DAUERHAFT
+   laufende CSS-Animation (auch mit steps(1), auch ohne mix-blend-mode, auch ohne animiertes
+   clip-path) zwingt den Browser, zwei volltextgroße, absolut positionierte Ebenen die ganze
+   Sitzung über compositing-aktiv zu halten — nicht nur während des 140ms-Bursts. Gemessen:
+   ~53fps Baseline → ~30fps mit der Endlos-Zyklus-Variante. Deshalb jetzt KEIN infinite-Loop in
+   CSS mehr: die Animation existiert nur als Ein-Klasse-Einmal-Burst (`is-glitching`,
+   `animation-iteration-count: 1`), ausgelöst per JS-Timer in ops-dashboard.tsx (gleiche
+   Direkt-DOM-Technik wie crt-overlay.tsx fürs Spotlight — kein React-Re-Render pro Burst).
+   Damit existiert die Animation nur für ~300ms alle paar Sekunden, nicht permanent — löst auch
+   das WCAG-2.3.1-Anfallsicherheits-Ziel (kurzer, seltener Burst) strukturell statt nur über die
+   Zykluslänge. */
+.glitch-text {
+  position: relative;
+}
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  background: none;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0;
+}
+.glitch-text::before {
+  color: var(--accent-orange);
+  clip-path: inset(0 0 65% 0);
+}
+.glitch-text::after {
+  color: var(--accent-core);
+  clip-path: inset(60% 0 0 0);
+}
+.glitch-text.is-glitching::before {
+  animation: glitch-burst-1 280ms steps(1) 1;
+}
+.glitch-text.is-glitching::after {
+  animation: glitch-burst-2 280ms steps(1) 1;
+}
+@keyframes glitch-burst-1 {
+  0% { opacity: 0; transform: translate3d(0, 0, 0); clip-path: inset(0 0 65% 0); }
+  35% { opacity: 0.9; transform: translate3d(-3px, 0, 0); clip-path: inset(10% 0 55% 0); }
+  70% { opacity: 0.9; transform: translate3d(2px, 0, 0); clip-path: inset(35% 0 20% 0); }
+  100% { opacity: 0; transform: translate3d(0, 0, 0); clip-path: inset(0 0 65% 0); }
+}
+@keyframes glitch-burst-2 {
+  0% { opacity: 0; transform: translate3d(0, 0, 0); clip-path: inset(60% 0 0 0); }
+  30% { opacity: 0.9; transform: translate3d(3px, 0, 0); clip-path: inset(50% 0 5% 0); }
+  65% { opacity: 0.9; transform: translate3d(-2px, 0, 0); clip-path: inset(20% 0 40% 0); }
+  100% { opacity: 0; transform: translate3d(0, 0, 0); clip-path: inset(60% 0 0 0); }
+}
+
 /* Boot-Intro. Standardmäßig unsichtbar: ohne JavaScript (und für Suchmaschinen) existiert das
    Overlay damit faktisch nicht, der Inhalt ist sofort da. Sichtbar wird es nur, wenn das
    Inline-Skript in layout.tsx die Klasse `booting` ans <html> hängt — das passiert synchron
@@ -328,6 +440,20 @@ html.booting #boot-intro .boot-line {
 @keyframes boot-line-in {
   from { opacity: 0; transform: translateY(3px); }
   to { opacity: 1; transform: none; }
+}
+/* Zeichen-Decode-Flackern (2026-09-04) — nur auf der ersten Boot-Zeile (boot-intro.tsx steuert
+   das per `decode`-Prop), pro Zeichen ein eigener, sehr kleiner animationDelay-Versatz. Bleibt
+   reines Server-Markup + CSS, kein Client-JS: der Text ist beim Rendern bereits bekannt, hier
+   wird nur das Einblenden pro Zeichen animiert statt zeilenweise. */
+html.booting #boot-intro .boot-char {
+  display: inline-block;
+  opacity: 0;
+  animation: boot-char-decode 260ms ease-out both;
+}
+@keyframes boot-char-decode {
+  0% { opacity: 0; color: var(--accent-orange); filter: blur(2px); transform: translateY(2px); }
+  40% { opacity: 1; color: var(--accent-core); filter: blur(0); transform: none; }
+  100% { opacity: 1; color: inherit; filter: none; transform: none; }
 }
 /* CRT-Abschalten: Bild kollabiert zu einer horizontalen Linie und verlischt — der
    charakteristische Röhrenmonitor-Effekt beim Übergang zur Seite. */
@@ -413,5 +539,22 @@ html.boot-out #boot-intro {
       color-mix(in srgb, var(--accent) 7%, transparent) 0%,
       transparent 70%
     ) !important;
+  }
+  /* Defensive Zusatzregeln für die neuen Glitch-Effekte (2026-09-04) — die generelle
+     0.01ms-Kollaps-Regel oben lässt jede Animation ohnehin sofort in ihrem Endzustand landen
+     (bei allen dreien: unsichtbar/neutral), diese Zeilen sind billige Absicherung gegen
+     Browser-Eigenheiten, gleiches Muster wie die .crt-spotlight-Ausnahme direkt darüber. */
+  .glitch-text.is-glitching::before,
+  .glitch-text.is-glitching::after,
+  .rack-slot-glitch::before,
+  .rack-slot-glitch::after {
+    opacity: 0 !important;
+  }
+  /* Hier wichtiger als bei rein dekorativen Effekten: die Zeichen SIND der Boot-Status-Inhalt,
+     nicht nur Deko — muss lesbar auf Endzustand landen, nicht nur unsichtbar. */
+  .boot-char {
+    opacity: 1 !important;
+    filter: none !important;
+    color: inherit !important;
   }
 }
