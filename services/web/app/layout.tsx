@@ -82,6 +82,15 @@ export default function RootLayout({
     <html
       lang="de"
       className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif.variable} h-full antialiased dark`}
+      // Das Boot-Intro-Inline-Skript (unten im Body) setzt/entfernt "booting"/"boot-out" auf
+      // dieser className, bevor React hydratisiert — das ist Absicht (siehe Kommentar dort), aber
+      // React vergleicht bei jedem Laden den serverseitigen className-String mit dem inzwischen
+      // vom Skript veränderten und wirft einen Hydration-Mismatch-Fehler in der Konsole (gefunden
+      // beim finalen Release-Check, 2026-09-04) — bei jedem einzigen Seitenaufruf, für jeden
+      // Besucher. React akzeptiert die Client-Version ohnehin ("wird nicht nachträglich
+      // gepatcht"), suppressHydrationWarning unterdrückt nur die irreführende Fehlermeldung für
+      // diesen einen, bewusst abweichenden Fall.
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         {/* Boot-Intro-Steuerung. Muss als ALLERERSTES im Body stehen und synchron laufen:

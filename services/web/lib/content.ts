@@ -340,8 +340,13 @@ export const HERO = {
   // ergeben beide weiterhin den vollständigen Satz "Zwei Server, acht Systeme, ein Betreiber."
   headlineLead: "Zwei Server,",
   headlineEmphasis: "acht Systeme, ein Betreiber.",
+  // Gekürzt (2026-09-04, finaler Release-Check): der erste Satz wiederholte fast wörtlich, was
+  // plainIntro direkt darüber schon sagt ("baue/betreibe... läuft") und was headlineEmphasis
+  // schon zeigt ("acht Systeme") — reine Redundanz in der ohnehin langen Hero-Textkette, gerade
+  // auf Mobile relevant. Der zweite Satz (Lagerbereich-Kontrast) bleibt, weil er die einzige neue
+  // Information ist: keine Tatsache entfernt, nur die Doppelung gestrichen.
   subline:
-    "Entwickle und betreibe produktive Web- und Server-Systeme — acht Systeme auf zwei eigenen Servern, im laufenden Betrieb, nicht nur konzipiert. Beruflich aktuell im Lagerbereich, nebenbei volle Infrastruktur-Verantwortung.",
+    "Beruflich aktuell im Lagerbereich — nebenbei volle Infrastruktur-Verantwortung für acht produktive Systeme auf zwei eigenen Servern.",
 };
 
 export const BIO = {
