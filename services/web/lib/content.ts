@@ -314,10 +314,36 @@ export const ROLE_FIT = [
   },
 ];
 
+// Selbst gefunden, selbst behoben (2026-09-07, Recherche-Synthese: "unklare Eigenleistung"/
+// "nur Erfolge zeigen" sind die am häufigsten dokumentierten Vertrauens-Killer bei technischen
+// Portfolios — genau das Gegenteil davon steckt schon in den challenge/outcome-Feldern oben,
+// war aber nur tief auf den Projekt-Unterseiten sichtbar). Neu formulierte Kurzfassungen (NICHT
+// die langen challenge-Absätze kopiert — eigene knappe Zusammenfassung derselben, bereits oben
+// dokumentierten Fakten), jede Zeile verlinkt auf die bestehende Projekt-Seite für den vollen
+// Kontext. Keine neuen Behauptungen.
+export const INCIDENTS = [
+  {
+    projectId: "qntx",
+    summary: "Fehlerhafte Fee-Berechnung im eigenen ~150-Punkte-Sicherheitsaudit gefunden.",
+  },
+  {
+    projectId: "buchhaltung",
+    summary: "Exponierte interne Endpunkte im eigenen 40-Punkte-Sicherheitsaudit gefunden.",
+  },
+  {
+    projectId: "n8n-automation",
+    summary: "Eskalierte Automatisierung erzwang kompletten Server-Reset — Ursprung der heutigen Betriebsdisziplin.",
+  },
+];
+
 export const LINKS = {
   linkedin: "https://www.linkedin.com/in/luis-b-668750319/",
   contactEmail: "kontakt@zntx.de",
 };
+
+// Für den Git-SHA-Footer-Link (2026-09-07) — Repo wird als Teil derselben Änderung öffentlich
+// gepusht, siehe docs/plans-Kommentar bzw. Session-Verlauf.
+export const GITHUB_REPO = "https://github.com/1D3NTITY/zntx";
 
 // name/roleTagline ergänzt (Feedback 2026-07-26, Headhunter-Perspektive):
 // Name stand vorher nur in Meta-Tags/der LinkedIn-URL, nirgends sichtbar auf

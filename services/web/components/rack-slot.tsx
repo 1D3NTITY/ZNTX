@@ -77,8 +77,20 @@ export function RackSlot({
           </span>
           {!dimmed && <LiveLed live={live ?? null} />}
         </span>
-        <span className="block truncate font-mono text-[11px] uppercase tracking-widest text-foreground-muted">
-          {formatProjectMeta(project)}
+        <span className="flex items-center gap-2">
+          <span className="min-w-0 flex-1 truncate font-mono text-[11px] uppercase tracking-widest text-foreground-muted">
+            {formatProjectMeta(project)}
+          </span>
+          {/* Attributions-Tag (2026-09-07, Recherche-Synthese) — löst den häufigsten
+              Glaubwürdigkeits-Einwand ("unklare Eigenleistung") direkt auf der Startseite, ohne
+              Klick. Bewusst knapp (2 Wörter, kein Fließtext) statt die ausführliche myWork-Box
+              der Projekt-Unterseite zu verdoppeln — die volle Formulierung steht dort bereits.
+              Nur gerendert wo das Feld wirklich gesetzt ist, keine pauschale Annahme. */}
+          {!dimmed && project.myWork && (
+            <span className="shrink-0 font-mono text-[10px] uppercase tracking-widest text-accent/70">
+              eigene Arbeit
+            </span>
+          )}
         </span>
         {liveDetail && (
           <span className="mt-0.5 block truncate font-mono text-[11px] text-accent/80">

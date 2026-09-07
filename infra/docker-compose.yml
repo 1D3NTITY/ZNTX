@@ -21,6 +21,13 @@ services:
       dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${TURNSTILE_SITE_KEY:-}
+        # Git-SHA-Provenance im Footer (2026-09-07, Recherche-Synthese) — kommt NICHT automatisch
+        # von hier, docker-compose kann kein Shell-Kommando ausführen. Der Deploy-Befehl muss
+        # GIT_SHA selbst setzen, z.B.:
+        #   GIT_SHA=$(git rev-parse --short HEAD) docker compose -f infra/docker-compose.yml \
+        #     --project-directory . build zntx-web
+        # Ohne gesetztes GIT_SHA fällt es auf "unknown" zurück statt einen falschen Stand zu zeigen.
+        NEXT_PUBLIC_GIT_SHA: ${GIT_SHA:-unknown}
     restart: unless-stopped
     environment:
       - TZ=Europe/Berlin

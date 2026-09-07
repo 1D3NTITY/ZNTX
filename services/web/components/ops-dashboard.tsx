@@ -6,6 +6,7 @@ import { PROJECTS, HERO, LINKS } from "@/lib/content";
 import { DashboardRow } from "@/components/dashboard-row";
 import { ServerRack } from "@/components/server-rack";
 import { RackSlot } from "@/components/rack-slot";
+import { IncidentLog } from "@/components/incident-log";
 import { OperatorProfileBody } from "@/components/operator-profile-body";
 import { ContactForm } from "@/components/contact-form";
 import { LiveTerminal } from "@/components/live-terminal";
@@ -87,10 +88,14 @@ function AnimatedWords({
 // Kontakt sind keine "Projekte" und bleiben als Akkordeon-Zeilen (DashboardRow) unterhalb.
 const SERVER_1_PROJECTS = PROJECTS.filter((p) => p.server === "server-1");
 const SERVER_2_PROJECTS = PROJECTS.filter((p) => p.server === "server-2");
-// Projekte ohne server-Feld (aktuell nur n8n-automation, historisch — verursachte den Server-
-// Reset, gehört ehrlicherweise keinem der beiden aktiven Racks) landen in einer separaten,
-// gedimmten Archiv-Ablage statt künstlich einem Server zugeordnet zu werden.
-const ARCHIVED_PROJECTS = PROJECTS.filter((p) => !p.server);
+// Projekte ohne server-Feld landen in einer separaten, gedimmten Archiv-Ablage statt künstlich
+// einem Server zugeordnet zu werden. n8n-automation ist aktuell das einzige (historisch —
+// verursachte den Server-Reset, gehört keinem der beiden aktiven Racks), wird hier aber bewusst
+// ausgeschlossen: es bekommt seit 2026-09-07 eine eigene, nicht abgewertete Präsentation im
+// IncidentLog unten (Recherche-Synthese: Fehler-Transparenz ist ein Vertrauenssignal, kein
+// Archiv-Grund). Der Mechanismus bleibt für hypothetische künftige Server-lose Projekte
+// bestehen, ist aktuell aber leer.
+const ARCHIVED_PROJECTS = PROJECTS.filter((p) => !p.server && p.id !== "n8n-automation");
 // Echte, aus PROJECTS berechnete Kennzahl (Lovable-Vergleichsentwurf, 2026-08-29, hatte eine
 // Kennzahlen-Leiste — Idee übernommen, Wert aber selbst neu/ehrlich definiert statt geraten).
 // zntx selbst zählt hier bewusst nicht mit — gleiche Konvention wie bei HERO.headlineEmphasis
@@ -278,9 +283,14 @@ export function OpsDashboard({
             </div>
             <div className="bg-surface p-2.5 sm:p-4">
               <p className="font-mono text-[10px] uppercase tracking-widest text-foreground-muted sm:text-[11px]">
-                Verantwortung
+                Sicherheitsaudits
               </p>
-              <p className="mt-1 text-xs font-semibold text-foreground sm:text-sm">Alleinbetrieb</p>
+              {/* Ersetzt die vorherige "Verantwortung: Alleinbetrieb"-Kachel (2026-09-07,
+                  Recherche-Synthese: Tiefen-Beleg direkt neben der Breiten-Kennzahl "acht
+                  Systeme" statt einer abstrakten Rollenangabe). Drei echte, bereits in
+                  lib/content.ts dokumentierte Audits, keine neue Behauptung: ravepuls
+                  (fünfphasig), buchhaltung (40 Punkte), qntx (~150 Punkte). */}
+              <p className="mt-1 text-xs font-semibold text-foreground sm:text-sm">3 eigenständig</p>
             </div>
           </motion.div>
         </motion.div>
@@ -370,6 +380,8 @@ export function OpsDashboard({
           </div>
         </div>
       )}
+
+      <IncidentLog />
 
       <div className="mt-4 flex flex-col gap-4">
         <div id="row-operator">
