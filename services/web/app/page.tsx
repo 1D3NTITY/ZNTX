@@ -23,11 +23,7 @@ export default async function Home() {
     <main className="flex flex-1 flex-col">
       {/* Statisches Server-Markup; sichtbar nur über die Klasse, die das Inline-Skript in
           layout.tsx vor dem ersten Bildaufbau setzt. */}
-      <BootIntro
-        systems={REAL_SYSTEMS.length}
-        operational={SYSTEMS_IN_OPERATION}
-        fetchedAtLabel={fetchedAtLabel}
-      />
+      <BootIntro systems={REAL_SYSTEMS.length} operational={SYSTEMS_IN_OPERATION} />
       <OpsDashboard statuses={statuses} fetchedAtLabel={fetchedAtLabel} />
     </main>
   );

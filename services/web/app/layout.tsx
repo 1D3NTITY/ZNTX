@@ -98,7 +98,15 @@ export default function RootLayout({
             überhaupt gemalt wird — und diese Entscheidung muss vor dem ersten Bildaufbau
             fallen. Ein useEffect käme zu spät (gemessen 0,7-2,9 s nach Hydration), das Overlay
             würde die schon sichtbare Seite nachträglich zudecken.
-            Reines Klassen-Umschalten, kein Inhalt wird hier erzeugt. */}
+            Reines Klassen-Umschalten, kein Inhalt wird hier erzeugt.
+            Der 2050-Timeout unten ist an die Rack-Power-Up-Sequenz in boot-intro.tsx gekoppelt
+            (LED_START_MS + (systems-1)*LED_STAGGER_MS + LED_DURATION_MS + BLOOM_GAP_MS +
+            CAPTION_GAP_MS + CAPTION_FADE_MS + HOLD_BEFORE_COLLAPSE_MS, aktuell für systems=8
+            berechnet: 260+700+180+60+150+200+500=2050). Dieses Skript kennt den echten
+            Systems-Count nicht (statischer String, kein Props-Zugriff) — der Wert hat daher
+            etwas Puffer für ein, zwei zusätzliche Systeme in der Zukunft. Wächst REAL_SYSTEMS
+            in lib/content.ts spürbar, hier neu nachrechnen (siehe Formel oben), sonst reißt der
+            Kollaps in eine noch laufende LED-Sequenz. */}
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{
@@ -114,7 +122,7 @@ function end(){if(done)return;done=true;
 d.classList.add('boot-out');
 window.setTimeout(function(){d.classList.remove('booting','boot-out');},420);
 window.removeEventListener('keydown',end);window.removeEventListener('pointerdown',end);}
-window.setTimeout(end,1150);
+window.setTimeout(end,2050);
 window.addEventListener('keydown',end);window.addEventListener('pointerdown',end);
 }catch(e){try{document.documentElement.classList.remove('booting');}catch(_){}}})();`,
           }}

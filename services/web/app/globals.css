@@ -431,29 +431,89 @@ html.booting #boot-intro {
   align-items: center;
   justify-content: center;
   background: var(--background);
+  overflow: hidden;
+  /* Power-On-Snap (2026-09-07, Luis: "Intro muss krasser") — spiegelt den bestehenden
+     Power-Off-Kollaps: das Overlay steht nicht mehr sofort in voller Größe da, sondern
+     schnappt aus einer schmalen Linie auf, wie eine Röhre, die gerade hochfährt. Das
+     verlagert einen Teil der Dramatik vom reinen Verschwinden auf das Erscheinen. */
+  transform-origin: center;
+  animation: boot-intro-in 160ms ease-out both;
 }
-/* Zeilen erscheinen gestaffelt — animation-delay wird pro Zeile inline gesetzt. */
+@keyframes boot-intro-in {
+  0% { transform: scaleY(0.012); opacity: 0.4; }
+  100% { transform: scaleY(1); opacity: 1; }
+}
+/* Rack-Power-Up (2026-09-07, zweiter Anlauf — siehe Kopfkommentar in boot-intro.tsx für die
+   Begründung des Konzeptwechsels weg vom Text-Log). Jeder Slot startet als leerer Rahmen
+   (unten in .boot-led definiert) und "schnappt" per animation-delay (inline aus boot-intro.tsx,
+   basiert auf den echten systems/operational-Zahlen) nacheinander in seinen Endzustand. */
+html.booting #boot-intro .boot-led {
+  width: 20px;
+  height: 30px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  background: transparent;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+html.booting #boot-intro .boot-led.is-online {
+  animation-name: boot-led-online;
+}
+html.booting #boot-intro .boot-led.is-registered {
+  animation-name: boot-led-registered;
+}
+@keyframes boot-led-online {
+  0% { background: transparent; border-color: var(--border); box-shadow: none; transform: scaleY(0.3); }
+  65% {
+    background: var(--status-online);
+    border-color: var(--status-online);
+    box-shadow: 0 0 6px var(--status-online), 0 0 18px var(--status-online);
+    transform: scaleY(1.12);
+  }
+  100% {
+    background: var(--status-online);
+    border-color: var(--status-online);
+    box-shadow: 0 0 5px var(--status-online), 0 0 14px var(--status-online);
+    transform: scaleY(1);
+  }
+}
+/* Bewusst NICHT als "live" eingefärbt — ehrliche Unterscheidung zwischen registriert und
+   tatsächlich live, identisch zur Semantik der "keine Live-Daten"-Legende in
+   ops-dashboard.tsx (border-only, keine Füllung). */
+@keyframes boot-led-registered {
+  0% { border-color: var(--border); opacity: 0.5; transform: scaleY(0.3); }
+  100% { border-color: var(--foreground-muted); opacity: 0.9; transform: scaleY(1); }
+}
+/* Einmaliger Bloom, wenn die Sequenz fertig ist — motiviert durch den Inhalt (Power-Up
+   abgeschlossen), nicht generisch beim Erscheinen wie im ersten, verworfenen Anlauf. screen
+   kann nur aufhellen, nie verdunkeln (gleiche Kontrast-Begründung wie bei .glitch-text). */
+html.booting #boot-intro .boot-led-bloom {
+  position: absolute;
+  inset: -20px;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, var(--status-online) 0%, transparent 70%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation-name: boot-led-bloom;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+@keyframes boot-led-bloom {
+  0% { opacity: 0; }
+  45% { opacity: 0.4; }
+  100% { opacity: 0; }
+}
+/* Zeilen (Caption + Skip-Hinweis) erscheinen gestaffelt — animation-delay/-duration wird inline
+   gesetzt. */
 html.booting #boot-intro .boot-line {
   opacity: 0;
-  animation: boot-line-in 200ms ease-out forwards;
+  animation-name: boot-line-in;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
 }
 @keyframes boot-line-in {
   from { opacity: 0; transform: translateY(3px); }
   to { opacity: 1; transform: none; }
-}
-/* Zeichen-Decode-Flackern (2026-09-04) — nur auf der ersten Boot-Zeile (boot-intro.tsx steuert
-   das per `decode`-Prop), pro Zeichen ein eigener, sehr kleiner animationDelay-Versatz. Bleibt
-   reines Server-Markup + CSS, kein Client-JS: der Text ist beim Rendern bereits bekannt, hier
-   wird nur das Einblenden pro Zeichen animiert statt zeilenweise. */
-html.booting #boot-intro .boot-char {
-  display: inline-block;
-  opacity: 0;
-  animation: boot-char-decode 260ms ease-out both;
-}
-@keyframes boot-char-decode {
-  0% { opacity: 0; color: var(--accent-orange); filter: blur(2px); transform: translateY(2px); }
-  40% { opacity: 1; color: var(--accent-core); filter: blur(0); transform: none; }
-  100% { opacity: 1; color: inherit; filter: none; transform: none; }
 }
 /* CRT-Abschalten: Bild kollabiert zu einer horizontalen Linie und verlischt — der
    charakteristische Röhrenmonitor-Effekt beim Übergang zur Seite. */
@@ -550,11 +610,29 @@ html.boot-out #boot-intro {
   .rack-slot-glitch::after {
     opacity: 0 !important;
   }
-  /* Hier wichtiger als bei rein dekorativen Effekten: die Zeichen SIND der Boot-Status-Inhalt,
-     nicht nur Deko — muss lesbar auf Endzustand landen, nicht nur unsichtbar. */
-  .boot-char {
-    opacity: 1 !important;
-    filter: none !important;
-    color: inherit !important;
+  /* Defensive Zusatzregeln für den Rack-Power-Up (2026-09-07) — das Inline-Skript in
+     layout.tsx setzt `booting` bei reduzierter Bewegung ohnehin nie (matchMedia-Check vor dem
+     ersten Bildaufbau), das Overlay erscheint für diese Nutzer also gar nicht erst. Diese
+     Zeilen sind trotzdem billige Verteidigung-in-der-Tiefe, gleiches Muster wie oben. LEDs
+     landen sofort auf ihrem ehrlichen Endzustand (online/registered), nicht nur unsichtbar —
+     dieselbe Regel wie beim vorherigen .boot-char, die Information soll nicht verloren gehen.
+     Der Bloom ist reine Deko und wird unterdrückt. */
+  .boot-led.is-online {
+    background: var(--status-online) !important;
+    border-color: var(--status-online) !important;
+    box-shadow: 0 0 5px var(--status-online), 0 0 14px var(--status-online) !important;
+    transform: none !important;
+  }
+  .boot-led.is-registered {
+    border-color: var(--foreground-muted) !important;
+    opacity: 0.9 !important;
+    transform: none !important;
+  }
+  .boot-led-bloom {
+    opacity: 0 !important;
+  }
+  #boot-intro {
+    animation: none !important;
+    transform: none !important;
   }
 }

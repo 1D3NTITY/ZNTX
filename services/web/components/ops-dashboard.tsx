@@ -297,23 +297,26 @@ export function OpsDashboard({
       />
 
       {/* Status-Legende (Idee aus einem Lovable-Vergleichsentwurf, 2026-08-29) — erklärt die
-          LED-Zustände statt sie vorauszusetzen. */}
-      <div className="mb-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[11px] text-foreground-muted">
-        <span className="flex items-center gap-1.5">
+          LED-Zustände statt sie vorauszusetzen. Bewusst knapp gehalten (2026-09-07, Luis:
+          "viel zu viel Text, wirkt nervig") — nur noch Label statt ganzer Erklärsätze; die
+          echte Detailinfo steckt weiterhin im title-Tooltip jeder einzelnen LED
+          (formatLiveStatus in rack-slot.tsx), hier reicht die Zuordnung Farbe→Wort. */}
+      <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10px] text-foreground-muted/70">
+        <span className="flex items-center gap-1">
           <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "var(--status-online)" }} />
-          operational — läuft, Live-Daten vorhanden
+          operational
         </span>
-        <span className="flex items-center gap-1.5">
+        <span className="flex items-center gap-1">
           <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "var(--status-paper)" }} />
-          degraded — eingeschränkt
+          degraded
         </span>
-        <span className="flex items-center gap-1.5">
+        <span className="flex items-center gap-1">
           <span className="h-1.5 w-1.5 rounded-full border border-foreground-muted" />
-          keine Live-Daten — kein öffentlicher Status
+          kein Status
         </span>
-        <span className="flex items-center gap-1.5">
+        <span className="flex items-center gap-1">
           <span className="h-1.5 w-1.5 rounded-full bg-foreground-muted opacity-40" />
-          archiviert — bewusst abgeschaltet
+          archiviert
         </span>
       </div>
 
