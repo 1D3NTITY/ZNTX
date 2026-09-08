@@ -3,17 +3,18 @@
 import { useEffect, useRef } from "react";
 import { useReducedMotionPreference } from "@/lib/use-reduced-motion";
 
-// Amber-Phosphor-CRT-Overlay (2026-09-03) — legt Scanlines, Filmkorn, Vignette und ein
-// mausreaktives Spotlight über die gesamte Seite. Alle Schichten sind rein dekorativ:
+// Ambient-Glow (2026-09-08, ersetzt das frühere Amber-Phosphor-CRT-Overlay — Scanlines/
+// Filmkorn/Vignette waren Teil der explizit abgelehnten CRT-Kostümierung und sind entfernt).
+// Was bleibt: ein mausreaktives, weiches Licht über der gesamten Seite. Rein dekorativ:
 // aria-hidden, pointer-events:none, keine Information, kein Fokusziel.
 //
-// Warum das Spotlight per CSS-Custom-Property statt über React-State läuft: Ein State-Update
+// Warum das Licht per CSS-Custom-Property statt über React-State läuft: Ein State-Update
 // pro Mausbewegung würde bei jedem Pixel einen Re-Render der halben Seite auslösen. Stattdessen
 // schreibt der Handler direkt zwei CSS-Variablen auf das Element — der Browser rechnet den
 // Verlauf im Compositor, React wird gar nicht erst beteiligt. Zusätzlich per
 // requestAnimationFrame gedrosselt, damit bei schnellen Bewegungen höchstens ein Schreibvorgang
 // pro Frame passiert.
-export function CrtOverlay() {
+export function AmbientGlow() {
   const spotRef = useRef<HTMLDivElement>(null);
   // useSyncExternalStore statt einmaligem matchMedia-Read beim Mount (Accessibility-Audit
   // 2026-09-03: ein OS-seitiger Wechsel von Reduced-Motion mitten in der Session wurde vorher
@@ -51,11 +52,7 @@ export function CrtOverlay() {
 
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-30">
-      {/* Reihenfolge = Schichtung: erst Licht, dann Röhrenstruktur, dann Korn, dann Randabfall. */}
-      <div ref={spotRef} className="crt-spotlight absolute inset-0" />
-      <div className="crt-scanlines absolute inset-0" />
-      <div className="crt-grain absolute inset-0" />
-      <div className="crt-vignette absolute inset-0" />
+      <div ref={spotRef} className="ambient-glow absolute inset-0" />
     </div>
   );
 }

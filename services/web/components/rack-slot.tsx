@@ -23,12 +23,12 @@ function LiveLed({ live }: { live: LiveStatus | null }) {
   return (
     <span
       aria-hidden="true"
-      // phosphor-live: minimales Helligkeits-Flackern, nur bei Slots mit echten Live-Daten —
+      // live-pulse: minimales Helligkeits-Flackern, nur bei Slots mit echten Live-Daten —
       // dadurch bewegt sich sichtbar genau das, was auch wirklich lebt.
-      className={`h-2 w-2 shrink-0 rounded-full ${formatted ? "phosphor-live" : ""}`}
+      className={`h-2 w-2 shrink-0 rounded-full ${formatted ? "live-pulse" : ""}`}
       style={{
         backgroundColor: dotColor,
-        // Zweistufiger Schein (Kern + Hof) statt eines einzelnen Radius — siehe .glow-amber
+        // Zweistufiger Schein (Kern + Hof) statt eines einzelnen Radius — siehe .glow-accent
         // in globals.css, gleiche Begründung: ein Radius wirkt nach Weichzeichner.
         boxShadow: formatted ? `0 0 5px ${dotColor}, 0 0 14px ${dotColor}` : "none",
       }}
@@ -69,7 +69,7 @@ export function RackSlot({
       className={`group relative flex items-center gap-3 overflow-hidden rounded border p-3 outline-none transition-all duration-300 focus-visible:ring-2 focus-visible:ring-accent-dim ${
         dimmed
           ? "border-border/60 opacity-60 hover:opacity-90"
-          : "rack-slot-glitch border-border hover:border-[var(--card-accent,var(--foreground-muted))] hover:shadow-[0_0_20px_color-mix(in_srgb,var(--card-accent,transparent)_16%,transparent)]"
+          : "rack-slot-glow-ring border-border hover:border-[var(--card-accent,var(--foreground-muted))] hover:shadow-[0_0_20px_color-mix(in_srgb,var(--card-accent,transparent)_16%,transparent)]"
       }`}
       style={{ ["--card-accent" as string]: project.accentColor }}
     >

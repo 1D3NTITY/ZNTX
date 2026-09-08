@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { motion, useReducedMotion, type Variants } from "motion/react";
 import { PROJECTS, HERO, LINKS } from "@/lib/content";
 import { DashboardRow } from "@/components/dashboard-row";
@@ -11,7 +11,6 @@ import { OperatorProfileBody } from "@/components/operator-profile-body";
 import { ContactForm } from "@/components/contact-form";
 import { LiveTerminal } from "@/components/live-terminal";
 import { FlowLines } from "@/components/flow-lines";
-import { useReducedMotionPreference } from "@/lib/use-reduced-motion";
 import type { LiveStatus } from "@/lib/status";
 import type { UptimeHistorySummary } from "@/lib/uptime-history";
 
@@ -127,37 +126,6 @@ export function OpsDashboard({
 }) {
   const [openId, setOpenId] = useState<string | null>(null);
   const reducedMotion = useReducedMotion();
-  // Eigener Hook (nicht das obige `reducedMotion` von motion/react) für den Glitch-Trigger unten
-  // — der bestehende Wert ist bewusst für die initial/variants-Hydration-Fallstricke des
-  // Datei-Kopfkommentars reserviert, dieser neue Effect ist unabhängige, frische Logik.
-  const reducedMotionPref = useReducedMotionPreference();
-  const heroGlitchRef = useRef<HTMLSpanElement>(null);
-
-  // Ambienter Hero-Glitch (2026-09-04) — bewusst per JS-Timer statt endloser CSS-Animation
-  // ausgelöst (siehe Kommentar bei .glitch-text in globals.css): eine dauerhaft laufende
-  // CSS-Animation kostete real gemessen ~20fps, weil der Browser die beiden Textduplikat-
-  // Ebenen die ganze Sitzung über compositing-aktiv hält. Direkte DOM-Klassenmanipulation
-  // per Ref statt React-State (gleiche Technik wie crt-overlay.tsx fürs Spotlight) — kein
-  // Re-Render pro Burst.
-  useEffect(() => {
-    if (reducedMotionPref) return;
-    let timeout: ReturnType<typeof setTimeout>;
-    function scheduleGlitch() {
-      timeout = setTimeout(
-        () => {
-          const el = heroGlitchRef.current;
-          if (el) {
-            el.classList.add("is-glitching");
-            setTimeout(() => el.classList.remove("is-glitching"), 320);
-          }
-          scheduleGlitch();
-        },
-        6000 + Math.random() * 2000,
-      );
-    }
-    scheduleGlitch();
-    return () => clearTimeout(timeout);
-  }, [reducedMotionPref]);
 
   function toggle(id: string) {
     setOpenId((current) => (current === id ? null : id));
@@ -208,15 +176,15 @@ export function OpsDashboard({
           >
             {HERO.plainIntro}
           </motion.p>
-          <h1 className="mt-4 font-sans text-3xl font-semibold tracking-tight sm:text-4xl">
+          {/* Signalraum-Display-Typo (2026-09-08) — kondensiert, fett, Großbuchstaben statt der
+              vorherigen periodischen Glitch-Animation auf der Headline. Der "Wow"-Moment kommt
+              jetzt aus der Typografie selbst (Kontrast zum neutralen Fließtext) statt aus einem
+              wiederkehrenden Effekt, der ohnehin nur alle paar Sekunden sichtbar war. */}
+          <h1 className="mt-4 font-display text-4xl font-bold uppercase tracking-tight sm:text-5xl">
             <span className="text-gradient-muted block">
               <AnimatedWords text={HERO.headlineLead} delay={0.15} reducedMotion={reducedMotion} />
             </span>
-            <span
-              ref={heroGlitchRef}
-              className="text-gradient-accent glow-bloom glitch-text block"
-              data-text={HERO.headlineEmphasis}
-            >
+            <span className="text-gradient-accent glow-bloom block">
               <AnimatedWords text={HERO.headlineEmphasis} delay={0.3} reducedMotion={reducedMotion} />
             </span>
           </h1>

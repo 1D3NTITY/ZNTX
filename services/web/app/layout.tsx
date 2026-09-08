@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Source_Serif_4 } from "next/font/google";
+import { Geist, Geist_Mono, Source_Serif_4, Chakra_Petch } from "next/font/google";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { Footer } from "@/components/footer";
 import { Logo } from "@/components/logo";
 import { Nav } from "@/components/nav";
 import { CircuitBackground } from "@/components/circuit-background";
-import { CrtOverlay } from "@/components/crt-overlay";
+import { AmbientGlow } from "@/components/ambient-glow";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,10 +18,19 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Dritter Typo-Layer für den Dossier-Look: Serif-Headlines geben den
-// Sektionstiteln Report-Charakter, statt alles im selben Sans/Mono zu halten.
+// Dritter Typo-Layer für redaktionelle Zitate (BIO.throughline, Projekt-Outcome-Blockquotes) —
+// unverändert seit dem Signalraum-Wechsel, kein Teil der abgelösten CRT-Kostümierung.
 const sourceSerif = Source_Serif_4({
   variable: "--font-source-serif",
+  subsets: ["latin"],
+  weight: ["600", "700"],
+});
+
+// Signalraum-Display-Schrift (2026-09-08) — kondensiert, fett, für Headlines (Hero, Projekt-
+// Seitentitel). Ersetzt font-sans an genau diesen Stellen, siehe ops-dashboard.tsx und
+// app/projekte/[slug]/page.tsx.
+const chakraPetch = Chakra_Petch({
+  variable: "--font-chakra-petch",
   subsets: ["latin"],
   weight: ["600", "700"],
 });
@@ -81,7 +90,7 @@ export default function RootLayout({
   return (
     <html
       lang="de"
-      className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif.variable} h-full antialiased dark`}
+      className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif.variable} ${chakraPetch.variable} h-full antialiased dark`}
       // Das Boot-Intro-Inline-Skript (unten im Body) setzt/entfernt "booting"/"boot-out" auf
       // dieser className, bevor React hydratisiert — das ist Absicht (siehe Kommentar dort), aber
       // React vergleicht bei jedem Laden den serverseitigen className-String mit dem inzwischen
@@ -140,10 +149,10 @@ window.addEventListener('keydown',end);window.addEventListener('pointerdown',end
           {children}
           <Footer />
         </SmoothScroll>
-        {/* CRT-Schichten ganz zuletzt: liegen als reines Dekor über allem (z-30,
-            pointer-events:none), dürfen aber nie zwischen Nutzer und Bedienelemente geraten —
+        {/* Ambient-Glow ganz zuletzt: liegt als reines Dekor über allem (z-30,
+            pointer-events:none), darf aber nie zwischen Nutzer und Bedienelemente geraten —
             deshalb kein z-Index oberhalb der fixierten Nav/Logo-Chrome. */}
-        <CrtOverlay />
+        <AmbientGlow />
       </body>
     </html>
   );

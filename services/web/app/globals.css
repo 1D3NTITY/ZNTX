@@ -3,35 +3,31 @@
 /* Dark-Theme ist Default, nicht nur bei prefers-color-scheme — das Konzept
    (Control-Room / Netzwerkkarte) trägt nicht im Light-Mode.
 
-   Farbwechsel Redesign "Live Infrastructure Atlas" (2026-08-23, Review-Feedback: Terminal-
-   Ästhetik wirkt austauschbar): leichter Blaustich statt neutralem Schwarz, gebrochenes statt
-   reinem Weiß — Akzentfarbe bleibt exklusiv für Bedienelemente/aktive Datenwege reserviert,
-   taucht nirgends mehr dekorativ auf.
-
-   Farbton-Update (2026-08-27, Alumica-Stil-Adaption): Akzent von reinem Rot zu warmem
-   Orange-Rot verschoben — automatischer, kohärenter Effekt auf alle Stellen, die --accent/
-   --accent-dim bereits nutzen (Links, Focus-Ringe, Hover-Borders). --accent-orange neu als
-   heller Verlaufs-Endpunkt für Gradient-Text/-Ränder (Hero-Headline, Primary-CTA).
-
-   Amber-Phosphor-CRT (2026-09-03, Entscheidung Luis): Wunsch war eine "Deep-Dark-Hacker"-
-   Anmutung wie bei alten Cheat-Provider-Seiten, aber ausdrücklich nicht austauschbar. Deshalb
-   bewusst NICHT das übliche Neon-Cyan/Giftgrün, das dort jede zweite Seite verwendet, sondern
-   der Bernstein-Phosphor alter Röhrenmonitore — historisch echt, optisch selten, und anschluss-
-   fähig an das bereits vorhandene Orange (keine Bruchstelle zum bisherigen Stand). Blaustich im
-   Untergrund weicht warmem Schwarz, damit das Amber-Leuchten nicht gegen kühles Grau arbeitet. */
+   Signalraum (2026-09-08, Entscheidung Luis nach wiederholtem Feedback — "im Hintergrund
+   passiert nichts, keine high quality Grafiken, nicht dieser edle Look", explizit die ganze
+   Amber-CRT-Ästhetik abgelehnt): ein Akzent (Violett), ein zweiter für Verläufe/Ränder (Cyan),
+   kühles Nah-Schwarz statt dem vorherigen warmen Braun-Schwarz. Ersetzt die Amber-Phosphor-CRT-
+   Palette vollständig — siehe docs/plans bzw. Session-Verlauf für die zwei gegeneinander
+   getesteten Konzepte ("Warmglut" vs. "Signalraum"), Signalraum hat gewonnen. Die Status- und
+   Projekt-Farbtokens weiter unten bleiben unangetastet (semantisch bzw. feste
+   Projekt-Identität, kein Brand-Bezug). */
 :root {
-  --background: #050301;
-  --surface: #0d0904;
-  --border: #2a1e10;
-  --foreground: #f2e8dc;
-  --foreground-muted: #9c8a72;
-  --accent: #ff9d2f;
-  --accent-dim: #7a4410;
-  --accent-orange: #ffd9a0;
+  --background: #08090d;
+  --surface: #10121a;
+  --border: #232838;
+  --foreground: #eef0f7;
+  --foreground-muted: #7d8299;
+  --accent: #9b5cff;
+  --accent-dim: #4a2f80;
+  /* Zweiter Signalton (Cyan) für Verläufe/Ränder — vorher --accent-orange, umbenannt weil der
+     alte Name (aus der Amber-Ära) nach dem Farbwechsel irreführend wäre. War nirgends außerhalb
+     dieser Datei referenziert (glitch-text, das ihn nutzte, ist mit der CRT-Ästhetik entfernt),
+     risikofreie Umbenennung. */
+  --accent-secondary: #4fd3ff;
   --status-online: #4ade80;
   --status-paper: #facc15;
-  /* Glühkern für Bloom-Effekte — hellste Stufe des Phosphors, nur für Leucht-Schichten. */
-  --accent-core: #ffe9c7;
+  /* Hellster Farbton für Bloom-/Glow-Effekte. */
+  --accent-core: #c9b6ff;
 
   /* Projekt-Akzentfarben für den Live-Ops-Leitstand (Konzept A, 2026-07-24).
      ravepuls/qntx/arma sind Luis' fest vorgegebene Farben, nicht verhandelbar.
@@ -47,7 +43,13 @@
   */
   --project-foodapp: #22c55e;
   --project-ravepuls: #e11d48;
-  --project-matrix-chat: #a855f7;
+  /* War #a855f7 — mit dem neuen Signalraum-Seitenakzent (--accent: #9b5cff, selber Violett-Ton)
+     kaum noch unterscheidbar (siehe Kommentar unten zu diesem Prinzip). Richtung Magenta
+     verschoben, damit "das ist matrix-chat" und "das ist die Seiten-Chrome-Farbe" wieder klar
+     auseinanderzuhalten sind — matrix-chats Farbe war ohnehin kein von Luis fest vorgegebener
+     Ton (anders als ravepuls/qntx/arma), sondern bei der "jedes Projekt eine Farbe"-Ergänzung
+     automatisch vergeben. */
+  --project-matrix-chat: #e879f9;
   --project-arma: #eab308;
   --project-qntx: #3b82f6;
   --project-n8n: #b45309;
@@ -64,13 +66,14 @@
   --color-foreground-muted: var(--foreground-muted);
   --color-accent: var(--accent);
   --color-accent-dim: var(--accent-dim);
-  --color-accent-orange: var(--accent-orange);
+  --color-accent-secondary: var(--accent-secondary);
   --color-accent-core: var(--accent-core);
   --color-status-online: var(--status-online);
   --color-status-paper: var(--status-paper);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-serif: var(--font-source-serif);
+  --font-display: var(--font-chakra-petch);
 }
 
 body {
@@ -94,7 +97,7 @@ body {
    keine der inhaltlich unpassenden Elemente (Video, erfundene Nav, Fake-Social-Proof, siehe
    Plan-Datei). Gradient-Text via background-clip, keine Bildmasken/JS nötig. */
 .text-gradient-accent {
-  background: linear-gradient(135deg, var(--accent-orange), var(--accent));
+  background: linear-gradient(135deg, var(--accent-secondary), var(--accent));
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -158,11 +161,11 @@ body {
   border-radius: inherit;
   background: conic-gradient(
     from var(--glass-pill-angle),
-    var(--accent-orange),
+    var(--accent-secondary),
     var(--accent),
     var(--accent-dim),
     var(--accent),
-    var(--accent-orange)
+    var(--accent-secondary)
   );
   animation: glass-pill-rotate 4s linear infinite;
 }
@@ -196,55 +199,55 @@ body {
   );
 }
 
-/* Hover-/Focus-Glitch auf Rack-Slots (2026-09-04) — Karte hat gemischten Inhalt (Vents, Name,
-   LED, Meta, Pfeil), kein einzelner Textknoten wie bei .glitch-text — deshalb ein horizontaler
-   Farbriss über die ganze Karte statt eines Text-Duplikats, eingefärbt mit der bereits pro
-   Projekt gesetzten --card-accent-Variable (rack-slot.tsx), damit jedes Projekt in seiner
-   eigenen Akzentfarbe glitcht statt eine neue Farbquelle einzuführen.
-   animation-iteration-count: 1 ist hier der entscheidende Teil: der Burst spielt genau EINMAL
-   pro Hover-/Focus-Eintritt und bleibt danach unsichtbar, selbst wenn der Zeiger lange auf der
-   Karte stehen bleibt — macht "kurzer Burst" statt "Dauerflackern" strukturell garantiert, ganz
-   ohne zusätzliche JS-Guard-Logik. */
-.rack-slot-glitch::before,
-.rack-slot-glitch::after {
+/* Hover-/Focus-Licht-Rand auf Rack-Slots (2026-09-08, ersetzt den VHS-Tear-Glitch der
+   Amber-CRT-Ära) — ein rotierender konischer Lichtstrahl entlang des Kartenrands, eingefärbt mit
+   der bereits pro Projekt gesetzten --card-accent-Variable (rack-slot.tsx), damit jedes Projekt
+   weiterhin in seiner eigenen Akzentfarbe "lebt" statt eine neue Farbquelle einzuführen. Technik:
+   ein Pseudo-Element in Kartengröße + 1.5px Padding, per `mask`/`mask-composite: exclude` auf
+   einen dünnen Rand geklippt, darauf ein rotierender conic-gradient (@property für eine
+   animierbare Winkel-Variable) — reines CSS, kein zusätzliches Markup nötig. Läuft nur bei
+   Hover/Focus (`animation-play-state`), pausiert sonst komplett — kein Dauerbetrieb-Kostenfaktor
+   wie bei einer permanent laufenden CSS-Animation (siehe Kommentar zur früheren fps-Regression
+   beim Hero-Glitch, dieselbe Lektion gilt hier: nur aktiv, wenn wirklich sichtbar gebraucht). */
+@property --rack-ring-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+.rack-slot-glow-ring {
+  position: relative;
+}
+.rack-slot-glow-ring::after {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -1.5px;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--rack-ring-angle),
+    transparent 0 70%,
+    color-mix(in srgb, var(--card-accent, var(--accent)) 90%, transparent),
+    var(--accent-secondary),
+    transparent 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
   pointer-events: none;
   opacity: 0;
-  mix-blend-mode: screen;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    color-mix(in srgb, var(--card-accent, var(--accent)) 35%, transparent),
-    transparent
-  );
+  transition: opacity 200ms ease;
+  animation: rack-ring-spin 2.4s linear infinite;
+  animation-play-state: paused;
 }
-.rack-slot-glitch::before {
-  clip-path: inset(15% 0 60% 0);
+.rack-slot-glow-ring:hover::after,
+.rack-slot-glow-ring:focus-visible::after {
+  opacity: 1;
+  animation-play-state: running;
 }
-.rack-slot-glitch::after {
-  clip-path: inset(65% 0 10% 0);
-}
-.rack-slot-glitch:hover::before,
-.rack-slot-glitch:focus-visible::before {
-  animation: rack-glitch-1 260ms steps(1) 1;
-}
-.rack-slot-glitch:hover::after,
-.rack-slot-glitch:focus-visible::after {
-  animation: rack-glitch-2 260ms steps(1) 1;
-}
-@keyframes rack-glitch-1 {
-  0% { opacity: 0; transform: translate3d(0, 0, 0); }
-  30% { opacity: 0.85; transform: translate3d(-4px, 0, 0); }
-  60% { opacity: 0.85; transform: translate3d(3px, 0, 0); }
-  100% { opacity: 0; transform: translate3d(0, 0, 0); }
-}
-@keyframes rack-glitch-2 {
-  0% { opacity: 0; transform: translate3d(0, 0, 0); }
-  35% { opacity: 0.85; transform: translate3d(4px, 0, 0); }
-  65% { opacity: 0.85; transform: translate3d(-3px, 0, 0); }
-  100% { opacity: 0; transform: translate3d(0, 0, 0); }
+@keyframes rack-ring-spin {
+  to { --rack-ring-angle: 360deg; }
 }
 
 /* Hero-Intro: Unterstrich hinter "zntx_" teilt sich kurz in zwei vertikale Linien (Symbol für
@@ -277,68 +280,30 @@ body {
   animation: logo-diamond-spin 6s linear infinite;
 }
 
-/* ── Amber-Phosphor-CRT-Schichten (2026-09-03) ──────────────────────────────────────────────
-   Ziel laut Luis: "deep dark hacker", aber einzigartig statt Vorlagen-Look. Der Unterschied
-   zwischen billigem und teurem Glow liegt in der Schichtung: NICHT ein flacher Verlauf, sondern
-   Scanlines + Korn + Vignette + reaktives Licht übereinander. Alle Schichten sind rein
-   dekorativ, liegen per pointer-events:none über dem Inhalt und tragen nie Information —
-   Screenreader/Tastatur sehen davon nichts. */
-
-/* Feine horizontale Zeilenstruktur eines Röhrenmonitors. Sehr niedrige Deckkraft: soll
-   spürbar, nicht lesbar sein — bei zu hohem Kontrast wird Fließtext anstrengend. */
-.crt-scanlines {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.22) 0px,
-    rgba(0, 0, 0, 0.22) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  mix-blend-mode: multiply;
-}
-
-/* Filmkorn als inline-SVG-Rauschen (data:-URI, kein externer Request — CSP-konform und
-   keine zusätzliche Netzwerklast). Bricht die perfekte Glätte digitaler Flächen auf, das
-   ist der Hauptgrund, warum echte Retro-Optik "analog" wirkt statt nach CSS-Verlauf. */
-.crt-grain {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-  opacity: 0.045;
-}
-
-/* Röhren-Vignette: Ränder fallen ab wie bei einer gewölbten Bildröhre. */
-.crt-vignette {
-  /* Spitzenwert 0.55 → 0.28 (Accessibility-Audit 2026-09-03, echt per Pixel-Sampling gemessen,
-     nicht nur CSS-Werte verglichen): Text nahe der Bildschirmecke — z. B. der Footer — fiel real
-     unter WCAG AA, weil die Vignette dort am stärksten abdunkelt. Strukturell behoben statt nur
-     am Footer, da jeder künftige Text nahe einer Ecke demselben Risiko ausgesetzt wäre. */
+/* ── Ambient-Glow (2026-09-08, ersetzt die Amber-Phosphor-CRT-Schichten) ───────────────────
+   Scanlines/Filmkorn/Vignette waren explizit Teil der abgelehnten CRT-Kostümierung (Luis: "die
+   ganze Amber-CRT-Ästhetik" gefällt nicht) und sind komplett entfernt. Was bleibt: die
+   mausreaktive Lichttechnik selbst (folgt dem Cursor über --spot-x/--spot-y, geschrieben von
+   ambient-glow.tsx per requestAnimationFrame ohne React-Re-Render) — das war nie CRT-spezifisch,
+   sondern der Teil, der "teuer" wirkt, weil er auf den Besucher reagiert. Rein dekorativ, liegt
+   per pointer-events:none über dem Inhalt, trägt nie Information. */
+.ambient-glow {
   background: radial-gradient(
-    ellipse at center,
-    transparent 55%,
-    rgba(0, 0, 0, 0.28) 100%
-  );
-}
-
-/* Mausreaktives Spotlight — folgt dem Cursor über --spot-x/--spot-y (gesetzt in
-   crt-overlay.tsx). Das ist der Effekt, der "teuer" wirkt: Licht, das auf den Besucher
-   reagiert, kann eine statische Vorlage nicht. Fällt ohne JS sauber auf die Bildschirmmitte
-   zurück (Startwert 50%/50%), dann ist es einfach ein ruhiger Lichtkegel. */
-.crt-spotlight {
-  background: radial-gradient(
-    600px circle at var(--spot-x, 50%) var(--spot-y, 50%),
-    color-mix(in srgb, var(--accent) 10%, transparent) 0%,
+    900px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    color-mix(in srgb, var(--accent) 8%, transparent) 0%,
     transparent 70%
   );
   transition: background 120ms linear;
 }
 
-/* Phosphor-Nachleuchten für Typografie. Mehrstufig (eng+weit) statt ein einzelner Schatten —
+/* Signal-Nachleuchten für Typografie. Mehrstufig (eng+weit) statt ein einzelner Schatten —
    ein Radius allein sieht nach Weichzeichner aus, zwei nach echtem Leuchtkern. */
-.glow-amber {
+.glow-accent {
   text-shadow:
     0 0 6px color-mix(in srgb, var(--accent) 55%, transparent),
     0 0 22px color-mix(in srgb, var(--accent) 30%, transparent);
 }
-.glow-amber-strong {
+.glow-accent-strong {
   text-shadow:
     0 0 4px color-mix(in srgb, var(--accent-core) 80%, transparent),
     0 0 16px color-mix(in srgb, var(--accent) 60%, transparent),
@@ -353,67 +318,6 @@ body {
   filter:
     drop-shadow(0 0 14px color-mix(in srgb, var(--accent) 45%, transparent))
     drop-shadow(0 0 40px color-mix(in srgb, var(--accent) 25%, transparent));
-}
-
-/* Ambienter Signal-Tear-Glitch (2026-09-04, Luis: "richtig krass, glitch, omfg-Faktor") —
-   bewusst KEIN klassischer rot/cyan-RGB-Split (das wäre VHS-/LCD-Ästhetik, nicht CRT-Phosphor,
-   und würde die Amber-exklusive Farbregel brechen). Stattdessen zwei phasenverschobene
-   Geister-Duplikate des Texts in --accent-orange/--accent-core, die kurz aufblitzen und wieder
-   verschwinden — liest sich als Signal-Riss, bleibt aber eindeutig derselbe Phosphor-Ton.
-   Braucht `data-text="..."` auf dem Zielelement (content: attr(data-text) auf den Pseudo-
-   Elementen) sowie explizite `color` dort, weil .text-gradient-accent `color: transparent`
-   setzt (Verlauf per background-clip) — sonst wäre das Duplikat unsichtbar.
-
-   Fps-Regression gefunden und isoliert (nicht nur vermutet — per Playwright-fps-Messung
-   durchgetestet, gleiche Methode wie beim früheren circuit-background-Fund): eine DAUERHAFT
-   laufende CSS-Animation (auch mit steps(1), auch ohne mix-blend-mode, auch ohne animiertes
-   clip-path) zwingt den Browser, zwei volltextgroße, absolut positionierte Ebenen die ganze
-   Sitzung über compositing-aktiv zu halten — nicht nur während des 140ms-Bursts. Gemessen:
-   ~53fps Baseline → ~30fps mit der Endlos-Zyklus-Variante. Deshalb jetzt KEIN infinite-Loop in
-   CSS mehr: die Animation existiert nur als Ein-Klasse-Einmal-Burst (`is-glitching`,
-   `animation-iteration-count: 1`), ausgelöst per JS-Timer in ops-dashboard.tsx (gleiche
-   Direkt-DOM-Technik wie crt-overlay.tsx fürs Spotlight — kein React-Re-Render pro Burst).
-   Damit existiert die Animation nur für ~300ms alle paar Sekunden, nicht permanent — löst auch
-   das WCAG-2.3.1-Anfallsicherheits-Ziel (kurzer, seltener Burst) strukturell statt nur über die
-   Zykluslänge. */
-.glitch-text {
-  position: relative;
-}
-.glitch-text::before,
-.glitch-text::after {
-  content: attr(data-text);
-  position: absolute;
-  inset: 0;
-  background: none;
-  pointer-events: none;
-  mix-blend-mode: screen;
-  opacity: 0;
-}
-.glitch-text::before {
-  color: var(--accent-orange);
-  clip-path: inset(0 0 65% 0);
-}
-.glitch-text::after {
-  color: var(--accent-core);
-  clip-path: inset(60% 0 0 0);
-}
-.glitch-text.is-glitching::before {
-  animation: glitch-burst-1 280ms steps(1) 1;
-}
-.glitch-text.is-glitching::after {
-  animation: glitch-burst-2 280ms steps(1) 1;
-}
-@keyframes glitch-burst-1 {
-  0% { opacity: 0; transform: translate3d(0, 0, 0); clip-path: inset(0 0 65% 0); }
-  35% { opacity: 0.9; transform: translate3d(-3px, 0, 0); clip-path: inset(10% 0 55% 0); }
-  70% { opacity: 0.9; transform: translate3d(2px, 0, 0); clip-path: inset(35% 0 20% 0); }
-  100% { opacity: 0; transform: translate3d(0, 0, 0); clip-path: inset(0 0 65% 0); }
-}
-@keyframes glitch-burst-2 {
-  0% { opacity: 0; transform: translate3d(0, 0, 0); clip-path: inset(60% 0 0 0); }
-  30% { opacity: 0.9; transform: translate3d(3px, 0, 0); clip-path: inset(50% 0 5% 0); }
-  65% { opacity: 0.9; transform: translate3d(-2px, 0, 0); clip-path: inset(20% 0 40% 0); }
-  100% { opacity: 0; transform: translate3d(0, 0, 0); clip-path: inset(60% 0 0 0); }
 }
 
 /* Boot-Intro. Standardmäßig unsichtbar: ohne JavaScript (und für Suchmaschinen) existiert das
@@ -432,16 +336,14 @@ html.booting #boot-intro {
   justify-content: center;
   background: var(--background);
   overflow: hidden;
-  /* Power-On-Snap (2026-09-07, Luis: "Intro muss krasser") — spiegelt den bestehenden
-     Power-Off-Kollaps: das Overlay steht nicht mehr sofort in voller Größe da, sondern
-     schnappt aus einer schmalen Linie auf, wie eine Röhre, die gerade hochfährt. Das
-     verlagert einen Teil der Dramatik vom reinen Verschwinden auf das Erscheinen. */
+  /* Sanftes Einblenden (2026-09-08, ersetzt den Röhren-Aufschnapp-Effekt der Amber-CRT-Ära —
+     kein Bezug mehr zu einem hochfahrenden Röhrenbildschirm, reiner Fade+Scale-Auftakt). */
   transform-origin: center;
-  animation: boot-intro-in 160ms ease-out both;
+  animation: boot-intro-in 200ms ease-out both;
 }
 @keyframes boot-intro-in {
-  0% { transform: scaleY(0.012); opacity: 0.4; }
-  100% { transform: scaleY(1); opacity: 1; }
+  0% { opacity: 0; transform: scale(0.97); }
+  100% { opacity: 1; transform: scale(1); }
 }
 /* Rack-Power-Up (2026-09-07, zweiter Anlauf — siehe Kopfkommentar in boot-intro.tsx für die
    Begründung des Konzeptwechsels weg vom Text-Log). Jeder Slot startet als leerer Rahmen
@@ -486,7 +388,7 @@ html.booting #boot-intro .boot-led.is-registered {
 }
 /* Einmaliger Bloom, wenn die Sequenz fertig ist — motiviert durch den Inhalt (Power-Up
    abgeschlossen), nicht generisch beim Erscheinen wie im ersten, verworfenen Anlauf. screen
-   kann nur aufhellen, nie verdunkeln (gleiche Kontrast-Begründung wie bei .glitch-text). */
+   kann nur aufhellen, nie verdunkeln — kein Kontrast-Regress möglich. */
 html.booting #boot-intro .boot-led-bloom {
   position: absolute;
   inset: -20px;
@@ -515,53 +417,31 @@ html.booting #boot-intro .boot-line {
   from { opacity: 0; transform: translateY(3px); }
   to { opacity: 1; transform: none; }
 }
-/* CRT-Abschalten: Bild kollabiert zu einer horizontalen Linie und verlischt — der
-   charakteristische Röhrenmonitor-Effekt beim Übergang zur Seite. */
+/* Signalraum-Übergang (2026-09-08, ersetzt den Röhren-Ausschalt-Kollaps): sanftes Ausblenden,
+   kombiniert mit einem kurzen "Signal-Lock"-Aufleuchten in --accent-secondary als bewusster
+   Abschluss-Moment statt des alten Röhren-Ausschaltens — screen kann nur aufhellen, nie
+   verdunkeln, kein neuer Kontrast-Regress möglich. */
 @keyframes boot-intro-out {
-  0% { transform: scaleY(1); opacity: 1; }
-  55% { transform: scaleY(0.012); opacity: 1; }
-  100% { transform: scaleY(0.012); opacity: 0; }
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.98); }
 }
 html.boot-out #boot-intro {
   animation: boot-intro-out 420ms ease-in forwards;
 }
-
-/* Leiterbahnen-Hintergrund: rechtwinklige Bahnen mit Lötpunkten, als wiederholbares
-   inline-SVG-Muster (data:-URI, kein externer Request → CSP-konform). Zwei Ebenen mit
-   unterschiedlicher Größe und Geschwindigkeit erzeugen Tiefe, ohne echte 3D-Kosten.
-   Deckkraft absichtlich sehr niedrig — die Ebene liegt hinter Fließtext. */
-/* Bewegt wird per transform, NICHT per background-position: letzteres erzwingt pro Bild ein
-   vollflächiges Neuzeichnen beider Ebenen — gemessen 11 fps. transform läuft dagegen im
-   Compositor der Grafikkarte, ohne Neuzeichnen. Damit die Kachelung beim Verschieben nicht
-   abreißt, ist die Ebene um je eine Kachel größer als der Viewport und wandert um exakt eine
-   Kachelbreite, bevor die Animation neu beginnt — dadurch ist der Sprung unsichtbar. */
-.circuit-layer {
+html.boot-out #boot-intro::after {
+  content: "";
   position: absolute;
-  top: -260px;
-  left: -260px;
-  width: calc(100% + 520px);
-  height: calc(100% + 520px);
-  background-repeat: repeat;
-  will-change: transform;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260' fill='none' stroke='%23ff9d2f' stroke-width='1'%3E%3Cpath d='M0 40h60v60h80V40h120M40 0v70h60v90h60v100M200 260V150h60V80h-40'/%3E%3Cpath d='M0 200h90v-40h70'/%3E%3Ccircle cx='60' cy='40' r='3' fill='%23ff9d2f' stroke='none'/%3E%3Ccircle cx='140' cy='40' r='3' fill='%23ff9d2f' stroke='none'/%3E%3Ccircle cx='100' cy='160' r='3' fill='%23ff9d2f' stroke='none'/%3E%3Ccircle cx='160' cy='160' r='3' fill='%23ff9d2f' stroke='none'/%3E%3Ccircle cx='260' cy='80' r='3' fill='%23ff9d2f' stroke='none'/%3E%3Ccircle cx='90' cy='200' r='3' fill='%23ff9d2f' stroke='none'/%3E%3C/svg%3E");
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 55%, var(--accent-secondary) 0%, transparent 60%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: boot-lock-flash 420ms ease-out forwards;
 }
-.circuit-near {
-  background-size: 260px 260px;
-  opacity: 0.055;
-  animation: circuit-drift-near 60s linear infinite;
-}
-.circuit-far {
-  background-size: 130px 130px;
-  opacity: 0.03;
-  animation: circuit-drift-far 110s linear infinite;
-}
-/* Verschiebung um genau eine Kachel — danach sieht das Muster identisch aus, der Neustart
-   der Animation ist deshalb nicht wahrnehmbar. */
-@keyframes circuit-drift-near {
-  to { transform: translate3d(260px, 260px, 0); }
-}
-@keyframes circuit-drift-far {
-  to { transform: translate3d(-130px, 130px, 0); }
+@keyframes boot-lock-flash {
+  0% { opacity: 0; }
+  35% { opacity: 0.5; }
+  100% { opacity: 0; }
 }
 
 /* Wanderndes Leuchten entlang der Flussleitungen zwischen den Racks. stroke-dashoffset
@@ -574,14 +454,14 @@ html.boot-out #boot-intro {
   animation: flow-pulse 3.2s linear infinite;
 }
 
-/* Sanftes Pulsieren des Phosphors — echte Röhren sind nie absolut konstant. Bewusst extrem
-   dezent (3 % Helligkeitshub), sonst wird es zum Blink-Effekt und damit billig/störend. */
-@keyframes phosphor-flicker {
+/* Sanftes Pulsieren nur bei Slots mit echten Live-Daten — bewusst extrem dezent (3 %
+   Helligkeitshub), sonst wird es zum Blink-Effekt und damit billig/störend. */
+@keyframes live-flicker {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.97; }
 }
-.phosphor-live {
-  animation: phosphor-flicker 4s ease-in-out infinite;
+.live-pulse {
+  animation: live-flicker 4s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -591,23 +471,23 @@ html.boot-out #boot-intro {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  /* Das Spotlight ist bewegungsgetrieben (folgt der Maus) — bei reduzierter Bewegung wird es
+  /* Das Ambient-Licht ist bewegungsgetrieben (folgt der Maus) — bei reduzierter Bewegung wird es
      zur ruhigen, statischen Aufhellung statt zum wandernden Lichtkegel. */
-  .crt-spotlight {
+  .ambient-glow {
     background: radial-gradient(
       900px circle at 50% 30%,
       color-mix(in srgb, var(--accent) 7%, transparent) 0%,
       transparent 70%
     ) !important;
   }
-  /* Defensive Zusatzregeln für die neuen Glitch-Effekte (2026-09-04) — die generelle
+  /* Defensive Zusatzregeln für die Signalraum-Effekte (2026-09-08) — die generelle
      0.01ms-Kollaps-Regel oben lässt jede Animation ohnehin sofort in ihrem Endzustand landen
-     (bei allen dreien: unsichtbar/neutral), diese Zeilen sind billige Absicherung gegen
-     Browser-Eigenheiten, gleiches Muster wie die .crt-spotlight-Ausnahme direkt darüber. */
-  .glitch-text.is-glitching::before,
-  .glitch-text.is-glitching::after,
-  .rack-slot-glitch::before,
-  .rack-slot-glitch::after {
+     (unsichtbar/neutral), diese Zeilen sind billige Absicherung gegen Browser-Eigenheiten,
+     gleiches Muster wie die .ambient-glow-Ausnahme direkt darüber. */
+  .rack-slot-glow-ring::after {
+    opacity: 0 !important;
+  }
+  html.boot-out #boot-intro::after {
     opacity: 0 !important;
   }
   /* Defensive Zusatzregeln für den Rack-Power-Up (2026-09-07) — das Inline-Skript in

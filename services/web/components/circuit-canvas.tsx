@@ -3,35 +3,37 @@
 import { useEffect, useRef } from "react";
 import { useReducedMotionPreference } from "@/lib/use-reduced-motion";
 
-// Elektronenstrahl-Sweep (2026-09-04, Luis: "richtig krass, hochauflösende Grafiken, omfg-
-// Faktor") — ein von oben nach unten wandernder, verblassender Amber-Leuchtbalken (CRT-
-// Elektronenstrahl-Metapher, bleibt an der bestehenden Phosphor-Röhren-Erzählung statt ein
-// beliebiges Partikel-Gimmick zu sein), plus gelegentliche kurze Glow-Blips an ein paar festen
-// Knotenpunkten (echoing die Lötpunkte im bestehenden Leiterbahnmuster in globals.css).
+// Signalraum-Hintergrund (2026-09-08, ersetzt den Elektronenstrahl-Sweep + das Leiterbahnen-
+// Muster der Amber-CRT-Ära). Zwei Schichten in einem Canvas: (1) zwei-drei weiche, langsam
+// driftende Licht-Blobs in Violett/Cyan — "Licht als Material" statt Deko-Rauschen (Stripe-
+// Prinzip aus der Recherche zu preisgekrönten Dark-Sites), (2) ein sehr sparsames, statisches
+// Punktraster mit gelegentlichen, kurz aufleuchtenden Verbindungslinien zwischen ein paar festen
+// Knotenpaaren — ehrliche Weiterführung der "Netzwerk/Infrastruktur"-Erzählung ohne wörtliche
+// Leiterbahnen-/PCB-Bildsprache.
 //
-// Bewusst Canvas statt einer weiteren CSS-Ebene: devicePixelRatio-genaue, wirklich scharfe
-// Kanten ("hochauflösend") statt noch einer CSS-Verlaufsebene, und die Draw-Calls hier (ein
-// clearRect, ein Gradient-Rechteck, ein paar kleine Radial-Gradients) sind günstiger als eine
-// dritte animierte SVG-Ebene. circuit-background.tsx begründet die bisherige Begrenzung auf
-// zwei bewegte Ebenen mit Performance auf schwacher Hardware — dieser Layer kommt trotzdem
-// dazu (Luis' explizite "voll reingehen"-Entscheidung), bleibt aber an dieselbe Sorgfalt
-// gebunden: sehr günstige Draw-Operationen, Pause bei nicht sichtbarem Tab.
-//
-// SSR rendert das <canvas> unbedingt in fester CSS-Größe (inset-0 h-full w-full) — kein
-// Layout-Shift unabhängig von Hydration-Timing. Erst nach dem Mount wird die Backing-Store-
-// Größe an devicePixelRatio angepasst und gezeichnet.
-const NODES = [
-  { x: 0.12, y: 0.22, offset: 0 },
-  { x: 0.82, y: 0.16, offset: 1400 },
-  { x: 0.34, y: 0.58, offset: 2800 },
-  { x: 0.68, y: 0.74, offset: 4200 },
-  { x: 0.5, y: 0.9, offset: 5600 },
+// Bewusst Canvas statt CSS-Ebenen: devicePixelRatio-scharfe Kanten, und die Draw-Calls hier
+// (ein clearRect, drei Gradient-Kreise, ein paar hundert kleine fillRect-Punkte, eine Handvoll
+// Linien) sind günstiger als mehrere animierte SVG-Ebenen. Gleiche Performance-Disziplin wie
+// der vorherige Sweep: Pause bei nicht sichtbarem Tab, DPR-skaliert, reduced-motion liefert
+// einen einzelnen statischen Frame.
+const BLOBS = [
+  { x: 0.22, y: 0.3, r: 0.5, secondary: false, speed: 0.00011, phase: 0 },
+  { x: 0.78, y: 0.22, r: 0.42, secondary: true, speed: 0.00008, phase: 2.1 },
+  { x: 0.5, y: 0.78, r: 0.46, secondary: false, speed: 0.0001, phase: 4.4 },
 ];
-const SWEEP_DURATION_MS = 9000;
-const TRAIL_HEIGHT = 160;
-const BLIP_INTERVAL_MS = 7000;
-const BLIP_DURATION_MS = 350;
-const BLIP_RADIUS = 26;
+const GRID_SPACING = 96;
+const DOT_ALPHA = 0.14;
+// Ein paar feste Knotenpaare (relative Koordinaten) für die Verbindungs-Pulse — bewusst eine
+// kleine, kuratierte Liste statt jedes Rasterpaar zu verbinden (sonst wirkt es wie ein
+// generisches Partikelnetz statt ein paar gezielten Signalen).
+const LINKS = [
+  { ax: 0.16, ay: 0.2, bx: 0.28, by: 0.32, offset: 0 },
+  { ax: 0.7, ay: 0.18, bx: 0.82, by: 0.28, offset: 1800 },
+  { ax: 0.4, ay: 0.55, bx: 0.52, by: 0.66, offset: 3600 },
+  { ax: 0.62, ay: 0.72, bx: 0.72, by: 0.82, offset: 5400 },
+];
+const LINK_INTERVAL_MS = 6500;
+const LINK_DURATION_MS = 900;
 
 function hexToRgb(hex: string): [number, number, number] {
   const clean = hex.trim().replace("#", "");
@@ -49,15 +51,14 @@ export function CircuitCanvas() {
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
 
-    // Farbe einmalig aus dem echten Design-Token lesen statt eine zweite Amber-Zahl hart zu
-    // codieren — Canvas-Gradient-Stops können CSS-Custom-Properties (var(--accent-core)) nicht
-    // auflösen, deshalb hier per getComputedStyle als RGB-Tripel übernommen.
-    const [ar, ag, ab] = hexToRgb(
-      getComputedStyle(document.documentElement).getPropertyValue("--accent-core") || "#ffe9c7",
-    );
+    const style = getComputedStyle(document.documentElement);
+    const accent = hexToRgb(style.getPropertyValue("--accent").trim() || "#9b5cff");
+    const secondary = hexToRgb(style.getPropertyValue("--accent-secondary").trim() || "#4fd3ff");
 
     let width = 0;
     let height = 0;
+    let dots: { x: number; y: number }[] = [];
+
     function resize() {
       const rect = canvas!.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
@@ -66,43 +67,64 @@ export function CircuitCanvas() {
       canvas!.width = Math.round(width * dpr);
       canvas!.height = Math.round(height * dpr);
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      dots = [];
+      for (let x = GRID_SPACING / 2; x < width; x += GRID_SPACING) {
+        for (let y = GRID_SPACING / 2; y < height; y += GRID_SPACING) {
+          dots.push({ x, y });
+        }
+      }
     }
 
-    function drawSweep(y: number) {
-      const grad = ctx!.createLinearGradient(0, y - TRAIL_HEIGHT, 0, y);
-      grad.addColorStop(0, `rgba(${ar}, ${ag}, ${ab}, 0)`);
-      grad.addColorStop(1, `rgba(${ar}, ${ag}, ${ab}, 0.16)`);
-      ctx!.fillStyle = grad;
-      ctx!.fillRect(0, y - TRAIL_HEIGHT, width, TRAIL_HEIGHT);
+    function drawDots() {
+      ctx!.fillStyle = `rgba(${accent[0]}, ${accent[1]}, ${accent[2]}, ${DOT_ALPHA})`;
+      for (const d of dots) {
+        ctx!.fillRect(d.x - 0.75, d.y - 0.75, 1.5, 1.5);
+      }
     }
 
-    function drawBlip(x: number, y: number, alpha: number) {
-      const grad = ctx!.createRadialGradient(x, y, 0, x, y, BLIP_RADIUS);
-      grad.addColorStop(0, `rgba(${ar}, ${ag}, ${ab}, ${0.5 * alpha})`);
-      grad.addColorStop(1, `rgba(${ar}, ${ag}, ${ab}, 0)`);
-      ctx!.fillStyle = grad;
-      ctx!.fillRect(x - BLIP_RADIUS, y - BLIP_RADIUS, BLIP_RADIUS * 2, BLIP_RADIUS * 2);
+    function drawBlobs(elapsed: number) {
+      for (const b of BLOBS) {
+        const dx = Math.sin(elapsed * b.speed + b.phase) * 0.1;
+        const dy = Math.cos(elapsed * b.speed * 1.2 + b.phase) * 0.08;
+        const cx = (b.x + dx) * width;
+        const cy = (b.y + dy) * height;
+        const r = b.r * Math.max(width, height);
+        const [cr, cg, cb] = b.secondary ? secondary : accent;
+        const grad = ctx!.createRadialGradient(cx, cy, 0, cx, cy, r);
+        grad.addColorStop(0, `rgba(${cr}, ${cg}, ${cb}, 0.13)`);
+        grad.addColorStop(1, "rgba(0,0,0,0)");
+        ctx!.fillStyle = grad;
+        ctx!.fillRect(0, 0, width, height);
+      }
     }
 
-    // Ruhender Einzelframe für prefers-reduced-motion und als erster Frame vor dem RAF-Start —
-    // Sweep-Balken auf halber Bahn eingefroren, keine Blips (die wären per Definition Bewegung).
+    function drawLinks(elapsed: number) {
+      for (const link of LINKS) {
+        const cycle = (elapsed + link.offset) % LINK_INTERVAL_MS;
+        if (cycle >= LINK_DURATION_MS) continue;
+        const t = cycle / LINK_DURATION_MS;
+        const alpha = (t < 0.5 ? t * 2 : (1 - t) * 2) * 0.5;
+        ctx!.strokeStyle = `rgba(${secondary[0]}, ${secondary[1]}, ${secondary[2]}, ${alpha})`;
+        ctx!.lineWidth = 1;
+        ctx!.beginPath();
+        ctx!.moveTo(link.ax * width, link.ay * height);
+        ctx!.lineTo(link.bx * width, link.by * height);
+        ctx!.stroke();
+      }
+    }
+
     function drawStatic() {
       ctx!.clearRect(0, 0, width, height);
-      drawSweep((height + TRAIL_HEIGHT) * 0.5);
+      drawBlobs(0);
+      drawDots();
     }
 
     function drawFrame(elapsed: number) {
       ctx!.clearRect(0, 0, width, height);
-      const sweepY = ((elapsed % SWEEP_DURATION_MS) / SWEEP_DURATION_MS) * (height + TRAIL_HEIGHT);
-      drawSweep(sweepY);
-      for (const node of NODES) {
-        const cycle = (elapsed + node.offset) % BLIP_INTERVAL_MS;
-        if (cycle < BLIP_DURATION_MS) {
-          const t = cycle / BLIP_DURATION_MS;
-          const alpha = t < 0.5 ? t * 2 : (1 - t) * 2;
-          drawBlip(node.x * width, node.y * height, alpha);
-        }
-      }
+      drawBlobs(elapsed);
+      drawDots();
+      drawLinks(elapsed);
     }
 
     resize();

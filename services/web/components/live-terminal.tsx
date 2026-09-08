@@ -145,7 +145,7 @@ const LINE_CLASS: Record<Line["kind"], string> = {
   in: "text-foreground",
   out: "text-foreground",
   dim: "text-foreground-muted",
-  accent: "text-accent glow-amber",
+  accent: "text-accent glow-accent",
 };
 
 export function LiveTerminal({
@@ -275,7 +275,7 @@ export function LiveTerminal({
               <label htmlFor="terminal-input" className="sr-only">
                 {"Terminal-Befehl eingeben — 'help' zeigt alle Befehle"}
               </label>
-              <span aria-hidden="true" className="shrink-0 text-accent glow-amber">
+              <span aria-hidden="true" className="shrink-0 text-accent glow-accent">
                 zntx_ ~
               </span>
               <input

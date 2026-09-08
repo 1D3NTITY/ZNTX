@@ -1,30 +1,15 @@
 import { CircuitCanvas } from "@/components/circuit-canvas";
 
-// Leiterbahnen-Hintergrund (2026-09-03) — ersetzt die vorherigen Aurora-Gradient-Blobs.
-//
-// Grund für den Austausch statt Ergänzung: Die Blobs waren erklärtermaßen das häufigste
-// Klischee-Muster aus der KI-Vorlagen-Recherche und trugen inhaltlich nichts. Leiterbahnen
-// erzählen dagegen dasselbe wie der Rest der Seite (Maschinen, Verbindungen).
-//
-// Update 2026-09-04: ursprünglich bewusst bei zwei bewegten Ebenen belassen (Performance auf
-// schwacher Hardware, die Seite trägt bereits Scanlines/Korn/Vignette/Spotlight). Mit
-// CircuitCanvas (siehe unten) kommt jetzt eine dritte dazu — Luis' explizite Entscheidung, für
-// den "omfg"-Faktor die Optik-Zurückhaltung aufzugeben. Die Sorgfalt bleibt aber: die neue Ebene
-// ist bewusst günstig gehalten (siehe circuit-canvas.tsx), kein Ersatz der Perf-Disziplin.
-//
-// Alles im Code erzeugt (inline-SVG-Muster als data:-URI, siehe .circuit-layer in globals.css):
-// auflösungsunabhängig scharf, keine externen Requests, keine Lizenzfrage, einzigartig für
-// diese Seite.
-//
-// CircuitCanvas (2026-09-04, Luis: "hochauflösende Grafiken, glitch, omfg-Faktor") kommt als
-// dritte, aber deutlich günstigere Ebene dazu (Canvas statt einer weiteren SVG-Ebene) — malt
-// oberhalb der beiden flachen SVG-Ebenen, aber weiterhin innerhalb desselben -z-10-Containers,
-// nie über echtem Text. Siehe circuit-canvas.tsx für die Begründung/Performance-Absicherung.
+// Signalraum-Hintergrund (2026-09-08, ersetzt das Leiterbahnen-Muster der Amber-CRT-Ära —
+// explizit abgelehnt zusammen mit dem Rest der CRT-Kostümierung). CircuitCanvas übernimmt jetzt
+// allein die bewegte Ebene (driftende Licht-Blobs + sparsames Punktraster mit
+// Verbindungs-Pulsen, siehe dort) — die beiden statischen, unbewegten Lichtquellen unten bleiben
+// bestehen: sie malen sofort beim ersten Server-Render (kein JS/Hydration nötig), bevor das
+// Canvas überhaupt gemountet ist, und färben sich über --accent/--accent-dim automatisch mit dem
+// Signalraum-Farbsystem ein.
 export function CircuitBackground() {
   return (
     <div aria-hidden="true" className="fixed inset-0 -z-10 overflow-hidden">
-      {/* Zwei ruhende Lichtquellen für Tiefe — bewusst ohne eigene Animation, damit die
-          bewegten Ebenen darüber nicht mit ihnen konkurrieren. */}
       <div
         className="absolute rounded-full"
         style={{
@@ -49,10 +34,6 @@ export function CircuitBackground() {
           opacity: 0.1,
         }}
       />
-      {/* Zwei Leiterbahn-Ebenen unterschiedlicher Größe/Geschwindigkeit → Parallaxe-Andeutung.
-          Beide laufen über die globale prefers-reduced-motion-Regel automatisch still. */}
-      <div className="circuit-layer circuit-far" />
-      <div className="circuit-layer circuit-near" />
       <CircuitCanvas />
     </div>
   );

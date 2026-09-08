@@ -81,7 +81,7 @@ export default async function ProjectPage({
               boxShadow: project.accentColor ? `0 0 8px ${project.accentColor}` : "none",
             }}
           />
-          <h1 className="font-sans text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+          <h1 className="font-display text-3xl font-bold uppercase tracking-tight text-foreground sm:text-4xl">
             {project.name}
           </h1>
         </div>

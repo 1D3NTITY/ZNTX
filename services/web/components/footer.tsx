@@ -12,10 +12,9 @@ export function Footer() {
   return (
     <footer className="mx-auto w-full max-w-6xl px-6 py-10">
       <div className="flex flex-col gap-3 border-t border-border pt-6 font-mono text-xs text-foreground-muted sm:flex-row sm:items-center sm:justify-between">
-        {/* text-foreground statt -muted (Accessibility-Audit 2026-09-03): der Footer sitzt in
-            der Bildschirmecke, wo die .crt-vignette am stärksten abdunkelt — echt per
-            Pixel-Sampling gemessen blieb der Kontrast selbst nach Abschwächen der Vignette
-            unter WCAG AA. Direkt am Text behoben statt die Vignette noch weiter zu verwässern. */}
+        {/* text-foreground statt -muted (Accessibility-Audit 2026-09-03, ursprünglich wegen der
+            inzwischen entfernten .crt-vignette, die Ecken abdunkelte): bleibt als generelle
+            Sicherheitsmarge in der Bildschirmecke bestehen, auch ohne die Vignette selbst. */}
         <span className="flex flex-wrap items-center gap-x-3 gap-y-1 text-foreground">
           <span>© {new Date().getFullYear()} zntx.de</span>
           {GIT_SHA && GIT_SHA !== "unknown" && (
