@@ -2,6 +2,7 @@ import { OpsDashboard } from "@/components/ops-dashboard";
 import { BootIntro } from "@/components/boot-intro";
 import { PROJECTS } from "@/lib/content";
 import { getProjectStatuses } from "@/lib/status";
+import { getUptimeHistorySummary } from "@/lib/uptime-history";
 import { formatSnapshotTime } from "@/lib/labels";
 
 // Gleiche Zählweise wie in ops-dashboard.tsx: zntx selbst ist ein Meta-Eintrag und zählt nicht
@@ -17,14 +18,19 @@ const SYSTEMS_IN_OPERATION = REAL_SYSTEMS.filter((p) => p.status !== "archived")
 // landet dadurch im initialen HTML, kein CORS, kein zusätzlicher Client-Bundle-Overhead. Siehe
 // lib/status.ts für das Caching (Modul-Memo, 60s TTL) und Fallback-Verhalten bei Fehlschlägen.
 export default async function Home() {
-  const { statuses, fetchedAt } = await getProjectStatuses();
+  // Parallel statt sequenziell — zwei unabhängige Fetches (echter Live-Status vs. git-committete
+  // Uptime-Historie, siehe lib/uptime-history.ts), keine Abhängigkeit zwischeneinander.
+  const [{ statuses, fetchedAt }, uptimeHistory] = await Promise.all([
+    getProjectStatuses(),
+    getUptimeHistorySummary(),
+  ]);
   const fetchedAtLabel = formatSnapshotTime(fetchedAt);
   return (
     <main className="flex flex-1 flex-col">
       {/* Statisches Server-Markup; sichtbar nur über die Klasse, die das Inline-Skript in
           layout.tsx vor dem ersten Bildaufbau setzt. */}
       <BootIntro systems={REAL_SYSTEMS.length} operational={SYSTEMS_IN_OPERATION} />
-      <OpsDashboard statuses={statuses} fetchedAtLabel={fetchedAtLabel} />
+      <OpsDashboard statuses={statuses} fetchedAtLabel={fetchedAtLabel} uptimeHistory={uptimeHistory} />
     </main>
   );
 }

@@ -13,6 +13,7 @@ import { LiveTerminal } from "@/components/live-terminal";
 import { FlowLines } from "@/components/flow-lines";
 import { useReducedMotionPreference } from "@/lib/use-reduced-motion";
 import type { LiveStatus } from "@/lib/status";
+import type { UptimeHistorySummary } from "@/lib/uptime-history";
 
 // Eintritts-Animation beim Laden (2026-08-29) — Headline baut sich wortweise auf, danach
 // Subline/Buttons/Racks gestaffelt. Eigene, seriöse Motion-Technik statt der abgelehnten
@@ -113,12 +114,16 @@ const SERVER_DESCRIPTIONS: Record<"server-1" | "server-2", string> = {
 export function OpsDashboard({
   statuses,
   fetchedAtLabel,
+  uptimeHistory,
 }: {
   statuses: Record<string, LiveStatus | null>;
   /** Serverseitig formatierte Uhrzeit des Status-Snapshots — bewusst als fertiger String
    *  hereingereicht, nicht clientseitig aus einem ISO-Wert berechnet (Zeitzonen-/Hydration-
    *  Falle, siehe formatSnapshotTime in lib/labels.ts). */
   fetchedAtLabel: string | null;
+  /** Git-committed Uptime-History (2026-09-08, lib/uptime-history.ts) — unabhängig von
+   *  `statuses` oben, andere Datenquelle (Actions-committete Historie statt Live-Fetch). */
+  uptimeHistory: Record<string, UptimeHistorySummary | null>;
 }) {
   const [openId, setOpenId] = useState<string | null>(null);
   const reducedMotion = useReducedMotion();
@@ -359,12 +364,14 @@ export function OpsDashboard({
           description={SERVER_DESCRIPTIONS["server-1"]}
           projects={SERVER_1_PROJECTS}
           statuses={statuses}
+          uptimeHistory={uptimeHistory}
         />
         <ServerRack
           label="Server 2"
           description={SERVER_DESCRIPTIONS["server-2"]}
           projects={SERVER_2_PROJECTS}
           statuses={statuses}
+          uptimeHistory={uptimeHistory}
         />
       </motion.div>
 

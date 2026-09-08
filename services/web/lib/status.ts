@@ -55,6 +55,21 @@ const STATUS_ENDPOINTS: Record<string, { url: string; schema: LiveStatus["schema
   qntx: { url: "https://qntx.zblt.eu/status", schema: "badge" },
 };
 
+// Für scripts/uptime-check.ts (2026-09-08, Git-committed Uptime-History) — eine Quelle der
+// Wahrheit statt einer zweiten, parallelen Endpoint-Liste. Das Skript läuft außerhalb des
+// Next.js-Runtimes (GitHub Actions, Bun), importiert diese beiden Funktionen aber direkt aus
+// dieser Datei (keine externen Deps hier, funktioniert ohne node_modules-Install im Workflow).
+export function getMonitoredProjectIds(): string[] {
+  return Object.keys(STATUS_ENDPOINTS);
+}
+
+export async function checkLiveValue(id: string): Promise<LiveStatusValue | null> {
+  const entry = STATUS_ENDPOINTS[id];
+  if (!entry) return null;
+  const result = await fetchOne(id, entry.url, entry.schema);
+  return result?.status ?? null;
+}
+
 function isLiveStatusValue(v: unknown): v is LiveStatusValue {
   return v === "operational" || v === "degraded" || v === "down";
 }

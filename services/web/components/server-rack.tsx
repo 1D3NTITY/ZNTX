@@ -1,5 +1,6 @@
 import type { ProjectNode } from "@/lib/content";
 import type { LiveStatus } from "@/lib/status";
+import type { UptimeHistorySummary } from "@/lib/uptime-history";
 import { RackSlot } from "@/components/rack-slot";
 
 // Rack-Rahmen (Konzept F, 2026-08-27) — eine 1:1-Karte der echten Zwei-Server-Infrastruktur
@@ -11,6 +12,7 @@ export function ServerRack({
   description,
   projects,
   statuses,
+  uptimeHistory,
 }: {
   label: string;
   /** Kurze, ehrliche Beschreibung der Workload-Art (Idee aus einem Lovable-Vergleichsentwurf,
@@ -18,6 +20,7 @@ export function ServerRack({
   description?: string;
   projects: ProjectNode[];
   statuses: Record<string, LiveStatus | null>;
+  uptimeHistory: Record<string, UptimeHistorySummary | null>;
 }) {
   return (
     <div className="relative rounded-md border-2 border-border bg-surface p-4">
@@ -33,7 +36,12 @@ export function ServerRack({
       {!description && <div className="mb-3" />}
       <div className="flex flex-col gap-2">
         {projects.map((project) => (
-          <RackSlot key={project.id} project={project} live={statuses[project.id] ?? null} />
+          <RackSlot
+            key={project.id}
+            project={project}
+            live={statuses[project.id] ?? null}
+            uptime={uptimeHistory[project.id] ?? null}
+          />
         ))}
       </div>
     </div>

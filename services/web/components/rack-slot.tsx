@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ProjectNode } from "@/lib/content";
 import type { LiveStatus } from "@/lib/status";
+import type { UptimeHistorySummary } from "@/lib/uptime-history";
 import { formatProjectMeta, formatLiveStatus } from "@/lib/labels";
 
 // Ein Einschub im Server-Rack (Konzept F, 2026-08-27) — ersetzt die vorherige quadratische
@@ -43,10 +44,14 @@ function LiveLed({ live }: { live: LiveStatus | null }) {
 export function RackSlot({
   project,
   live,
+  uptime,
   dimmed = false,
 }: {
   project: ProjectNode;
   live?: LiveStatus | null;
+  /** Git-committed Uptime-History (2026-09-08, lib/uptime-history.ts) — andere Datenquelle als
+   *  `live` oben (Actions-committete Historie statt Live-Fetch), unabhängig davon ob vorhanden. */
+  uptime?: UptimeHistorySummary | null;
   /** Für die Archiv-Ablage (Projekte ohne server-Feld) — gedimmter Look, keine LED. */
   dimmed?: boolean;
 }) {
@@ -83,6 +88,16 @@ export function RackSlot({
         {liveDetail && (
           <span className="mt-0.5 block truncate font-mono text-[11px] text-accent/80">
             {liveDetail}
+          </span>
+        )}
+        {/* Git-committed Uptime-History (2026-09-08) — eigene Zeile, gleiche Lektion wie beim
+            Attributions-Tag: nie mit einer anderen Zeile um Breite konkurrieren lassen. Nur
+            gerendert wenn echte Daten vorliegen (mind. 1 Check je bisherigem Actions-Lauf) —
+            direkt nach dem ersten Deploy, bevor der Workflow einmal gelaufen ist, bleibt die
+            Zeile ehrlich weg statt "0 %" zu zeigen. */}
+        {!dimmed && uptime && (
+          <span className="mt-0.5 block font-mono text-[11px] text-foreground-muted">
+            {uptime.percent.toFixed(1)} % · {uptime.days} {uptime.days === 1 ? "Tag" : "Tage"}
           </span>
         )}
         {/* Attributions-Tag (2026-09-07, Recherche-Synthese) — löst den häufigsten

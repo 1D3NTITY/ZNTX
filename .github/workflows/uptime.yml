@@ -1,0 +1,38 @@
+name: Uptime Check
+
+# Git-committed Uptime-History (2026-09-08) — fragt alle 30 Minuten dieselben echten
+# /status-Endpoints ab wie die laufende Seite (services/web/lib/status.ts) und committet
+# eine rollierende 30-Tage-Historie nach data/uptime/summary.json. Kein neuer Docker-Service,
+# keine neue Server-Last — läuft komplett auf GitHub-eigener Infrastruktur, kostenlos für
+# öffentliche Repos. Cron-Timing bei GitHub Actions ist nicht exakt punktuell (dokumentiertes
+# Verhalten) — vereinzelt ausgelassene Intervalle sind erwartet, kein Bug.
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Uptime-Check ausführen
+        run: bun run scripts/uptime-check.ts
+
+      - name: Änderung committen
+        run: |
+          git config user.name "zntx-uptime-bot"
+          git config user.email "actions@github.com"
+          git add data/uptime/summary.json
+          if git diff --cached --quiet; then
+            echo "Keine Änderung, kein Commit."
+            exit 0
+          fi
+          git commit -m "chore(uptime): update history [skip ci]"
+          git push
