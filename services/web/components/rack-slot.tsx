@@ -77,24 +77,25 @@ export function RackSlot({
           </span>
           {!dimmed && <LiveLed live={live ?? null} />}
         </span>
-        <span className="flex items-center gap-2">
-          <span className="min-w-0 flex-1 truncate font-mono text-[11px] uppercase tracking-widest text-foreground-muted">
-            {formatProjectMeta(project)}
-          </span>
-          {/* Attributions-Tag (2026-09-07, Recherche-Synthese) — löst den häufigsten
-              Glaubwürdigkeits-Einwand ("unklare Eigenleistung") direkt auf der Startseite, ohne
-              Klick. Bewusst knapp (2 Wörter, kein Fließtext) statt die ausführliche myWork-Box
-              der Projekt-Unterseite zu verdoppeln — die volle Formulierung steht dort bereits.
-              Nur gerendert wo das Feld wirklich gesetzt ist, keine pauschale Annahme. */}
-          {!dimmed && project.myWork && (
-            <span className="shrink-0 font-mono text-[10px] uppercase tracking-widest text-accent/70">
-              eigene Arbeit
-            </span>
-          )}
+        <span className="block truncate font-mono text-[11px] uppercase tracking-widest text-foreground-muted">
+          {formatProjectMeta(project)}
         </span>
         {liveDetail && (
           <span className="mt-0.5 block truncate font-mono text-[11px] text-accent/80">
             {liveDetail}
+          </span>
+        )}
+        {/* Attributions-Tag (2026-09-07, Recherche-Synthese) — löst den häufigsten
+            Glaubwürdigkeits-Einwand ("unklare Eigenleistung") direkt auf der Startseite, ohne
+            Klick. Bewusst knapp (2 Wörter, kein Fließtext) statt die ausführliche myWork-Box der
+            Projekt-Unterseite zu verdoppeln — die volle Formulierung steht dort bereits. Eigene
+            Zeile statt in die Meta-Zeile gequetscht (erste Fassung teilte sich sonst horizontal
+            den Platz mit formatProjectMeta und schnitt bei jedem Slot echte Info ab, gemessen
+            per Playwright: scrollWidth bis zu 413px bei nur 225px verfügbarem Platz). Nur
+            gerendert wo das Feld wirklich gesetzt ist, keine pauschale Annahme. */}
+        {!dimmed && project.myWork && (
+          <span className="mt-0.5 block font-mono text-[10px] uppercase tracking-widest text-accent/70">
+            eigene Arbeit
           </span>
         )}
       </span>
