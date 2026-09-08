@@ -343,7 +343,7 @@ export const LINKS = {
 
 // Für den Git-SHA-Footer-Link (2026-09-07) — Repo wird als Teil derselben Änderung öffentlich
 // gepusht, siehe docs/plans-Kommentar bzw. Session-Verlauf.
-export const GITHUB_REPO = "https://github.com/1D3NTITY/zntx";
+export const GITHUB_REPO = "https://github.com/1D3NTITY/ZNTX";
 
 // name/roleTagline ergänzt (Feedback 2026-07-26, Headhunter-Perspektive):
 // Name stand vorher nur in Meta-Tags/der LinkedIn-URL, nirgends sichtbar auf
