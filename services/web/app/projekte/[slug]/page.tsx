@@ -6,6 +6,7 @@ import { PROJECTS, LINKS } from "@/lib/content";
 import { formatProjectMeta } from "@/lib/labels";
 import { getProjectStatuses } from "@/lib/status";
 import { ProjectCaseStudyBody } from "@/components/project-case-study";
+import { IncidentCallout } from "@/components/incident-callout";
 
 // Eigene Seite pro Projekt (2026-08-24) — ersetzt das Inline-Aufklappen im Grid auf der
 // Startseite. Grund: Karten, die sich über die volle Grid-Breite öffnen, verschieben die
@@ -110,6 +111,8 @@ export default async function ProjectPage({
       )}
 
       <ProjectCaseStudyBody project={project} live={live} />
+
+      <IncidentCallout projectId={project.id} />
 
       {project.myWork && (
         <div className="mt-8 rounded-md border border-border bg-surface p-5">
