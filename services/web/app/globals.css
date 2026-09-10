@@ -250,6 +250,61 @@ body {
   to { --rack-ring-angle: 360deg; }
 }
 
+/* Ambienter Signal-Tear-Glitch (2026-09-10, zurückgebracht auf expliziten Wunsch: "acht Systeme,
+   ein Betreiber darf auch gerne etwas glitch") — war Teil der Amber-CRT-Ästhetik und wurde beim
+   Signalraum-Wechsel entfernt, kommt jetzt gezielt zurück, neu eingefärbt in --accent/
+   --accent-secondary statt der alten Amber-Töne. Technik unverändert zur vorherigen, bereits
+   fps-getesteten Fassung: zwei phasenverschobene Geister-Duplikate des Texts via
+   `content: attr(data-text)`, mix-blend-mode: screen, clip-path-Versatz. Braucht `data-text`
+   und explizite `color` auf den Pseudo-Elementen (überschreibt `color: transparent` von
+   .text-gradient-accent).
+
+   WICHTIG (Lehre aus dem ersten Anlauf, per Playwright-fps-Messung nachgewiesen): niemals als
+   dauerhaft laufende CSS-Animation — das zwingt den Browser, zwei volltextgroße Ebenen die
+   ganze Sitzung über compositing-aktiv zu halten (gemessen ~53fps → ~30fps). Deshalb hier nur
+   die reine Burst-Animation (animation-iteration-count: 1), ausgelöst per JS-Timer in
+   ops-dashboard.tsx über classList.add/remove — die Animation existiert nur ~280ms alle paar
+   Sekunden, löst damit auch das WCAG-2.3.1-Anfallsicherheits-Ziel strukturell. */
+.glitch-text {
+  position: relative;
+}
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  background: none;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0;
+}
+.glitch-text::before {
+  color: var(--accent-secondary);
+  clip-path: inset(0 0 65% 0);
+}
+.glitch-text::after {
+  color: var(--accent-core);
+  clip-path: inset(60% 0 0 0);
+}
+.glitch-text.is-glitching::before {
+  animation: glitch-burst-1 280ms steps(1) 1;
+}
+.glitch-text.is-glitching::after {
+  animation: glitch-burst-2 280ms steps(1) 1;
+}
+@keyframes glitch-burst-1 {
+  0% { opacity: 0; transform: translate3d(0, 0, 0); clip-path: inset(0 0 65% 0); }
+  35% { opacity: 0.9; transform: translate3d(-3px, 0, 0); clip-path: inset(10% 0 55% 0); }
+  70% { opacity: 0.9; transform: translate3d(2px, 0, 0); clip-path: inset(35% 0 20% 0); }
+  100% { opacity: 0; transform: translate3d(0, 0, 0); clip-path: inset(0 0 65% 0); }
+}
+@keyframes glitch-burst-2 {
+  0% { opacity: 0; transform: translate3d(0, 0, 0); clip-path: inset(60% 0 0 0); }
+  30% { opacity: 0.9; transform: translate3d(3px, 0, 0); clip-path: inset(50% 0 5% 0); }
+  65% { opacity: 0.9; transform: translate3d(-2px, 0, 0); clip-path: inset(20% 0 40% 0); }
+  100% { opacity: 0; transform: translate3d(0, 0, 0); clip-path: inset(60% 0 0 0); }
+}
+
 /* Hero-Intro: Unterstrich hinter "zntx_" teilt sich kurz in zwei vertikale Linien (Symbol für
    die 2 Server) bevor Headline/Subline einblenden. Siehe ops-dashboard.tsx für die Steuerung
    (skip bei prefers-reduced-motion, siehe Media-Query unten). */
@@ -485,6 +540,10 @@ html.boot-out #boot-intro::after {
      (unsichtbar/neutral), diese Zeilen sind billige Absicherung gegen Browser-Eigenheiten,
      gleiches Muster wie die .ambient-glow-Ausnahme direkt darüber. */
   .rack-slot-glow-ring::after {
+    opacity: 0 !important;
+  }
+  .glitch-text.is-glitching::before,
+  .glitch-text.is-glitching::after {
     opacity: 0 !important;
   }
   html.boot-out #boot-intro::after {
