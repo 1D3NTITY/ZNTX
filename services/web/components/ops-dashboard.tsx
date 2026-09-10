@@ -245,7 +245,7 @@ export function OpsDashboard({
               onClick={openContact}
               className="glass-pill flex items-center gap-2.5 py-2 pl-5 pr-2 font-mono text-xs font-semibold uppercase tracking-widest text-foreground transition-opacity duration-300 hover:opacity-90"
             >
-              Kontakt aufnehmen
+              Schreib mir
               <span
                 aria-hidden="true"
                 className="flex h-6 w-6 items-center justify-center rounded-full bg-accent text-background"
@@ -407,7 +407,7 @@ export function OpsDashboard({
         <div id="row-contact">
           <DashboardRow
             title="Kontakt"
-            teaser="Kurze Einordnung des Anliegens genügt — Rückmeldung erfolgt zeitnah."
+            teaser="Schreib kurz, worum's geht — ich melde mich zeitnah."
             isOpen={openId === "contact"}
             onToggle={() => toggle("contact")}
           >

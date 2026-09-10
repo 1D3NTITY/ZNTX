@@ -128,7 +128,7 @@ export default async function ProjectPage({
           href="/#row-contact"
           className="inline-block rounded bg-accent px-5 py-2.5 font-mono text-xs font-semibold uppercase tracking-widest text-background transition-opacity hover:opacity-90"
         >
-          Kontakt aufnehmen →
+          Schreib mir →
         </Link>
         <a
           href={LINKS.linkedin}
