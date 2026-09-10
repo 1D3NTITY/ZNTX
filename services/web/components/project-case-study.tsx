@@ -121,27 +121,45 @@ export function ProjectCaseStudyBody({
       </motion.p>
 
       <h2 className="sr-only">Projektdetails</h2>
-      <motion.dl
-        variants={item}
-        className="grid grid-cols-1 gap-x-10 gap-y-5 sm:grid-cols-[140px_1fr]"
-      >
-        <dt className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
-          Beitrag
-        </dt>
-        <dd className="max-w-prose text-sm leading-relaxed text-foreground">{project.contribution}</dd>
+      {/* Panel-Karten statt reiner dl-Text-Zeilen (2026-09-10, Luis: "wirkt sehr langweilig",
+          nicht weniger Text, sondern technischer) — gleiche Box-Optik wie die "Was davon meine
+          Arbeit ist"-Box auf derselben Seite (border-border bg-surface), damit sich Beitrag/
+          Herausforderung nach echten Dashboard-Panels anfühlen statt nach Fließtext-Absätzen
+          mit Label davor. Kein Wort am Inhalt geändert, nur Fassung. */}
+      <motion.div variants={item} className="flex flex-col gap-4">
+        <div className="rounded-md border border-border bg-surface p-5">
+          <p className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
+            Beitrag
+          </p>
+          <p className="mt-2 max-w-prose text-sm leading-relaxed text-foreground">
+            {project.contribution}
+          </p>
+        </div>
 
-        <dt className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
-          Herausforderung
-        </dt>
-        <dd className="max-w-prose text-sm leading-relaxed text-foreground">{project.challenge}</dd>
+        <div className="rounded-md border border-border bg-surface p-5">
+          <p className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
+            Herausforderung
+          </p>
+          <p className="mt-2 max-w-prose text-sm leading-relaxed text-foreground">
+            {project.challenge}
+          </p>
+        </div>
 
-        <dt className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
-          Stack
-        </dt>
-        <dd className="font-mono text-xs leading-relaxed text-foreground-muted">
-          {project.stack.join(" · ")}
-        </dd>
-      </motion.dl>
+        <div>
+          <p className="mb-2 font-mono text-xs uppercase tracking-widest text-foreground-muted">
+            Stack
+          </p>
+          {/* Echte Tags statt Punkt-getrennter String — wiederverwendet .badge (bereits für den
+              Live-Status-Punkt oben im Einsatz), keine neue Klasse für dieselbe Chip-Optik. */}
+          <div className="flex flex-wrap gap-2">
+            {project.stack.map((tech) => (
+              <span key={tech} className="badge font-mono text-[11px] text-foreground-muted">
+                {tech}
+              </span>
+            ))}
+          </div>
+        </div>
+      </motion.div>
 
       <motion.p
         variants={item}
