@@ -2,9 +2,10 @@
 <!-- `- [ ] Text [status:: blockiert] [fällig:: YYYY-MM-DD]` — beides optional,
      ohne status:: = offen. Bei Statusänderung sofort pflegen, nicht sammeln. -->
 
-- [ ] Layout-/Spacing-Feinschliff nach dem Signalraum-Farb-/Effekt-Wechsel (2026-09-08) —
-      Luis hat das explizit als zweiten, noch offenen Kritikpunkt bestätigt, bewusst separat
-      von der Farb-/Effekt-Migration gehalten, damit beide Änderungen einzeln beurteilbar bleiben.
+- [ ] Layout-/Spacing-Feinschliff, Rest-Umfang klären (Stand 2026-09-11) — konkrete Stellen seit
+      dem Signalraum-Wechsel bereits gefixt (Case-Study-Panels/Tags, Incident-Callout-Platzierung,
+      Kontakt-CTA-Ton), aber kein systematischer Full-Page-Durchgang. Rückfrage an Luis offen: reicht
+      das, oder eigener Durchgang gewünscht?
 - [ ] Drohnen-Video ins Operator-Profil einbauen — Luis: "folgt noch", Platzierung/Umsetzung
       liegt bei der Implementierungs-Session, sobald das Material da ist.
 - [ ] Uncommittete Server-Kontext-Änderungen klären (`.claude/hooks/guardrails.py`,
