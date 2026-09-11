@@ -64,7 +64,7 @@ export const PROJECTS: ProjectNode[] = [
     accentColor: "var(--project-foodapp)",
     server: "server-1",
     since: "Mai 2026",
-    url: "https://app.zentrix-solutions.eu",
+    url: "https://app.zblt.eu",
     screenshot: "/screenshots/foodapp.png",
     stack: ["FastAPI", "Next.js", "Expo / React Native", "Postgres", "Redis", "Alembic", "n8n"],
     context:

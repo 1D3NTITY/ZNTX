@@ -50,7 +50,7 @@ export type StatusSnapshot = {
 const STATUS_ENDPOINTS: Record<string, { url: string; schema: LiveStatus["schema"] }> = {
   ravepuls: { url: "https://ravepuls.de/status", schema: "basic" },
   buchhaltung: { url: "https://buchhaltung.zntx.de/status", schema: "basic" },
-  foodapp: { url: "https://api.zentrix-solutions.eu/status", schema: "basic" },
+  foodapp: { url: "https://api.zblt.eu/status", schema: "basic" },
   "matrix-chat": { url: "https://matrix.zntx.de/status", schema: "uptime" },
   qntx: { url: "https://qntx.zblt.eu/status", schema: "badge" },
 };
@@ -105,8 +105,10 @@ async function fetchOne(id: string, url: string, schema: LiveStatus["schema"]): 
     // Ehrlichkeits-Bugs (gefunden 2026-09-03):
     //
     // Mit fetch-seitigem `revalidate` legt Next die Antwort in den Data Cache. Läuft die
-    // Neuvalidierung später in einen Fehler (hier: api.zentrix-solutions.eu löst seit dem
-    // 24.08. per DNS nicht mehr auf), liefert Next die ALTE, erfolgreiche Antwort weiter
+    // Neuvalidierung später in einen Fehler (damals: die alte foodapp-Domain
+    // api.zentrix-solutions.eu löste per DNS nicht mehr auf — die Domain ist seither endgültig
+    // aufgegeben, foodapp läuft jetzt unter api.zblt.eu), liefert Next die ALTE, erfolgreiche
+    // Antwort weiter
     // (stale-while-revalidate). Aus Sicht dieses Moduls ist der Fetch damit erfolgreich —
     // der try/catch-Fallback auf `null` greift nie. Folge: Die Seite meldete foodapp
     // wochenlang als "operational", obwohl der Dienst gar nicht erreichbar war. Genau das
