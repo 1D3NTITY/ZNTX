@@ -394,10 +394,14 @@ html.booting #boot-intro {
   /* Sanftes Einblenden (2026-09-08, ersetzt den Röhren-Aufschnapp-Effekt der Amber-CRT-Ära —
      kein Bezug mehr zu einem hochfahrenden Röhrenbildschirm, reiner Fade+Scale-Auftakt). */
   transform-origin: center;
-  animation: boot-intro-in 200ms ease-out both;
+  /* Härterer Snap statt reinem Fade (2026-09-14, Luis: "darf gerne noch geiler"): kurze Dauer +
+     Overshoot-Easing statt linearem Auftakt — schnappt über 1 hinaus und pendelt sich ein,
+     fühlt sich nach Power-On an statt nach Soft-Fade. */
+  animation: boot-intro-in 160ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 @keyframes boot-intro-in {
-  0% { opacity: 0; transform: scale(0.97); }
+  0% { opacity: 0; transform: scale(0.92); }
+  60% { opacity: 1; transform: scale(1.015); }
   100% { opacity: 1; transform: scale(1); }
 }
 /* Rack-Power-Up (2026-09-07, zweiter Anlauf — siehe Kopfkommentar in boot-intro.tsx für die
@@ -419,18 +423,23 @@ html.booting #boot-intro .boot-led.is-online {
 html.booting #boot-intro .boot-led.is-registered {
   animation-name: boot-led-registered;
 }
+/* Farbe 2026-09-14 auf --accent-secondary (Cyan) umgestellt, vorher --status-online (Grün) —
+   im Boot-Intro ging es neben dem violett/cyanen Signalraum-Rest der Seite als Fremdkörper
+   durch. Die echten Live-Punkte im Dashboard (rack-slot.tsx) bleiben unverändert grün, das
+   ist dort weiterhin die ehrliche, semantische Status-Farbe — nur hier im rein performativen
+   Power-Up-Moment wird sie zugunsten der Brand-Kohärenz ersetzt. */
 @keyframes boot-led-online {
   0% { background: transparent; border-color: var(--border); box-shadow: none; transform: scaleY(0.3); }
   65% {
-    background: var(--status-online);
-    border-color: var(--status-online);
-    box-shadow: 0 0 6px var(--status-online), 0 0 18px var(--status-online);
+    background: var(--accent-secondary);
+    border-color: var(--accent-secondary);
+    box-shadow: 0 0 8px var(--accent-secondary), 0 0 24px var(--accent-secondary);
     transform: scaleY(1.12);
   }
   100% {
-    background: var(--status-online);
-    border-color: var(--status-online);
-    box-shadow: 0 0 5px var(--status-online), 0 0 14px var(--status-online);
+    background: var(--accent-secondary);
+    border-color: var(--accent-secondary);
+    box-shadow: 0 0 6px var(--accent-secondary), 0 0 18px var(--accent-secondary);
     transform: scaleY(1);
   }
 }
@@ -448,16 +457,19 @@ html.booting #boot-intro .boot-led-bloom {
   position: absolute;
   inset: -20px;
   pointer-events: none;
-  background: radial-gradient(ellipse at center, var(--status-online) 0%, transparent 70%);
+  background: radial-gradient(ellipse at center, var(--accent-secondary) 0%, transparent 70%);
   mix-blend-mode: screen;
   opacity: 0;
   animation-name: boot-led-bloom;
   animation-timing-function: ease-out;
   animation-fill-mode: both;
 }
+/* Peak-Opazität 2026-09-14 von 0.4 auf 0.6 angehoben ("darf gerne noch geiler") — kräftigerer
+   Flash-Moment am Ende der LED-Sequenz, screen kann weiterhin nur aufhellen, kein neuer
+   Kontrast-Regress. */
 @keyframes boot-led-bloom {
   0% { opacity: 0; }
-  45% { opacity: 0.4; }
+  45% { opacity: 0.6; }
   100% { opacity: 0; }
 }
 /* Zeilen (Caption + Skip-Hinweis) erscheinen gestaffelt — animation-delay/-duration wird inline
@@ -557,9 +569,9 @@ html.boot-out #boot-intro::after {
      dieselbe Regel wie beim vorherigen .boot-char, die Information soll nicht verloren gehen.
      Der Bloom ist reine Deko und wird unterdrückt. */
   .boot-led.is-online {
-    background: var(--status-online) !important;
-    border-color: var(--status-online) !important;
-    box-shadow: 0 0 5px var(--status-online), 0 0 14px var(--status-online) !important;
+    background: var(--accent-secondary) !important;
+    border-color: var(--accent-secondary) !important;
+    box-shadow: 0 0 6px var(--accent-secondary), 0 0 18px var(--accent-secondary) !important;
     transform: none !important;
   }
   .boot-led.is-registered {

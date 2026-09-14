@@ -37,12 +37,20 @@
 // und deutlich weniger Text als der erste Anlauf (passend zum zweiten Feedback-Punkt vom
 // selben Tag: "die Status-Legende ist viel zu viel Text").
 
+// Update 2026-09-14 (Luis: Boot-LEDs wirkten neben dem violett/cyanen Signalraum-Rest der Seite
+// wie ein Fremdkörper, weil sie die --status-online-Farbe der echten Live-Punkte teilten +
+// Wunsch nach mehr Wumms). Zwei Änderungen: (1) LEDs/Bloom laufen jetzt in --accent-secondary
+// statt --status-online (nur hier im Boot-Intro — die echten Live-Punkte im Dashboard bleiben
+// unverändert grün, das ist weiterhin die ehrliche Status-Farbe dort). (2) Sequenz gestrafft
+// (LED_STAGGER_MS/LED_DURATION_MS/BLOOM_GAP_MS runter) + boot-intro-in in globals.css hat jetzt
+// einen härteren Snap mit leichtem Overshoot statt reinem Fade — siehe dortiger Kommentar.
+//
 // Timing-Konstanten (auch von layout.tsx referenziert — siehe Kommentar dort). Alle Werte hier
 // zentral, damit sie nicht in zwei Dateien auseinanderlaufen.
 const LED_START_MS = 260; // nach dem Power-On-Snap (160ms) + kurzer Pause
-const LED_STAGGER_MS = 100;
-const LED_DURATION_MS = 180;
-const BLOOM_GAP_MS = 60;
+const LED_STAGGER_MS = 70;
+const LED_DURATION_MS = 140;
+const BLOOM_GAP_MS = 40;
 const BLOOM_DURATION_MS = 200;
 const CAPTION_GAP_MS = 150;
 const CAPTION_FADE_MS = 200;
