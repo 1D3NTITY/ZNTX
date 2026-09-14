@@ -136,7 +136,7 @@ export const PROJECTS: ProjectNode[] = [
     challenge:
       "Live-Spieler-Tracking über dieselbe RCON-Verbindung wie die Server-Steuerung — stabil genug für Dauerbetrieb, nicht nur gelegentliche Admin-Befehle.",
     outcome:
-      "Lief mehrere Monate produktiv, bewusst offline genommen, nachdem sich abzeichnete, dass das Projekt keinen echten Mehrwert mehr bringt — kein gescheitertes Vorhaben, sondern eine bewusste Priorisierungsentscheidung.",
+      "Lief mehrere Monate produktiv, bewusst offline genommen, nachdem sich abzeichnete, dass das Projekt keinen echten Mehrwert mehr bringt — kein gescheitertes Vorhaben, sondern eine bewusste Priorisierungsentscheidung. Der Gameserver selbst (28-GB-Volume, Pterodactyl-Panel) ist inzwischen vollständig zurückgebaut; der Discord-Bot lebt als Basis für ein neues Community-Projekt (WarDOGS) weiter.",
     myWork:
       "Der komplette Discord-Bot (~5000 Zeilen) und die RCON-Integration sind meine eigene Arbeit, ebenso die Entscheidung, ihn abzuschalten.",
   },
