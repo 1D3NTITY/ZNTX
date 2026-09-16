@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-16T09:26:27.404Z",
+  "updatedAt": "2026-09-16T14:19:00.332Z",
   "projects": {
     "ravepuls": {
       "days": [
@@ -45,10 +45,21 @@
         },
         {
           "date": "2026-09-16",
-          "checks": 2,
-          "operational": 2
+          "checks": 3,
+          "operational": 3
         }
-      ]
+      ],
+      "kuma": {
+        "lastStatus": "up",
+        "lastCheckedAt": "2026-09-16T14:19:00.332Z",
+        "days": [
+          {
+            "date": "2026-09-16",
+            "checks": 1,
+            "up": 1
+          }
+        ]
+      }
     },
     "buchhaltung": {
       "days": [
@@ -94,10 +105,21 @@
         },
         {
           "date": "2026-09-16",
-          "checks": 2,
-          "operational": 2
+          "checks": 3,
+          "operational": 3
         }
-      ]
+      ],
+      "kuma": {
+        "lastStatus": "up",
+        "lastCheckedAt": "2026-09-16T14:19:00.332Z",
+        "days": [
+          {
+            "date": "2026-09-16",
+            "checks": 1,
+            "up": 1
+          }
+        ]
+      }
     },
     "foodapp": {
       "days": [
@@ -143,10 +165,21 @@
         },
         {
           "date": "2026-09-16",
-          "checks": 2,
-          "operational": 2
+          "checks": 3,
+          "operational": 3
         }
-      ]
+      ],
+      "kuma": {
+        "lastStatus": "up",
+        "lastCheckedAt": "2026-09-16T14:19:00.332Z",
+        "days": [
+          {
+            "date": "2026-09-16",
+            "checks": 1,
+            "up": 1
+          }
+        ]
+      }
     },
     "matrix-chat": {
       "days": [
@@ -192,10 +225,21 @@
         },
         {
           "date": "2026-09-16",
-          "checks": 2,
-          "operational": 2
+          "checks": 3,
+          "operational": 3
         }
-      ]
+      ],
+      "kuma": {
+        "lastStatus": "up",
+        "lastCheckedAt": "2026-09-16T14:19:00.332Z",
+        "days": [
+          {
+            "date": "2026-09-16",
+            "checks": 1,
+            "up": 1
+          }
+        ]
+      }
     },
     "qntx": {
       "days": [
@@ -241,10 +285,49 @@
         },
         {
           "date": "2026-09-16",
-          "checks": 2,
-          "operational": 2
+          "checks": 3,
+          "operational": 3
         }
-      ]
+      ],
+      "kuma": {
+        "lastStatus": "up",
+        "lastCheckedAt": "2026-09-16T14:19:00.332Z",
+        "days": [
+          {
+            "date": "2026-09-16",
+            "checks": 1,
+            "up": 1
+          }
+        ]
+      }
+    },
+    "zntx": {
+      "days": [],
+      "kuma": {
+        "lastStatus": "up",
+        "lastCheckedAt": "2026-09-16T14:19:00.332Z",
+        "days": [
+          {
+            "date": "2026-09-16",
+            "checks": 1,
+            "up": 1
+          }
+        ]
+      }
+    },
+    "wardogs-community": {
+      "days": [],
+      "kuma": {
+        "lastStatus": "up",
+        "lastCheckedAt": "2026-09-16T14:19:00.332Z",
+        "days": [
+          {
+            "date": "2026-09-16",
+            "checks": 1,
+            "up": 1
+          }
+        ]
+      }
     }
   }
 }
