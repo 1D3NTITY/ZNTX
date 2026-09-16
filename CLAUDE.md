@@ -31,7 +31,16 @@ Siehe `~/.claude/CLAUDE.md` (Server-Kontext, harte Regeln, Arbeitsweise) — gil
 hier: Plan-Mode vor Tasks >2 Dateien, TDD wo testbar, kein `ports:` in Compose (nur Caddy-Routen),
 nie Migrationsdateien editieren, häufig committen.
 
-## TODO für die Implementierungs-Session (noch nicht gemacht)
+## Bekannte Probleme (Steward-Hinweis, von dieser Session zu klären)
+- **2026-07-30, erledigt am 2026-09-16:** Hinweis war, dass `ZNTX_DB_PASSWORD` beim
+  Container-Start nicht gesetzt sei. Vom Steward gegengeprüft: die Rolle `zntx_app` in
+  `infra-postgres-1` hat ein Passwort gesetzt (`pg_authid.rolpassword` nicht NULL), und
+  Verbindungen über das Container-Netz laufen laut `pg_hba.conf` über `scram-sha-256`.
+  Kein offenes Risiko mehr — der Hinweis bleibt nur als Beleg stehen, dass er geprüft wurde.
+
+## TODO für die Implementierungs-Session (Stand 2026-07-30: einiges davon bereits umgesetzt —
+## Punkte 2-4 laut laufendem Container/Caddy-Route offenbar erledigt, hier aber nicht mehr
+## nachgepflegt; bei Gelegenheit aktualisieren/abhaken)
 Dieses Projekt wurde am 2026-07-20 nur als Grundgerüst angelegt (Settings-Steward-Rolle:
 Ordnerstruktur, `CLAUDE.md`, `.claude/`-Settings) — kein App-Code, kein Compose-Stack, keine
 laufende Session. Für den eigentlichen Aufbau:
@@ -47,3 +56,11 @@ laufende Session. Für den eigentlichen Aufbau:
 ## rtk (Token-Optimizer)
 Greift automatisch über den globalen PreToolUse-Hook (`/root/.claude/settings.json`) — kein
 eigenes Setup hier nötig, siehe foodapp/ravepuls.
+
+## Ziele & Friction-Log (Vault-Sync)
+- Ziele in `docs/goals.md` pflegen: `- [ ] Text [status:: blockiert] [fällig:: YYYY-MM-DD]`
+  (beides optional, ohne `status::` = offen). Bei Statusänderung sofort aktualisieren.
+- Workflow-Reibung (Hook-Fehlalarm, fehlendes Tool, irreführende Regel) kurz in
+  `docs/friction-log.md`: `- [ ] YYYY-MM-DD: Beschreibung [status:: offen|behoben]`.
+  Kein Ticket-System — der Steward reviewt wöchentlich.
+- Beide Dateien werden automatisch ins Obsidian-Server-Überblick-Vault gespiegelt.

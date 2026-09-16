@@ -23,6 +23,33 @@ import sys
 
 PROJECT_ROOT = "/srv/zntx"
 COMPOSE_FILENAME_RE = re.compile(r"(^|/)(docker-)?compose\.ya?ml$", re.IGNORECASE)
+
+# Bash-level secret-path guard — closes the gap where broad Bash(cat *)/Bash(grep *)
+# allow-rules bypass the Read/Edit/Write file_path check above. Added 2026-08-13,
+# ported from /root/.claude/hooks/scope-guard.py::check_sensitive_paths (same pattern,
+# proven there since 2026-07-20). Whole-string search, not segment-anchored, so it
+# also catches `bash -c "cat .env"`-style indirection.
+SENSITIVE_PATH = re.compile(
+    r"(?:^|[\s\"'=:])("
+    r"[\w./~-]*\.env(?:\.[\w-]+)?"
+    r"|[\w./~-]*secrets/[\w./-]*"
+    r"|[\w./~-]*\.ssh/[\w./-]*"
+    r"|[\w./~-]*\.aws/[\w./-]*"
+    r")"
+)
+IDENTITY_FLAG = re.compile(r"(-i|IdentityFile)\s+$")
+ENV_EXAMPLE = re.compile(r"\.env\.example$")
+
+
+def check_sensitive_paths(cmd: str) -> None:
+    for m in SENSITIVE_PATH.finditer(cmd):
+        path = m.group(1)
+        if ENV_EXAMPLE.search(path):
+            continue
+        prefix = cmd[: m.start(1)]
+        if IDENTITY_FLAG.search(prefix):
+            continue
+        block(f"secret/credential path referenced in Bash command: {path}")
 # `ports:`-Policy korrigiert (Luis, 2026-07-20, siehe docs/plans/portfolio-aufbau.md
 # "Wichtiger Fund"): die alte Blanko-Sperre widersprach der gelebten Praxis bei
 # foodapp/ravepuls/matrix-chat (127.0.0.1-gebundene ports:, Caddy als Host-Service statt
@@ -82,6 +109,7 @@ def main() -> None:
 
     if tool == "Bash":
         cmd = str(ti.get("command", ""))
+        check_sensitive_paths(cmd)
         for seg in re.split(r"&&|\|\||[;\n|]", cmd):
             s = seg.strip()
             s = re.sub(r"^(?:[A-Za-z_][A-Za-z0-9_]*=\S+\s+)*", "", s)
@@ -99,7 +127,7 @@ def main() -> None:
             if not re.search(r"\s-[a-zA-Z]*r[a-zA-Z]*f|\s-[a-zA-Z]*f[a-zA-Z]*r|\s-rf\b|\s-fr\b", s):
                 continue
             for m in re.findall(r"(/[^\s'\";|&]+)", s):
-                norm = os.path.normpath(m)
+                norm = os.path.realpath(m)  # realpath, not normpath — resolves symlinks (2026-08-15)
                 if not (norm == PROJECT_ROOT or norm.startswith(PROJECT_ROOT + "/") or norm.startswith("/tmp/")):
                     block(f"rm -rf outside the project: {m}")
         return
