@@ -12,7 +12,7 @@ import { LiveTerminal } from "@/components/live-terminal";
 import { FlowLines } from "@/components/flow-lines";
 import { useReducedMotionPreference } from "@/lib/use-reduced-motion";
 import type { LiveStatus } from "@/lib/status";
-import type { UptimeHistorySummary } from "@/lib/uptime-history";
+import type { UptimeHistorySummary, KumaSummary } from "@/lib/uptime-history";
 
 // Eintritts-Animation beim Laden (2026-08-29) — Headline baut sich wortweise auf, danach
 // Subline/Buttons/Racks gestaffelt. Eigene, seriöse Motion-Technik statt der abgelehnten
@@ -114,6 +114,7 @@ export function OpsDashboard({
   statuses,
   fetchedAtLabel,
   uptimeHistory,
+  kumaSummary,
 }: {
   statuses: Record<string, LiveStatus | null>;
   /** Serverseitig formatierte Uhrzeit des Status-Snapshots — bewusst als fertiger String
@@ -123,6 +124,10 @@ export function OpsDashboard({
   /** Git-committed Uptime-History (2026-09-08, lib/uptime-history.ts) — unabhängig von
    *  `statuses` oben, andere Datenquelle (Actions-committete Historie statt Live-Fetch). */
   uptimeHistory: Record<string, UptimeHistorySummary | null>;
+  /** Kuma-Reachability (2026-09-16, lib/uptime-history.ts getKumaSummary) — dritte, unabhängige
+   *  Datenquelle: reine Erreichbarkeit (Uptime Kuma), nicht die fachliche Korrektheit von
+   *  `statuses`/`uptimeHistory`. */
+  kumaSummary: Record<string, KumaSummary | null>;
 }) {
   const [openId, setOpenId] = useState<string | null>(null);
   const reducedMotion = useReducedMotion();
@@ -366,6 +371,7 @@ export function OpsDashboard({
           projects={SERVER_1_PROJECTS}
           statuses={statuses}
           uptimeHistory={uptimeHistory}
+          kumaSummary={kumaSummary}
         />
         <ServerRack
           label="Server 2"
@@ -373,6 +379,7 @@ export function OpsDashboard({
           projects={SERVER_2_PROJECTS}
           statuses={statuses}
           uptimeHistory={uptimeHistory}
+          kumaSummary={kumaSummary}
         />
       </motion.div>
 

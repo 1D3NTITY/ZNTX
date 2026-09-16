@@ -1,8 +1,8 @@
 import Link from "next/link";
 import type { ProjectNode } from "@/lib/content";
 import type { LiveStatus } from "@/lib/status";
-import type { UptimeHistorySummary } from "@/lib/uptime-history";
-import { formatProjectMeta, formatLiveStatus } from "@/lib/labels";
+import type { UptimeHistorySummary, KumaSummary } from "@/lib/uptime-history";
+import { formatProjectMeta, formatLiveStatus, formatRelativeTime } from "@/lib/labels";
 
 // Ein Einschub im Server-Rack (Konzept F, 2026-08-27) — ersetzt die vorherige quadratische
 // Karte (project-card.tsx, gelöscht) durch eine horizontale Slot-Leiste, näher an der
@@ -45,6 +45,7 @@ export function RackSlot({
   project,
   live,
   uptime,
+  kuma,
   dimmed = false,
 }: {
   project: ProjectNode;
@@ -52,6 +53,13 @@ export function RackSlot({
   /** Git-committed Uptime-History (2026-09-08, lib/uptime-history.ts) — andere Datenquelle als
    *  `live` oben (Actions-committete Historie statt Live-Fetch), unabhängig davon ob vorhanden. */
   uptime?: UptimeHistorySummary | null;
+  /** Kuma-Reachability (2026-09-16, lib/uptime-history.ts getKumaSummary) — MISST ETWAS ANDERES
+   *  als `uptime` oben: reine Erreichbarkeit von außen (Uptime Kuma), nicht die fachliche
+   *  Korrektheit des projekteigenen /status-Endpoints. Bewusst als eigene Zeile gerendert, nie
+   *  in `live`/`uptime` eingerechnet — sonst geht genau der Fall verloren, der foodapp schon
+   *  einmal passiert ist (Endpoint meldete "operational", während der Sync tot war; Kuma hätte
+   *  das nie bemerkt). */
+  kuma?: KumaSummary | null;
   /** Für die Archiv-Ablage (Projekte ohne server-Feld) — gedimmter Look, keine LED. */
   dimmed?: boolean;
 }) {
@@ -98,6 +106,22 @@ export function RackSlot({
         {!dimmed && uptime && (
           <span className="mt-0.5 block font-mono text-[11px] text-foreground-muted">
             {uptime.percent.toFixed(1)} % · {uptime.days} {uptime.days === 1 ? "Tag" : "Tage"}
+          </span>
+        )}
+        {/* Kuma-Reachability (2026-09-16) — eigene Zeile, bewusst nicht mit der Zeile darüber
+            zusammengelegt (siehe Kommentar bei der `kuma`-Prop oben). Nur gerendert, wenn
+            genügend Historie vorliegt (uptimePercent !== null) — direkt nach dem ersten
+            Actions-Lauf mit Kuma-Daten bleibt sie ehrlich weg statt "0 %" zu zeigen. */}
+        {!dimmed && kuma && kuma.uptimePercent !== null && (
+          <span
+            className="mt-0.5 block font-mono text-[11px] text-foreground-muted"
+            title={
+              kuma.lastCheckedAt
+                ? `Kuma zuletzt geprüft ${formatRelativeTime(kuma.lastCheckedAt)} — ${kuma.reachability}`
+                : undefined
+            }
+          >
+            Erreichbarkeit {kuma.uptimePercent.toFixed(1)} % · {kuma.days} {kuma.days === 1 ? "Tag" : "Tage"}
           </span>
         )}
         {/* Attributions-Tag (2026-09-07, Recherche-Synthese) — löst den häufigsten

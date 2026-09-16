@@ -1,6 +1,6 @@
 import type { ProjectNode } from "@/lib/content";
 import type { LiveStatus } from "@/lib/status";
-import type { UptimeHistorySummary } from "@/lib/uptime-history";
+import type { UptimeHistorySummary, KumaSummary } from "@/lib/uptime-history";
 import { RackSlot } from "@/components/rack-slot";
 
 // Rack-Rahmen (Konzept F, 2026-08-27) — eine 1:1-Karte der echten Zwei-Server-Infrastruktur
@@ -13,6 +13,7 @@ export function ServerRack({
   projects,
   statuses,
   uptimeHistory,
+  kumaSummary,
 }: {
   label: string;
   /** Kurze, ehrliche Beschreibung der Workload-Art (Idee aus einem Lovable-Vergleichsentwurf,
@@ -21,6 +22,7 @@ export function ServerRack({
   projects: ProjectNode[];
   statuses: Record<string, LiveStatus | null>;
   uptimeHistory: Record<string, UptimeHistorySummary | null>;
+  kumaSummary: Record<string, KumaSummary | null>;
 }) {
   return (
     <div className="relative rounded-md border-2 border-border bg-surface p-4">
@@ -41,6 +43,7 @@ export function ServerRack({
             project={project}
             live={statuses[project.id] ?? null}
             uptime={uptimeHistory[project.id] ?? null}
+            kuma={kumaSummary[project.id] ?? null}
           />
         ))}
       </div>

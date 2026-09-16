@@ -9,16 +9,29 @@
 // operational — das Ergebnis ist ein ehrlich niedrigerer Prozentsatz, keine Lücke, die verschweigt
 // dass überhaupt geprüft wurde.
 import { getMonitoredProjectIds, checkLiveValue } from "../services/web/lib/status";
+import {
+  KUMA_PROJECT_MONITOR_IDS,
+  fetchKumaHeartbeats,
+  computeProjectReachability,
+  type KumaReachability,
+} from "../services/web/lib/kuma";
 import { readFile, writeFile } from "node:fs/promises";
 
 const DATA_PATH = new URL("../data/uptime/summary.json", import.meta.url);
 const RETENTION_DAYS = 30;
 
 type DayBucket = { date: string; checks: number; operational: number };
+type KumaDayBucket = { date: string; checks: number; up: number };
+type KumaEntry = { lastStatus: KumaReachability; lastCheckedAt: string; days: KumaDayBucket[] };
 type Summary = {
   updatedAt: string | null;
-  projects: Record<string, { days: DayBucket[] }>;
+  projects: Record<string, { days: DayBucket[]; kuma?: KumaEntry }>;
 };
+
+/** Retention-Kürzung — für beide Day-Bucket-Arten (fachlich + Kuma) identisch. */
+function trimRetention<T>(days: T[]): T[] {
+  return days.length > RETENTION_DAYS ? days.slice(days.length - RETENTION_DAYS) : days;
+}
 
 async function loadSummary(): Promise<Summary> {
   try {
@@ -58,10 +71,42 @@ async function main() {
       days.push({ date: today, checks: 1, operational: isOperational ? 1 : 0 });
     }
 
-    if (days.length > RETENTION_DAYS) {
-      summary.projects[id].days = days.slice(days.length - RETENTION_DAYS);
-    }
+    summary.projects[id].days = trimRetention(days);
   });
+
+  // Kuma-Reachability (2026-09-16, siehe lib/kuma.ts) — ein Fetch für alle Monitore, dann pro
+  // gemapptem Projekt aggregiert. Schlägt der Fetch fehl, wird der Kuma-Teil für diesen Lauf
+  // komplett übersprungen (kein Day-Bucket-Eintrag): ein Netzwerkfehler des Actions-Runners
+  // gegen status.zblt.eu ist nicht dasselbe wie "die überwachten Dienste sind down" — das darf
+  // die Reachability-Historie nicht verfälschen.
+  const heartbeats = await fetchKumaHeartbeats();
+  if (heartbeats) {
+    const nowIso = new Date().toISOString();
+    for (const [id, monitorIds] of Object.entries(KUMA_PROJECT_MONITOR_IDS)) {
+      const reachability = computeProjectReachability(heartbeats, monitorIds);
+      const isUp = reachability === "up";
+
+      if (!summary.projects[id]) summary.projects[id] = { days: [] };
+      const project = summary.projects[id];
+      const kumaDays = project.kuma?.days ?? [];
+      const last = kumaDays[kumaDays.length - 1];
+
+      if (last && last.date === today) {
+        last.checks += 1;
+        if (isUp) last.up += 1;
+      } else {
+        kumaDays.push({ date: today, checks: 1, up: isUp ? 1 : 0 });
+      }
+
+      project.kuma = {
+        lastStatus: reachability,
+        lastCheckedAt: nowIso,
+        days: trimRetention(kumaDays),
+      };
+    }
+  } else {
+    console.warn("Kuma-Heartbeat-Fetch fehlgeschlagen, Reachability-Teil für diesen Lauf übersprungen.");
+  }
 
   summary.updatedAt = new Date().toISOString();
 
