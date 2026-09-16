@@ -86,16 +86,14 @@ function AnimatedWords({
 // Slots verlinken weiterhin auf die bestehenden Projekt-Seiten (app/projekte/[slug]/page.tsx),
 // kein neues Panel-System — vermeidet das bekannte Reflow-Problem komplett. Operator-Profil/
 // Kontakt sind keine "Projekte" und bleiben als Akkordeon-Zeilen (DashboardRow) unterhalb.
-const SERVER_1_PROJECTS = PROJECTS.filter((p) => p.server === "server-1");
-const SERVER_2_PROJECTS = PROJECTS.filter((p) => p.server === "server-2");
-// Projekte ohne server-Feld landen in einer separaten, gedimmten Archiv-Ablage statt künstlich
-// einem Server zugeordnet zu werden. n8n-automation ist aktuell das einzige (historisch —
-// verursachte den Server-Reset, gehört keinem der beiden aktiven Racks). Stand 2026-09-07 kurz
-// stattdessen im IncidentLog auf der Startseite gezeigt — seit 2026-09-10 (Luis: wirkte zwischen
-// den Homepage-Blöcken unsauber) sitzt der Incident-Hinweis nur noch auf der Projekt-Seite
-// selbst (IncidentCallout), n8n landet hier auf der Startseite also wieder ganz normal im
-// gedimmten Archiv wie jedes andere Server-lose Projekt.
-const ARCHIVED_PROJECTS = PROJECTS.filter((p) => !p.server);
+// Archivierte Projekte gehören konsequent nur noch in EINE Ablage, unabhängig vom `server`-Feld
+// (2026-09-16, Luis: wcp-arma hing trotz status "archived" wegen server:"server-2" undimmed und
+// mit Hover-Glow im Server-2-Rack, sah aus wie ein aktives Projekt — n8n-automation dagegen
+// (kein server-Feld) landete schon immer im gedimmten Archiv-Block unten. Zwei Behandlungen für
+// denselben Zustand. Jetzt: `status === "archived"` sticht `server` immer, egal ob gesetzt.
+const SERVER_1_PROJECTS = PROJECTS.filter((p) => p.server === "server-1" && p.status !== "archived");
+const SERVER_2_PROJECTS = PROJECTS.filter((p) => p.server === "server-2" && p.status !== "archived");
+const ARCHIVED_PROJECTS = PROJECTS.filter((p) => p.status === "archived");
 // Echte, aus PROJECTS berechnete Kennzahl (Lovable-Vergleichsentwurf, 2026-08-29, hatte eine
 // Kennzahlen-Leiste — Idee übernommen, Wert aber selbst neu/ehrlich definiert statt geraten).
 // zntx selbst zählt hier bewusst nicht mit — gleiche Konvention wie bei HERO.headlineEmphasis

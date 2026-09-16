@@ -9,6 +9,7 @@ export const STATUS_LABEL: Record<ProjectNode["status"], string> = {
   "paper-trading": "PAPER-TRADING",
   internal: "INTERNAL",
   archived: "ARCHIVIERT",
+  concept: "KONZEPTPHASE",
 };
 
 export const SERVER_LABEL: Record<"server-1" | "server-2", string> = {

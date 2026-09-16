@@ -1,4 +1,4 @@
-export type ProjectStatus = "live" | "paper-trading" | "internal" | "archived";
+export type ProjectStatus = "live" | "paper-trading" | "internal" | "archived" | "concept";
 
 export type ProjectNode = {
   id: string;
@@ -139,6 +139,26 @@ export const PROJECTS: ProjectNode[] = [
       "Lief mehrere Monate produktiv, bewusst offline genommen, nachdem sich abzeichnete, dass das Projekt keinen echten Mehrwert mehr bringt — kein gescheitertes Vorhaben, sondern eine bewusste Priorisierungsentscheidung. Der Gameserver selbst (28-GB-Volume, Pterodactyl-Panel) ist inzwischen vollständig zurückgebaut; der Discord-Bot lebt als Basis für ein neues Community-Projekt (WarDOGS) weiter.",
     myWork:
       "Der komplette Discord-Bot (~5000 Zeilen) und die RCON-Integration sind meine eigene Arbeit, ebenso die Entscheidung, ihn abzuschalten.",
+  },
+  {
+    id: "wardogs-community",
+    name: "ZBLT — WarDOGS-Community",
+    role: "Discord-Bot + Community-Infrastruktur",
+    status: "concept",
+    accentColor: "var(--project-wardogs)",
+    server: "server-2",
+    since: "September 2026",
+    stack: ["discord.py", "OAuth2", "systemd", "nginx"],
+    context:
+      "Nach der endgültigen Stilllegung des Arma-Reforger-Servers lebt der Discord-Bot als Basis für eine neue Crew weiter — ZBLT, benannt nach dem sechs Tage alten Taktikspiel WarDOGS. Ob das Spiel trägt, ist offen: der Entwickler hat seinen Vorgängertitel seinerzeit aufgegeben, entsprechend bewusst zurückhaltend ist der Aufbau.",
+    contribution:
+      "Bot und Dashboard vollständig vom Arma-Code des Vorgängers befreit statt neu gebaut: bot.py von 6186 auf ~3900 Zeilen reduziert, dashboard.py von 3739 auf 3348, die RCON-Anbindung (bercon.py) komplett entfernt. Übrig blieb die spielunabhängige Substanz — 32 Slash-Commands, Ticket-System, Moderation mit Audit-Log, Event-RSVP, Rollen-Self-Assign, OAuth2-Web-Dashboard hinter nginx.",
+    challenge:
+      "Die generischen Community-Funktionen (Rollen, Moderation, Tickets) sauber von der spielspezifischen Arma-Integration trennen, ohne den produktiv laufenden Bot und das Dashboard zu riskieren.",
+    outcome:
+      "Bot und Dashboard laufen produktiv, komplett arma-frei. Der Rest ist bewusst noch nicht gebaut: ein Rollenkonzept (26 Rollen) ist entworfen und als Setup-Befehl implementiert, aber noch nicht ausgeführt — 7 Discord-Mitglieder bisher. Die Website trägt aktuell noch den Abschiedshinweis auf den alten Server und wird deshalb hier bewusst noch nicht verlinkt.",
+    myWork:
+      "Die Entscheidung, nur den Discord-Bot zu übernehmen und den kompletten Gameserver-Code zu entfernen, sowie der Umbau von Bot und Dashboard sind eigene Arbeit.",
   },
   {
     id: "motortown",

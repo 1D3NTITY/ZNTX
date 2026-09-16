@@ -107,75 +107,72 @@ export function ProjectCaseStudyBody({
         </motion.div>
       )}
 
-      {/* Klartext-Lead vor dem Fachdetail (2026-09-03) — project.context war schon immer die
-          plain-language-Einordnung, stand aber optisch gleichrangig mit dem jargondichten
-          Beitrag/Herausforderung-Text im dl darunter. Herausgezogen, keine Textänderung an den
-          Feldern selbst, nur Struktur (Zweitmeinungs-Runde: "Wand aus Fachjargon ohne
-          Einordnung"). h2 rein für Screenreader-Sprungnavigation (Accessibility-Audit
-          2026-09-03: kein Zwischenheading im Detail-Block). */}
-      <motion.p
-        variants={item}
-        className="mb-6 max-w-prose text-base leading-relaxed text-foreground"
-      >
-        {project.context}
-      </motion.p>
-
+      {/* Editorial-Rhythmus (2026-09-16, Luis: der vorherige Wechsel Freitext → Box → Box →
+          Pills → Zitat-Stil → Box wirkte unruhig/unprofessionell). Kontext/Beitrag/
+          Herausforderung/Ergebnis/Note sind jetzt EIN durchgehender redaktioneller Textfluss —
+          gleiches Muster für alle fünf (Mono-Eyebrow-Label + Absatz), keine Border-Boxen, keine
+          Zitat-Optik mehr. Boxen bleiben ausschließlich den echten Daten-Elementen vorbehalten
+          (ProofBlock oben, Stack-Pills unten, myWork-Panel in app/projekte/[slug]/page.tsx) —
+          die Seite hat dadurch nur noch zwei visuelle Register statt fünf verschiedener. Kein
+          Wort an den content.ts-Feldern geändert, nur Fassung. h2 rein für Screenreader-
+          Sprungnavigation (Accessibility-Audit 2026-09-03: kein Zwischenheading im Detail-Block). */}
       <h2 className="sr-only">Projektdetails</h2>
-      {/* Panel-Karten statt reiner dl-Text-Zeilen (2026-09-10, Luis: "wirkt sehr langweilig",
-          nicht weniger Text, sondern technischer) — gleiche Box-Optik wie die "Was davon meine
-          Arbeit ist"-Box auf derselben Seite (border-border bg-surface), damit sich Beitrag/
-          Herausforderung nach echten Dashboard-Panels anfühlen statt nach Fließtext-Absätzen
-          mit Label davor. Kein Wort am Inhalt geändert, nur Fassung. */}
-      <motion.div variants={item} className="flex flex-col gap-4">
-        <div className="rounded-md border border-border bg-surface p-5">
+      <motion.div variants={item} className="flex flex-col gap-6">
+        <p className="max-w-prose text-base leading-relaxed text-foreground">{project.context}</p>
+
+        <div>
           <p className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
             Beitrag
           </p>
-          <p className="mt-2 max-w-prose text-sm leading-relaxed text-foreground">
+          <p className="mt-2 max-w-prose text-base leading-relaxed text-foreground">
             {project.contribution}
           </p>
         </div>
 
-        <div className="rounded-md border border-border bg-surface p-5">
+        <div>
           <p className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
             Herausforderung
           </p>
-          <p className="mt-2 max-w-prose text-sm leading-relaxed text-foreground">
+          <p className="mt-2 max-w-prose text-base leading-relaxed text-foreground">
             {project.challenge}
           </p>
         </div>
 
         <div>
-          <p className="mb-2 font-mono text-xs uppercase tracking-widest text-foreground-muted">
-            Stack
+          <p className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
+            Ergebnis
           </p>
-          {/* Echte Tags statt Punkt-getrennter String — wiederverwendet .badge (bereits für den
-              Live-Status-Punkt oben im Einsatz), keine neue Klasse für dieselbe Chip-Optik. */}
-          <div className="flex flex-wrap gap-2">
-            {project.stack.map((tech) => (
-              <span key={tech} className="badge font-mono text-[11px] text-foreground-muted">
-                {tech}
-              </span>
-            ))}
-          </div>
+          <p className="mt-2 max-w-prose text-base leading-relaxed text-foreground">
+            {project.outcome}
+          </p>
         </div>
+
+        {project.note && (
+          <div>
+            <p className="font-mono text-xs uppercase tracking-widest text-foreground-muted">
+              Randnotiz
+            </p>
+            <p className="mt-2 max-w-prose text-base leading-relaxed text-foreground-muted">
+              {project.note}
+            </p>
+          </div>
+        )}
       </motion.div>
 
-      <motion.p
-        variants={item}
-        className="mt-6 border-l-2 border-accent pl-4 font-serif text-lg leading-snug text-foreground sm:text-xl"
-      >
-        {project.outcome}
-      </motion.p>
-
-      {project.note && (
-        <motion.p
-          variants={item}
-          className="mt-5 border-l-2 border-accent-dim pl-4 text-sm italic leading-relaxed text-foreground-muted"
-        >
-          {project.note}
-        </motion.p>
-      )}
+      {/* Stack-Pills — einziges "Daten"-Element in diesem Block, bewusst weiter als Chips statt
+          Fließtext (echte Tags statt Punkt-getrennter String, wiederverwendet .badge). */}
+      <motion.div variants={item} className="mt-8">
+        <p className="mb-2 font-mono text-xs uppercase tracking-widest text-foreground-muted">
+          Stack
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {project.stack.map((tech) => (
+            <span key={tech} className="badge font-mono text-[11px] text-foreground-muted">
+              {tech}
+            </span>
+          ))}
+        </div>
+      </motion.div>
 
       {project.url && (
         <motion.a
