@@ -3,7 +3,13 @@
 Zeigt Infos über Luis' technisches Profil: was er macht, Links, kleiner Leistungsnachweis/
 Skills-Überblick. Solo-Projekt, öffentlich. Domain: `zntx.de` (Apex).
 
-Details/Inhalt: noch offen, folgt in der Tiefplanung (`docs/plans/`).
+**Stand 2026-09-17:** Live und produktiv deployed, kein Scaffold mehr. "Live Infrastructure
+Atlas"-Konzept: zwei Server-Racks (echte `server`-Zuordnung aus `lib/content.ts`), pro Projekt
+ein Live-Status (`lib/status.ts`, projekteigene `/status`-Endpoints), eine git-committete
+30-Tage-Historie (`scripts/uptime-check.ts`, GitHub Actions alle 30 Min) und seit 2026-09-16
+zusätzlich eine unabhängige Kuma-Erreichbarkeits-Historie (`lib/kuma.ts`) — beide als
+Health-Bars im Rack-Slot, bewusst nie zu einem Wert verrechnet. Aktueller Umfang/offene Punkte:
+siehe `docs/goals.md`.
 
 **Positionierung (Luis, 2026-07-20):** Ja, das meiste an Text/Content entsteht im Zusammenspiel
 mit KI — aber Server-Hosting, Domain-/DNS-Verwaltung, Infra-Betrieb (Docker/Caddy/Postgres,
@@ -22,9 +28,12 @@ schon zwei `handle /.well-known/matrix/...`-Blöcke — die bleiben unverändert
 `matrix.zntx.de`-Block — das ist fremdes Projekt-Territorium (siehe `/srv/matrix-chat/CLAUDE.md`).
 
 ## Stack
-Noch offen. Default-Fallback laut globaler `~/.claude/CLAUDE.md`, falls nicht explizit anders
-entschieden: Next.js + Tailwind + shadcn/ui, Docker Compose, Caddy als einziger Ingress (kein
-`ports:` in Compose). Entscheidung liegt bei der Implementierungs-Session, nicht vorentschieden.
+Next.js (App Router) + Tailwind, `motion/react` für Animationen, Drizzle ORM + Postgres
+(Kontaktformular), Vitest für Tests. Docker Compose (`infra/docker-compose.yml`, Service
+`zntx-web`), Caddy als einziger Ingress (kein `ports:` in Compose). Deploy: `GIT_SHA=$(git
+rev-parse --short HEAD) docker compose -f infra/docker-compose.yml --project-directory . build
+zntx-web` dann `... up -d zntx-web` — Redeploy braucht immer frische, explizite Freigabe von
+Luis, nie aus einem vorherigen "ja" ableiten (Commits nicht).
 
 ## Globale Regeln
 Siehe `~/.claude/CLAUDE.md` (Server-Kontext, harte Regeln, Arbeitsweise) — gilt vollständig auch
@@ -37,21 +46,6 @@ nie Migrationsdateien editieren, häufig committen.
   `infra-postgres-1` hat ein Passwort gesetzt (`pg_authid.rolpassword` nicht NULL), und
   Verbindungen über das Container-Netz laufen laut `pg_hba.conf` über `scram-sha-256`.
   Kein offenes Risiko mehr — der Hinweis bleibt nur als Beleg stehen, dass er geprüft wurde.
-
-## TODO für die Implementierungs-Session (Stand 2026-07-30: einiges davon bereits umgesetzt —
-## Punkte 2-4 laut laufendem Container/Caddy-Route offenbar erledigt, hier aber nicht mehr
-## nachgepflegt; bei Gelegenheit aktualisieren/abhaken)
-Dieses Projekt wurde am 2026-07-20 nur als Grundgerüst angelegt (Settings-Steward-Rolle:
-Ordnerstruktur, `CLAUDE.md`, `.claude/`-Settings) — kein App-Code, kein Compose-Stack, keine
-laufende Session. Für den eigentlichen Aufbau:
-1. Stack-Entscheidung treffen (siehe oben), `docs/plans/` anlegen
-2. Docker-Compose-Service bauen (KEIN `ports:` — nur Caddy-Route)
-3. Caddyfile: im bestehenden `zntx.de { ... }`-Block den `handle { respond 404 }`-Fallback durch
-   `reverse_proxy localhost:<PORT>` ersetzen; die beiden `.well-known/matrix/*`-Handler
-   unverändert lassen
-4. Neue tmux-Session anlegen (z.B. `zntx-N`, Gruppe `zntx`), analog zu `foodapp-0`/`ravepuls-1`,
-   `claude` dort starten
-5. `.env.example` anlegen, sobald der Stack feststeht
 
 ## rtk (Token-Optimizer)
 Greift automatisch über den globalen PreToolUse-Hook (`/root/.claude/settings.json`) — kein

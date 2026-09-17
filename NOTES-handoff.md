@@ -1,124 +1,109 @@
-# zntx — Context Handoff (2026-09-11)
+# zntx — Context Handoff (2026-09-17)
 
-Vorherige Version dieser Datei war veraltet (referenzierte ein längst verworfenes
-"Matrix-Rain/Neon-Rot"-Konzept aus einer viel früheren Session, ~2026-07-23) — komplett
-überschrieben, nicht gemerged. Diese Session hat unter explizitem Override der normalen
-Steward-Regel ("nie Projekt-Code implementieren") aktiv Code implementiert.
+Vorherige Version (2026-09-11) komplett überschrieben, nicht gemerged. Luis lässt die Seite ab
+hier bewusst ruhen ("erstmal ruhen lassen können") — diese Session hat vor der Pause einen
+vollständigen Check gemacht (Tests/Lint/Build/Live-Smoke-Test/Doku-Aktualität), siehe unten.
 
 ## Aktiver Plan
-Keiner. Letzter Plan (`/root/.claude/plans/stateless-jingling-shore.md`, "Glitch zurück +
-Matrix-Regen-Akzent") ist abgeschlossen und deployed. Kein offener Plan-Mode-Task.
+Keiner. Letzter Plan (`/root/.claude/plans/moonlit-zooming-papert.md`, "Health-Bar statt
+Prozent-Text") ist abgeschlossen und deployed. Kein offener Plan-Mode-Task.
 
 ## Aktueller Live-Stand
-- Deployed Commit == HEAD == `6f127fa` (verifiziert: `curl https://zntx.de/` Footer-Link zeigt
-  denselben SHA).
-- Öffentliches GitHub-Repo: `https://github.com/1D3NTITY/ZNTX` (seit dieser Session public,
-  komplette Historie vorab auf Secrets geprüft — keine gefunden).
-- GitHub Actions Workflow `uptime.yml` läuft automatisch alle 30 Min, committet
-  `data/uptime/summary.json` (daher viele `chore(uptime): update history [skip ci]`-Commits im
-  Log — das ist kein Rauschen von mir, ignorieren beim Log-Lesen).
+- Deployed Commit == HEAD == `2a0627b` (verifiziert: `curl https://zntx.de/` Footer-Link zeigt
+  denselben SHA). Die drei Doku-Commits danach (CLAUDE.md/decisions.md/dieser Handoff) sind
+  reine Textänderungen ohne `services/web/`-Bezug — kein Redeploy nötig, geprüft.
+- Live-Smoke-Test (diese Session, vor der Pause): `/`, `/projekte/{wardogs-community,foodapp,
+  wcp-arma,n8n-automation}`, `/datenschutz`, `/impressum`, `/robots.txt`, `/sitemap.xml` — alle
+  HTTP 200. Zwei grep-Treffer auf "undefined"/"nan" untersucht, beide False Positives (React-RSC-
+  Payload-Serialisierung bzw. das Wort "be**nan**nt") — kein echter Fehler, siehe
+  `docs/friction-log.md` (dort schon als bekanntes grep-Limit dokumentiert).
+- `bun run lint` / `bun run test` (18 Tests, 2 Dateien) / `bun run build` — alle grün, zuletzt
+  direkt vor diesem Handoff geprüft.
+- GitHub Actions `uptime.yml` läuft automatisch alle 30 Min, committet
+  `data/uptime/summary.json` (fachliche `/status`-Historie **und** seit 2026-09-16 zusätzlich
+  Kuma-Erreichbarkeits-Historie) — die vielen `chore(uptime): ...`-Commits im Log sind kein
+  Rauschen von mir.
 
-## Geänderte Dateien (diese Session, alle committed + live deployed)
-- `app/globals.css`, `components/ambient-glow.tsx` (vorher `crt-overlay.tsx`),
-  `components/circuit-canvas.tsx`, `components/circuit-background.tsx`, `app/layout.tsx`,
-  `components/ops-dashboard.tsx`, `components/rack-slot.tsx`,
-  `app/projekte/[slug]/page.tsx` — **Signalraum-Identitätswechsel**: komplette Amber-Phosphor-
-  CRT-Ästhetik (Scanlines/Vignette/Grain/Boot-Röhren-Kollaps/Leiterbahnen) entfernt, ersetzt
-  durch Violett/Cyan-Farbsystem (`--accent: #9b5cff`, `--accent-secondary: #4fd3ff`, vorher
-  `--accent-orange`), kondensierte Bold-Display-Typo (Chakra Petch, `font-display`), rotierender
-  Licht-Rand auf Rack-Slots (`.rack-slot-glow-ring`) statt VHS-Glitch-Hover.
-- `app/globals.css`, `components/ops-dashboard.tsx` — Headline-Glitch (Ghost-Duplikat-Technik)
-  auf explizites Feedback zurückgebracht, neu in Violett/Cyan statt Amber. `.glitch-text`-Klasse.
-- `components/circuit-canvas.tsx` — Hintergrund-Canvas zeigt jetzt einen **sparsamen
-  Matrix-Regen-Akzent** (11 Spalten, gemischt Violett/Cyan) statt Punktraster+Linien; die drei
-  driftenden Licht-Blobs blieben unverändert. Referenz war `https://qntx.zblt.eu/` (eigenes
-  Projekt, Luis nannte es "der Autotrader"), bewusst NICHT 1:1 kopiert (Dichte deutlich unter
-  dem Referenzbild).
-- `services/web/lib/status.ts` (neue Exports `getMonitoredProjectIds`, `checkLiveValue`),
-  `scripts/uptime-check.ts` (neu), `.github/workflows/uptime.yml` (neu),
-  `data/uptime/summary.json` (neu, Repo-Root, bewusst außerhalb des Docker-Build-Contexts),
-  `services/web/lib/uptime-history.ts` (neu), `components/rack-slot.tsx`,
-  `components/server-rack.tsx`, `components/ops-dashboard.tsx`, `app/page.tsx` — **Git-committed
-  Uptime-History** (Upptime-Muster): Actions-Workflow pingt alle 30 Min dieselben echten
-  `/status`-Endpoints wie die Live-Seite, rollierende 30-Tage-Historie, Seite liest live von
-  `raw.githubusercontent.com` (kein Redeploy nötig für neue Zahlen).
-- `components/incident-callout.tsx` (vorher `incident-log.tsx`), `components/ops-dashboard.tsx`,
-  `app/projekte/[slug]/page.tsx` — "Selbst gefunden, selbst behoben" von einer Sammel-Liste auf
-  der Startseite (wirkte dort "unsauber") verschoben auf die jeweilige Projekt-Seite selbst,
-  keyed auf `projectId`. `n8n-automation` ist deshalb wieder im normalen gedimmten
-  Startseiten-Archiv (Sonderbehandlung war nur wegen des jetzt entfernten Homepage-Eintrags
-  nötig).
-- `components/project-case-study.tsx` — Beitrag/Herausforderung von reinen `dl`-Text-Zeilen zu
-  Panel-Karten (gleiche Optik wie die "Was davon meine Arbeit ist"-Box), Stack von
-  Punkt-getrenntem String zu echten Tag-Chips (`.badge`). Kein Wort Inhalt geändert, nur Fassung
-  — Luis: "wirkt sehr langweilig", nicht weniger Text, sondern technischer.
-- `components/operator-profile-body.tsx`, `lib/content.ts` (zntx-Projekt `myWork`) —
-  Eigenanteil-Framing ehrlicher: "unter meiner Anleitung und Abnahme" (wirkte zu passiv) ersetzt
-  durch Formulierungen, die aktive Steuerung/eigene Konzepte/Kurskorrekturen benennen ("gebaut
-  haben wir es gemeinsam").
-- `components/ops-dashboard.tsx`, `app/projekte/[slug]/page.tsx` — Kontakt-CTAs auf Du-Ansprache
-  ("Kontakt aufnehmen" → "Schreib mir"), bewusst NUR an den Kontakt-Stellen, nicht in die
-  Ich-Perspektive-Fakten-Prosa gemischt.
-- `services/web/lib/status.ts`, `services/web/lib/content.ts` — foodapp-Domain
-  `zentrix-solutions.eu` → `zblt.eu` (alte Domain nach EURid-Quarantäne final aufgegeben, von
-  SERVERMANAGEMENT-Session gemeldet, selbst per curl verifiziert vor der Änderung).
-- `docs/goals.md`, `docs/friction-log.md` (neu) — Vault-Sync-Konvention (Anfrage
-  SERVERMANAGEMENT-Session, mit echten aktuellen Inhalten gefüllt, keine Platzhalter).
+## Geänderte Dateien (diese Session, alle committed + live deployed, in dieser Reihenfolge)
+- `app/globals.css`, `components/boot-intro.tsx`, `app/layout.tsx` — Boot-Intro-LEDs/Bloom von
+  `--status-online` (Grün, wirkte neben dem violetten/cyanen Rest der Seite als Fremdkörper) auf
+  `--accent-secondary` (Cyan) umgestellt — nur im Boot-Intro, echte Live-Dashboard-Punkte bleiben
+  grün. Sequenz gestrafft, härterer Snap mit Overshoot statt Soft-Fade, kräftigerer Bloom-Flash.
+  `layout.tsx`-Collapse-Timeout dabei auf den echten `systems=9` neu kalibriert (war unbemerkt
+  auf `systems=8` veraltet).
+- `services/web/lib/kuma.ts` (neu), `scripts/uptime-check.ts`, `services/web/lib/uptime-
+  history.ts`, `components/rack-slot.tsx`, `components/server-rack.tsx`,
+  `components/ops-dashboard.tsx`, `app/page.tsx` — **Kuma-Reachability als zweites,
+  unabhängiges Live-Signal**. Liest die self-hosted Uptime-Kuma-Instanz von SERVERMANAGEMENT
+  (`status.zblt.eu`, öffentliche Heartbeat-API, kein Login, kein CORS-Header → nur serverseitig
+  nutzbar). Bewusst getrennt von der bestehenden fachlichen `/status`-Historie gehalten, nie
+  verrechnet — SERVERMANAGEMENT-Präzedenzfall: foodapp meldete tagelang `operational`, obwohl der
+  Sync tot war; Kuma hätte das nie bemerkt, der fachliche Check schon. Kuma-Daten werden wie die
+  bestehende Historie im Actions-Lauf geholt und committet, nie live zur Request-Zeit gefetcht.
+- `services/web/lib/content.ts`, `services/web/lib/labels.ts`, `services/web/app/globals.css`,
+  `components/ops-dashboard.tsx`, `components/project-case-study.tsx` — **ZBLT/wardogs-
+  community-Karte** (neuer Status `"concept"`/KONZEPTPHASE, Projektschlüssel bleibt
+  `wardogs-community`, Crew-Name/Anzeigename "ZBLT — Zivile Bergung, Logistik & Transport"),
+  **Archiv-Konsolidierung** (ein Block für alle `status === "archived"`-Projekte statt zwei
+  verschiedener Behandlungen je nach `server`-Feld) und **Editorial-Redesign** der Projekt-
+  Detailseiten (Kontext/Beitrag/Herausforderung/Ergebnis/Note als durchgehender Textfluss statt
+  Box/Zitat-Stil-Mix — Boxen nur noch für echte Daten-Elemente).
+- `services/web/lib/content.ts` (Folge-Commit) — Website-Link (`https://zblt.eu`) nachgezogen,
+  sobald die wardogs-Session ihren Vorbehalt (Seite zeigte noch den alten Arma-Abschiedshinweis)
+  ausgeräumt hatte — selbst per curl verifiziert, bevor gesetzt.
+- `services/web/lib/uptime-history.ts`, `services/web/components/health-bar.tsx` (neu),
+  `components/rack-slot.tsx` — **Health-Bars statt Prozent-Text**: beide Historie-Zeilen zeigen
+  jetzt Tages-Segmente (up/partial/down) statt einer Zahl, dünn + mit Glow (rounded-full, `h-1`,
+  einstufiger `box-shadow`). Prozentzahl bleibt als `sr-only`-Text + Tooltip erhalten.
+- `.env.example` — Platzhalter statt hartkodierter Defaults/`changeme`.
+- `CLAUDE.md`, `docs/decisions.md` — Scaffold-Ära-Reste bereinigt (Stack/TODO-Abschnitt war seit
+  Monaten veraltet, "kein App-Code" stand da, obwohl die Seite längst live ist), EU-AI-Act-
+  Bildnachweis aktualisiert (die vier echten Screenshots unter `public/screenshots/` existierten
+  längst, der Eintrag sagte noch "public/ ist leer" — Ergebnis der Prüfung bleibt unverändert:
+  echte Screenshots, kein KI-Bildmaterial, Kennzeichnungspflicht weiter nicht einschlägig).
+- `docs/goals.md` — laufend nachgepflegt (Layout-Punkt + Uncommitted-Files-Punkt als erledigt
+  markiert, neuer Punkt für die Kuma-Retention-Prüfung in ein paar Wochen ergänzt).
 
 ## Test-Status
-Grün. `bun run lint` (services/web/) → sauber. `bun run test` → 2 Testdateien, 18 Tests, alle
-grün. `bun run build` → erfolgreich, zuletzt geprüft direkt vor diesem Handoff (2026-09-11).
-Playwright-QA (Desktop/Mobile/reduced-motion/Boot-Sequenz) wiederholt gegen den Production-
-Standalone-Build durchgeführt, zuletzt für den Glitch/Matrix-Rain-Umbau — keine
-Konsolenfehler, fps ~49-61 mit allen Hintergrund-Ebenen aktiv (keine Regression).
+Grün. `bun run lint` → sauber. `bun run test` → 2 Testdateien, 18 Tests, alle grün. `bun run
+build` → erfolgreich. Live-Smoke-Test (9 URLs) → alle 200, keine echten Konsolen-/Render-Fehler
+gefunden (siehe oben). Kein Playwright-Lauf diese Session — der lokale Standalone-Testserver
+wurde vom Nutzer per Permission-Prompt abgelehnt, daher nur Live-Site-Checks nach jedem Deploy.
 
 ## Offene TODOs
-1. **Drohnen-Video** fürs Operator-Profil einbauen — Luis: "folgt noch", Material war zuletzt
-   noch nicht da. Platzierung/Umsetzung liegt bei der Implementierungs-Session.
-2. **Layout/Spacing generell** — Luis' ursprünglicher zweiter Kritikpunkt (neben der jetzt
-   erledigten Farb-/Effekt-Migration) war breiter als nur die seitdem gefixten Einzelstellen
-   (Case-Study-Panels, Incident-Callout-Platzierung, Kontakt-CTA-Ton). Rückfrage an Luis offen,
-   ob das reicht oder ein systematischer Full-Page-Durchgang gewünscht ist (siehe `docs/goals.md`).
-3. **Uncommittete Server-Kontext-Änderungen** (`.claude/hooks/guardrails.py`, `.env.example`,
-   Teile von `CLAUDE.md`) liegen seit Sessionbeginn unangetastet im Arbeitsverzeichnis — nicht
-   von dieser Session, nicht mein Implementierungs-Scope. Absichtlich nie committed/verworfen,
-   nur ignoriert. Klären ob committen oder verwerfen.
-4. Uptime-History-Datenbestand nach ein paar Wochen prüfen (Retention/Aussagekraft der
-   30-Tage-Kennzahl, siehe `docs/goals.md`).
+1. **Drohnen-Video** fürs Operator-Profil — Luis: "folgt noch", Material war zuletzt noch nicht
+   da. Platzierung/Umsetzung liegt bei der nächsten Implementierungs-Session.
+2. **Uptime-Historie nach ein paar Wochen prüfen** (Retention/Aussagekraft der 30-Tage-Kennzahl,
+   beide Signale — fachlich und Kuma) — siehe `docs/goals.md`.
+3. `docs/friction-log.md`: `GITHUB_TOKEN` überschreibt `gh`-Auth bleibt offen (wiederkehrende
+   Falle, kein Fix möglich, nur Workaround `unset GITHUB_TOKEN` vor jedem betroffenen Befehl).
 
 ## Benannte Entscheidungen
-- **Signalraum statt Amber-CRT** ist die aktuelle, fest etablierte visuelle Identität — nicht
-  wieder zur Diskussion stellen ohne neuen expliziten Anlass. Zwei gegensätzliche Konzepte
-  ("Warmglut" vs. "Signalraum") wurden als Artefakt gebaut und verglichen, Signalraum hat
-  gewonnen ("b holt mich mehr ab").
-- Status-/Projekt-Farbtokens (`--status-online`, `--status-paper`, `--project-*`) sind
-  **semantisch, kein Brand-Bezug** — bleiben bei jedem künftigen Farbwechsel unangetastet.
-  `--project-matrix-chat` wurde bei der Signalraum-Migration leicht Richtung Magenta verschoben
-  (Kollisions-Vermeidung mit dem neuen Seitenakzent, war kein von Luis fest vorgegebener Ton).
-- **Nie eine dauerhaft laufende (infinite) CSS-Animation für Glitch-/Deko-Effekte** — mehrfach
-  in dieser Session per Playwright-fps-Messung nachgewiesen: der reine Dauerbetrieb kostet
-  ~20fps, unabhängig von den animierten Properties. Immer als Ein-Klasse-Einmal-Burst
-  (`animation-iteration-count: 1`) per JS-Timer/`classList`-Toggle auslösen.
-- Cross-Session-Anfragen von der **SERVERMANAGEMENT-Session dürfen direkt umgesetzt werden**,
-  ohne Rückfrage bei Luis (von ihm explizit bestätigt, siehe Memory
-  `feedback_servermanagement_trust.md`) — gilt spezifisch für diese eine Peer-Session, nicht
-  generell für andere Projekt-Sessions.
-- **`GITHUB_TOKEN`-Umgebungsvariable überschreibt `gh`'s gespeicherte Auth** (fine-grained PAT
-  ohne `workflow`-Scope/Repo-Erstellungsrecht) — jeder `git push` der `.github/workflows/*`
-  ändert, und `gh repo create`, schlagen sonst still fehl. Immer `unset GITHUB_TOKEN` direkt vor
-  dem jeweiligen `git push`/`gh`-Befehl voranstellen (siehe `docs/friction-log.md`).
-- Der Uptime-History-Bot committet unabhängig alle 30 Min — vor jedem eigenen `git push` erst
-  `git pull --rebase origin main` (bzw. bei lokal unstaged unrelated changes: `git stash push -u`
-  → rebase → `git stash pop` → push), sonst `[rejected] fetch first`.
-- Standalone-Test-Server: `output: standalone` in `next.config.ts` bedeutet `next start`
-  funktioniert NICHT — immer `node .next/standalone/server.js` nach `rsync -a --delete
-  .next/static/ .next/standalone/.next/static/` + gleiches für `public/`. Auf Port 4123 testen
-  (Port 3000/3020 sind vom laufenden Live-Container belegt).
+- **Health-Bars (Tages-Segmente) statt Prozent-Zahlen** ist jetzt die feste Darstellung für beide
+  Uptime-Signale im Rack-Slot — Live-LED bleibt für "genau jetzt" unverändert bestehen.
+- **Zwei unabhängige Live-Signale (fachlich + Kuma) werden nie verrechnet** — SERVERMANAGEMENT-
+  Leitplanke, siehe `lib/kuma.ts`-Kopfkommentar. Gilt als Architekturprinzip für jede künftige
+  dritte Datenquelle genauso.
+- **ZBLT-Projektschlüssel bleibt `wardogs-community`**, auch wenn der Anzeigename/die Domain
+  "ZBLT"/"zblt.eu" heißt — von Luis explizit so entschieden ("ZBLT ist ja nur die Domain").
+- Cross-Session-Anfragen von der **SERVERMANAGEMENT-Session dürfen direkt umgesetzt werden**
+  (siehe Memory `feedback_servermanagement_trust.md`) — gilt NICHT automatisch für alles: bei
+  öffentlich sichtbaren Text-/Namens-Änderungen wurde in dieser Session trotzdem jedes Mal
+  Luis' direkte Bestätigung eingeholt, nicht nur die Peer-Relay-Nachricht vertraut (mehrfach
+  gab es Kehrtwenden bei genau diesem Thema — reine Vorsicht, kein Widerspruch zur Memory).
+- **`GITHUB_TOKEN`-Umgebungsvariable überschreibt `gh`'s gespeicherte Auth** — immer `unset
+  GITHUB_TOKEN` direkt vor `git push`/`gh`-Befehlen (siehe `docs/friction-log.md`).
+- Vor jedem eigenen `git push`: `git fetch origin main` + `git pull --rebase origin main` (bei
+  lokal unstaged unrelated Changes: `git stash push -u` → rebase → `git stash pop` → push) — der
+  Uptime-Bot committet unabhängig alle 30 Min, sonst `[rejected] fetch first`.
 - Redeploy-Workflow: `GIT_SHA=$(git rev-parse --short HEAD) docker compose -f
-  infra/docker-compose.yml --project-directory . build zntx-web` dann `... up -d zntx-web`.
-  Jeder Redeploy braucht frische explizite Bestätigung von Luis, nie aus einem vorherigen "ja"
+  infra/docker-compose.yml --project-directory . build zntx-web` dann `... up -d zntx-web`. Jeder
+  Redeploy braucht frische explizite Bestätigung von Luis, nie aus einem vorherigen "ja"
   ableiten. Commits brauchen keine Rückfrage.
+- Standalone-Test-Server (Port 4123, `node .next/standalone/server.js` nach `rsync` von
+  `static`/`public`) ist als Workflow weiter gültig, wurde diese Session aber per Permission-
+  Prompt abgelehnt — vor erneutem Versuch kurz fragen statt automatisch wieder aufzusetzen.
 
 ## Nächster Schritt
-Kein akuter Task offen — auf neues Feedback von Luis warten. Falls er die Layout/Spacing-Frage
-aus TODO #2 beantwortet: entsprechend Plan Mode starten oder direkt umsetzen, je nach Umfang.
+Keiner — Seite ruht auf Luis' Wunsch. Bei Wiederaufnahme: dieses Handoff lesen, `docs/goals.md`
+für den aktuellen TODO-Stand prüfen, dann auf neues Feedback warten.

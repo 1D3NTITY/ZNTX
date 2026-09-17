@@ -8,14 +8,19 @@ KI-Text, der die Öffentlichkeit über Angelegenheiten von öffentlichem Interes
 Keine Rechtsberatung — bei Unsicherheit fachlich gegenchecken, hier nur der technische
 Ist-Zustand.
 
-**Bilder/Grafiken/Videos:** Keine eigenen vorhanden. `services/web/public/` ist leer, keine
-`next/image`-/`<img>`-Verwendung, kein OG-Image im Layout konfiguriert — die gesamte Seite ist
-reines Text/CSS/SVG (Matrix-Rain = DOM-Text-Knoten + CSS-Animation, Status-Punkte =
-inline-gestylte `<span>`, kein Rasterbild irgendwo). Einzige Ausnahme: `app/favicon.ico` —
-unverändertes `create-next-app`-Standard-Icon aus dem initialen Scaffold-Commit (`35c1c31`,
-verifiziert 2026-08-01: einziger Commit in der Datei-Historie), kein KI-generiertes Bild.
-Kennzeichnungspflicht für Bild/Video damit weiterhin nicht einschlägig, mangels
-KI-generiertem Bildmaterial.
+**Bilder/Grafiken/Videos (Stand aktualisiert 2026-09-17, Standing Rule unten hat genau diesen
+Nachprüf-Fall vorgesehen):** Ursprüngliche Aussage ("public/ ist leer, keine next/image-
+Verwendung") ist überholt — seit dem "Live Infrastructure Atlas"-Redesign gibt es vier echte
+Screenshots (`public/screenshots/{foodapp,ravepuls,buchhaltung,qntx}.png`), eingebunden via
+`next/image` auf den jeweiligen Projekt-Detailseiten. Das ändert das Ergebnis nicht: es sind
+echte Screenshots der laufenden, selbst betriebenen Anwendungen (`ProjectNode.screenshot`-
+Feldkommentar in `lib/content.ts`: "echter Screenshot der Live-Anwendung, kein Mockup/
+Stockfoto"), keine KI-generierten oder KI-manipulierten Bilder — Art. 50 zielt auf genau
+diese Kategorie, die hier nicht vorliegt. Kein OG-Image im Layout konfiguriert (weiterhin
+zutreffend, gegengeprüft in `app/layout.tsx` + `app/projekte/[slug]/page.tsx`). Favicon
+weiterhin unverändertes `create-next-app`-Standard-Icon, kein KI-generiertes Bild.
+Kennzeichnungspflicht für Bild/Video damit weiterhin nicht einschlägig — jetzt aus dem
+richtigen Grund (echte Fotos, nicht "keine Bilder vorhanden").
 
 **Text:** Case-Study-/Bio-Texte sind Eigenbeschreibung von Luis' eigenem Werdegang und
 Projekten (Portfolio/Selbstdarstellung), keine Berichterstattung über Angelegenheiten von
