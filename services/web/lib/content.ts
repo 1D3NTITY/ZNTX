@@ -375,7 +375,7 @@ export const HERO = {
   name: "Luis",
   // Klartext-Einstieg (2026-09-03) — steht laut Zweitmeinungs-Runde (Recruiter-/Designer-Rolle,
   // ChatGPT, alle unabhängig zum selben Befund gekommen) zu spät: die Flex-Headline darunter
-  // ("Zwei Server, acht Systeme...") ist in 3 Sekunden ohne Vorwissen nicht selbsterklärend,
+  // ("Zwei Server, neun Systeme...") ist in 3 Sekunden ohne Vorwissen nicht selbsterklärend,
   // gerade für ein breites, nicht-technisches Publikum (Instagram/Snap-Bio-Link-Anforderung).
   // Keine neue Behauptung — reine Vereinfachung von roleTagline/subline unten.
   plainIntro: "Ich baue und betreibe Webseiten und Server — diese Seite zeigt live, was davon gerade läuft.",
@@ -384,12 +384,18 @@ export const HERO = {
   // Zweizeilig für den Gradient-Headline-Stil (Alumica-Adaption 2026-08-27): erste Zeile
   // gedämpfter Weiß-Grau-Verlauf (Kontext), zweite Zeile kräftiger Orange-Rot-Verlauf (die
   // eigentliche Kennzahl/Aussage) — statt einer durchgehend einfarbigen Zeile. Zusammen
-  // ergeben beide weiterhin den vollständigen Satz "Zwei Server, acht Systeme, ein Betreiber."
+  // ergeben beide weiterhin den vollständigen Satz "Zwei Server, neun Systeme, ein Betreiber."
+  // WICHTIG: dieser Text ist hardcodiert, kein `${REAL_SYSTEMS.length}`-Interpolation — bei
+  // jeder Änderung an PROJECTS (neues Projekt, zntx-Filter) hier von Hand nachziehen, sonst
+  // widersprechen sich Headline und die live berechnete Kennzahlen-Leiste/Boot-Intro darunter
+  // (genau das ist am 2026-09-17 passiert: wardogs-community kam am 16.09. dazu, PROJECTS ging
+  // von 9 auf 10 Einträge / REAL_SYSTEMS von 8 auf 9, die Headline blieb unbemerkt bei "acht"
+  // stehen — beim finalen Vor-Pause-Check gefunden und hier korrigiert).
   headlineLead: "Zwei Server,",
-  headlineEmphasis: "acht Systeme, ein Betreiber.",
+  headlineEmphasis: "neun Systeme, ein Betreiber.",
   // Gekürzt (2026-09-04, finaler Release-Check): der erste Satz wiederholte fast wörtlich, was
   // plainIntro direkt darüber schon sagt ("baue/betreibe... läuft") und was headlineEmphasis
-  // schon zeigt ("acht Systeme") — reine Redundanz in der ohnehin langen Hero-Textkette, gerade
+  // schon zeigt ("Systeme") — reine Redundanz in der ohnehin langen Hero-Textkette, gerade
   // auf Mobile relevant. Der zweite Satz (Lagerbereich-Kontrast) bleibt, weil er die einzige neue
   // Information ist: keine Tatsache entfernt, nur die Doppelung gestrichen.
   subline:

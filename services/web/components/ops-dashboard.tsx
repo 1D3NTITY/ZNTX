@@ -97,8 +97,11 @@ const ARCHIVED_PROJECTS = PROJECTS.filter((p) => p.status === "archived");
 // Echte, aus PROJECTS berechnete Kennzahl (Lovable-Vergleichsentwurf, 2026-08-29, hatte eine
 // Kennzahlen-Leiste — Idee übernommen, Wert aber selbst neu/ehrlich definiert statt geraten).
 // zntx selbst zählt hier bewusst nicht mit — gleiche Konvention wie bei HERO.headlineEmphasis
-// ("acht Systeme" = PROJECTS.length minus das Meta-Projekt zntx), sonst widersprächen sich
-// Kennzahlen-Leiste und Headline (Bug gefunden bei der Verifikation: zeigte zunächst "7 von 9").
+// ("neun Systeme" = PROJECTS.length minus das Meta-Projekt zntx), sonst widersprächen sich
+// Kennzahlen-Leiste und Headline (Bug gefunden bei der Verifikation: zeigte zunächst "7 von 9";
+// zweiter Fund 2026-09-17: HERO.headlineEmphasis blieb nach einem neuen Projekt unbemerkt bei
+// "acht" stehen, obwohl hier schon korrekt neu gezählt wurde — Headline ist der einzige
+// hardcodierte Wert in dieser Kette, bei jedem PROJECTS-Wachstum von Hand nachziehen).
 // "im Betrieb" = alles außer explizit archiviert, nicht nur status "live".
 const REAL_SYSTEMS = PROJECTS.filter((p) => p.id !== "zntx");
 const SYSTEMS_IN_OPERATION = REAL_SYSTEMS.filter((p) => p.status !== "archived").length;

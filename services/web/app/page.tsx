@@ -6,7 +6,7 @@ import { getUptimeHistorySummary, getKumaSummary } from "@/lib/uptime-history";
 import { formatSnapshotTime } from "@/lib/labels";
 
 // Gleiche Zählweise wie in ops-dashboard.tsx: zntx selbst ist ein Meta-Eintrag und zählt nicht
-// als betriebenes System mit (sonst widerspräche die Boot-Ausgabe der Headline "acht Systeme").
+// als betriebenes System mit (sonst widerspräche die Boot-Ausgabe der Headline "neun Systeme").
 const REAL_SYSTEMS = PROJECTS.filter((p) => p.id !== "zntx");
 const SYSTEMS_IN_OPERATION = REAL_SYSTEMS.filter((p) => p.status !== "archived").length;
 
