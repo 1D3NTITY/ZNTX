@@ -22,13 +22,18 @@ export function HealthBar({ segments }: { segments: DaySegment[] }) {
   if (segments.length === 0) return null;
 
   return (
-    <span aria-hidden="true" className="flex min-w-0 flex-1 items-center gap-[2px]">
+    <span aria-hidden="true" className="flex min-w-0 flex-1 items-center gap-[1.5px]">
+      {/* Dünner + rounded-full statt Kasten (2026-09-17, Luis: "etwas dünner harmonischer") —
+          näher an den übrigen kleinen Leuchtpunkten der Seite (LiveLed, Boot-LEDs) als an einem
+          Balkendiagramm. Ein einstufiger Glow pro Segment (gleiches Muster wie dort), bewusst
+          nur ein Radius statt Kern+Hof — bei bis zu 30 Segmenten nebeneinander würde ein
+          zweistufiger Schein zu einer verwaschenen Fläche statt einzelner Lichtpunkte werden. */}
       {segments.map((s) => (
         <span
           key={s.date}
           title={`${s.date}: ${LABEL[s.status]}`}
-          className="h-2.5 flex-1 rounded-[1px]"
-          style={{ backgroundColor: COLOR[s.status] }}
+          className="h-1 flex-1 rounded-full"
+          style={{ backgroundColor: COLOR[s.status], boxShadow: `0 0 3px ${COLOR[s.status]}` }}
         />
       ))}
     </span>
