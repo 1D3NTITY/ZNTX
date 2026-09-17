@@ -3,6 +3,7 @@ import type { ProjectNode } from "@/lib/content";
 import type { LiveStatus } from "@/lib/status";
 import type { UptimeHistorySummary, KumaSummary } from "@/lib/uptime-history";
 import { formatProjectMeta, formatLiveStatus, formatRelativeTime } from "@/lib/labels";
+import { HealthBar } from "@/components/health-bar";
 
 // Ein Einschub im Server-Rack (Konzept F, 2026-08-27) — ersetzt die vorherige quadratische
 // Karte (project-card.tsx, gelöscht) durch eine horizontale Slot-Leiste, näher an der
@@ -103,25 +104,43 @@ export function RackSlot({
             gerendert wenn echte Daten vorliegen (mind. 1 Check je bisherigem Actions-Lauf) —
             direkt nach dem ersten Deploy, bevor der Workflow einmal gelaufen ist, bleibt die
             Zeile ehrlich weg statt "0 %" zu zeigen. */}
-        {!dimmed && uptime && (
-          <span className="mt-0.5 block font-mono text-[11px] text-foreground-muted">
-            {uptime.percent.toFixed(1)} % · {uptime.days} {uptime.days === 1 ? "Tag" : "Tage"}
+        {/* Health-Bars (2026-09-17, ersetzt die reine Prozent-Text-Zeile) — Tages-Segmente statt
+            Zahl, gleiche Daten wie zuvor. Zwei bewusst getrennte Zeilen (fachlich vs. Kuma-
+            Erreichbarkeit, siehe Kommentar bei der `kuma`-Prop oben) — nie zusammengelegt. Nur
+            gerendert, wenn Segmente vorliegen — gleiche "keine Zeile statt erfundener Wert"-
+            Regel wie zuvor bei der reinen Prozent-Zeile. */}
+        {!dimmed && uptime && uptime.segments.length > 0 && (
+          <span
+            className="mt-1 flex items-center gap-2"
+            title={`${uptime.percent.toFixed(1)} % · ${uptime.days} ${uptime.days === 1 ? "Tag" : "Tage"}`}
+          >
+            <span className="shrink-0 font-mono text-[10px] uppercase tracking-widest text-foreground-muted">
+              Status
+            </span>
+            <HealthBar segments={uptime.segments} />
+            <span className="sr-only">
+              {uptime.percent.toFixed(1)} % über {uptime.days} {uptime.days === 1 ? "Tag" : "Tage"}
+            </span>
           </span>
         )}
-        {/* Kuma-Reachability (2026-09-16) — eigene Zeile, bewusst nicht mit der Zeile darüber
-            zusammengelegt (siehe Kommentar bei der `kuma`-Prop oben). Nur gerendert, wenn
-            genügend Historie vorliegt (uptimePercent !== null) — direkt nach dem ersten
-            Actions-Lauf mit Kuma-Daten bleibt sie ehrlich weg statt "0 %" zu zeigen. */}
-        {!dimmed && kuma && kuma.uptimePercent !== null && (
+        {!dimmed && kuma && kuma.segments.length > 0 && (
           <span
-            className="mt-0.5 block font-mono text-[11px] text-foreground-muted"
+            className="mt-1 flex items-center gap-2"
             title={
-              kuma.lastCheckedAt
-                ? `Kuma zuletzt geprüft ${formatRelativeTime(kuma.lastCheckedAt)} — ${kuma.reachability}`
+              kuma.uptimePercent !== null
+                ? `${kuma.uptimePercent.toFixed(1)} % · ${kuma.days} ${kuma.days === 1 ? "Tag" : "Tage"}${
+                    kuma.lastCheckedAt ? ` · zuletzt geprüft ${formatRelativeTime(kuma.lastCheckedAt)}` : ""
+                  }`
                 : undefined
             }
           >
-            Erreichbarkeit {kuma.uptimePercent.toFixed(1)} % · {kuma.days} {kuma.days === 1 ? "Tag" : "Tage"}
+            <span className="shrink-0 font-mono text-[10px] uppercase tracking-widest text-foreground-muted">
+              Erreichbar
+            </span>
+            <HealthBar segments={kuma.segments} />
+            <span className="sr-only">
+              {kuma.uptimePercent?.toFixed(1)} % über {kuma.days} {kuma.days === 1 ? "Tag" : "Tage"}
+            </span>
           </span>
         )}
         {/* Attributions-Tag (2026-09-07, Recherche-Synthese) — löst den häufigsten

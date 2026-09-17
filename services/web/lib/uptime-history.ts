@@ -19,7 +19,20 @@ type RawSummary = {
   projects: Record<string, { days: DayBucket[]; kuma?: KumaEntry }>;
 };
 
-export type UptimeHistorySummary = { percent: number; days: number };
+/** Tages-Segment für die Health-Bar (2026-09-17, ersetzt die reine Prozent-Zeile im Rack-Slot).
+ *  "partial" = ein Tag mit gemischtem Ergebnis (manche Checks ok, manche nicht) — dritter Zustand
+ *  statt binärem up/down, damit ein einzelner Ausfall im Tagesverlauf nicht als "ganzer Tag down"
+ *  verzerrt wird, aber auch nicht unter den Tisch fällt. */
+export type DaySegmentStatus = "up" | "partial" | "down";
+export type DaySegment = { date: string; status: DaySegmentStatus };
+
+function segmentStatus(success: number, checks: number): DaySegmentStatus {
+  if (success === 0) return "down";
+  if (success === checks) return "up";
+  return "partial";
+}
+
+export type UptimeHistorySummary = { percent: number; days: number; segments: DaySegment[] };
 
 /** Kuma-Reachability-Gegenstück zu UptimeHistorySummary (2026-09-16, lib/kuma.ts) — bewusst
  *  eigener Typ statt Wiederverwendung: andere Semantik (Erreichbarkeit statt fachliche
@@ -29,6 +42,7 @@ export type KumaSummary = {
   lastCheckedAt: string | null;
   uptimePercent: number | null;
   days: number;
+  segments: DaySegment[];
 };
 
 const RAW_URL = `${GITHUB_REPO.replace("github.com", "raw.githubusercontent.com")}/main/data/uptime/summary.json`;
@@ -59,7 +73,11 @@ function computeSummary(raw: RawSummary): Record<string, UptimeHistorySummary | 
       { checks: 0, operational: 0 },
     );
     out[id] = totals.checks > 0
-      ? { percent: (totals.operational / totals.checks) * 100, days: days.length }
+      ? {
+          percent: (totals.operational / totals.checks) * 100,
+          days: days.length,
+          segments: days.map((d) => ({ date: d.date, status: segmentStatus(d.operational, d.checks) })),
+        }
       : null;
   }
   return out;
@@ -82,6 +100,7 @@ function computeKumaSummary(raw: RawSummary): Record<string, KumaSummary | null>
       lastCheckedAt: kuma.lastCheckedAt,
       uptimePercent: totals.checks > 0 ? (totals.up / totals.checks) * 100 : null,
       days: kuma.days.length,
+      segments: kuma.days.map((d) => ({ date: d.date, status: segmentStatus(d.up, d.checks) })),
     };
   }
   return out;
