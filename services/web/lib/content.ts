@@ -142,7 +142,7 @@ export const PROJECTS: ProjectNode[] = [
   },
   {
     id: "wardogs-community",
-    name: "ZBLT — Zivile Bergung, Logistik & Transport",
+    name: "ZBLT",
     role: "Discord-Bot + Community-Infrastruktur",
     status: "concept",
     url: "https://zblt.eu",
