@@ -32,6 +32,9 @@ export function Footer() {
           <a href="#row-contact" className="hover:text-accent">
             Kontakt
           </a>
+          <Link href="/status" className="hover:text-accent">
+            Status
+          </Link>
           <a
             href={LINKS.linkedin}
             target="_blank"

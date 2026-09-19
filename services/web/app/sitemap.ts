@@ -16,6 +16,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.6,
     })),
     {
+      url: "https://zntx.de/status",
+      lastModified: new Date(),
+      changeFrequency: "hourly",
+      priority: 0.4,
+    },
+    {
       url: "https://zntx.de/impressum",
       lastModified: new Date(),
       priority: 0.2,

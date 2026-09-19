@@ -31,6 +31,7 @@ export function HealthBarRow({
   percent,
   days,
   tooltipSuffix,
+  showPercent = false,
 }: {
   label: string;
   segments: DaySegment[];
@@ -38,6 +39,10 @@ export function HealthBarRow({
   days: number;
   /** Optionaler Zusatz im Hover-Tooltip, z. B. "zuletzt geprüft vor 3 Min." (Kuma). */
   tooltipSuffix?: string;
+  /** Prozentzahl sichtbar statt nur sr-only (2026-09-19, für die ausführliche /status-Seite —
+   *  die kompakten Aufrufstellen in rack-slot.tsx/project-case-study.tsx bleiben unverändert,
+   *  Default bleibt `false`). */
+  showPercent?: boolean;
 }) {
   if (segments.length === 0) return null;
   const daysLabel = `${days} ${days === 1 ? "Tag" : "Tage"}`;
@@ -52,9 +57,15 @@ export function HealthBarRow({
         {label}
       </span>
       <HealthBar segments={segments} />
-      <span className="sr-only">
-        {percentLabel ? `${percentLabel} über ${daysLabel}` : daysLabel}
-      </span>
+      {showPercent ? (
+        <span className="shrink-0 font-mono text-[11px] text-foreground-muted">
+          {percentLabel ?? "—"} · {daysLabel}
+        </span>
+      ) : (
+        <span className="sr-only">
+          {percentLabel ? `${percentLabel} über ${daysLabel}` : daysLabel}
+        </span>
+      )}
     </span>
   );
 }
