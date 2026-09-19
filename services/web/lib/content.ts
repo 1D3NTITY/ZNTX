@@ -390,7 +390,10 @@ export const HERO = {
   // widersprechen sich Headline und die live berechnete Kennzahlen-Leiste/Boot-Intro darunter
   // (genau das ist am 2026-09-17 passiert: wardogs-community kam am 16.09. dazu, PROJECTS ging
   // von 9 auf 10 Einträge / REAL_SYSTEMS von 8 auf 9, die Headline blieb unbemerkt bei "acht"
-  // stehen — beim finalen Vor-Pause-Check gefunden und hier korrigiert).
+  // stehen — beim finalen Vor-Pause-Check gefunden und hier korrigiert). ZWEITE Fundstelle
+  // desselben Bugs, gleicher Tag: `subline` unten hatte "acht produktive Systeme" ebenfalls
+  // hardcodiert stehen — ein erster grep nach "acht Systeme" hatte das wegen des Zwischenworts
+  // "produktive" nicht gefunden. Bei künftigen Änderungen beide Stellen UND `subline` prüfen.
   headlineLead: "Zwei Server,",
   headlineEmphasis: "neun Systeme, ein Betreiber.",
   // Gekürzt (2026-09-04, finaler Release-Check): der erste Satz wiederholte fast wörtlich, was
@@ -399,7 +402,7 @@ export const HERO = {
   // auf Mobile relevant. Der zweite Satz (Lagerbereich-Kontrast) bleibt, weil er die einzige neue
   // Information ist: keine Tatsache entfernt, nur die Doppelung gestrichen.
   subline:
-    "Beruflich aktuell im Lagerbereich — nebenbei volle Infrastruktur-Verantwortung für acht produktive Systeme auf zwei eigenen Servern.",
+    "Beruflich aktuell im Lagerbereich — nebenbei volle Infrastruktur-Verantwortung für neun produktive Systeme auf zwei eigenen Servern.",
 };
 
 export const BIO = {
