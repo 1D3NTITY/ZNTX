@@ -3,7 +3,9 @@
 import { motion, type Variants } from "motion/react";
 import type { ProjectNode } from "@/lib/content";
 import type { LiveStatus } from "@/lib/status";
+import type { UptimeHistorySummary, KumaSummary } from "@/lib/uptime-history";
 import { formatLiveStatus } from "@/lib/labels";
+import { HealthBarRow } from "@/components/health-bar";
 
 const container: Variants = {
   hidden: {},
@@ -77,9 +79,16 @@ function ProofBlock({ live }: { live: LiveStatus | null }) {
 export function ProjectCaseStudyBody({
   project,
   live = null,
+  uptime = null,
+  kuma = null,
 }: {
   project: ProjectNode;
   live?: LiveStatus | null;
+  /** Git-committed Historie (2026-09-19, gleiche Quelle wie die Startseiten-Karte,
+   *  siehe components/rack-slot.tsx) — vorher fehlte das hier komplett, die Detailseite wusste
+   *  dadurch scheinbar "weniger" als die eigene Karte auf der Startseite. */
+  uptime?: UptimeHistorySummary | null;
+  kuma?: KumaSummary | null;
 }) {
   const lead = SIGNATURE_LEAD[project.id];
 
@@ -91,6 +100,26 @@ export function ProjectCaseStudyBody({
     >
       <motion.div variants={item}>
         <ProofBlock live={live} />
+        {((uptime?.segments.length ?? 0) > 0 || (kuma?.segments.length ?? 0) > 0) && (
+          <div className="-mt-3 mb-6 flex flex-col gap-1">
+            {uptime && (
+              <HealthBarRow
+                label="Status"
+                segments={uptime.segments}
+                percent={uptime.percent}
+                days={uptime.days}
+              />
+            )}
+            {kuma && (
+              <HealthBarRow
+                label="Erreichbar"
+                segments={kuma.segments}
+                percent={kuma.uptimePercent}
+                days={kuma.days}
+              />
+            )}
+          </div>
+        )}
       </motion.div>
 
       {lead && (

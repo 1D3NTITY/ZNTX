@@ -151,7 +151,7 @@ export const PROJECTS: ProjectNode[] = [
     since: "September 2026",
     stack: ["discord.py", "OAuth2", "systemd", "nginx"],
     context:
-      "Nach der endgültigen Stilllegung des Arma-Reforger-Servers lebt der Discord-Bot als Basis für eine neue Crew weiter — ZBLT, benannt nach dem sechs Tage alten Taktikspiel WarDOGS. Ob das Spiel trägt, ist offen: der Entwickler hat seinen Vorgängertitel seinerzeit aufgegeben, entsprechend bewusst zurückhaltend ist der Aufbau.",
+      "Nach der endgültigen Stilllegung des Arma-Reforger-Servers lebt der Discord-Bot als Basis für eine neue Crew weiter — ZBLT, benannt nach dem sechs Tage alten Taktikspiel WarDOGS. Ob das Spiel trägt, ist offen: der Entwickler hat seinen Vorgängertitel damals aufgegeben, entsprechend bewusst zurückhaltend ist der Aufbau.",
     contribution:
       "Bot und Dashboard vollständig vom Arma-Code des Vorgängers befreit statt neu gebaut: bot.py von 6186 auf ~3900 Zeilen reduziert, dashboard.py von 3739 auf 3348, die RCON-Anbindung (bercon.py) komplett entfernt. Übrig blieb die spielunabhängige Substanz — 32 Slash-Commands, Ticket-System, Moderation mit Audit-Log, Event-RSVP, Rollen-Self-Assign, OAuth2-Web-Dashboard hinter nginx.",
     challenge:
@@ -383,26 +383,32 @@ export const HERO = {
   kicker: "§00 — SYSTEMS ON RECORD",
   // Zweizeilig für den Gradient-Headline-Stil (Alumica-Adaption 2026-08-27): erste Zeile
   // gedämpfter Weiß-Grau-Verlauf (Kontext), zweite Zeile kräftiger Orange-Rot-Verlauf (die
-  // eigentliche Kennzahl/Aussage) — statt einer durchgehend einfarbigen Zeile. Zusammen
-  // ergeben beide weiterhin den vollständigen Satz "Zwei Server, neun Systeme, ein Betreiber."
-  // WICHTIG: dieser Text ist hardcodiert, kein `${REAL_SYSTEMS.length}`-Interpolation — bei
-  // jeder Änderung an PROJECTS (neues Projekt, zntx-Filter) hier von Hand nachziehen, sonst
-  // widersprechen sich Headline und die live berechnete Kennzahlen-Leiste/Boot-Intro darunter
-  // (genau das ist am 2026-09-17 passiert: wardogs-community kam am 16.09. dazu, PROJECTS ging
-  // von 9 auf 10 Einträge / REAL_SYSTEMS von 8 auf 9, die Headline blieb unbemerkt bei "acht"
-  // stehen — beim finalen Vor-Pause-Check gefunden und hier korrigiert). ZWEITE Fundstelle
-  // desselben Bugs, gleicher Tag: `subline` unten hatte "acht produktive Systeme" ebenfalls
-  // hardcodiert stehen — ein erster grep nach "acht Systeme" hatte das wegen des Zwischenworts
-  // "produktive" nicht gefunden. Bei künftigen Änderungen beide Stellen UND `subline` prüfen.
+  // eigentliche Kennzahl/Aussage) — statt einer durchgehend einfarbigen Zeile.
+  //
+  // Update 2026-09-19 (ChatGPT-Zweitmeinung, Luis): headlineEmphasis und subline waren bis
+  // hierhin hardcodierte Prosa-Zahlen ("neun Systeme"/"neun produktive Systeme") — das hat in
+  // dieser Session schon zweimal zu einem stillen Auseinanderlaufen geführt, als ein neues
+  // Projekt dazukam (Headline blieb bei "acht" stehen, obwohl Kennzahlen-Leiste/Boot-Intro
+  // längst korrekt "9" zeigten). Root-Fix statt drittem Wortlaut-Hotfix: beide Felder sind
+  // jetzt Funktionen, aufgerufen in ops-dashboard.tsx mit den dort schon vorhandenen echten
+  // Werten (REAL_SYSTEMS.length, SYSTEMS_IN_OPERATION) — kann nicht mehr auseinanderlaufen.
+  // Ziffern statt ausgeschriebener Zahlwörter ("9" statt "neun"), konsistent mit der
+  // Kennzahlen-Leiste ("7 von 9"), die auch schon Ziffern nutzt.
+  //
+  // Zweiter, echter Fehler, den dieselbe Zweitmeinung aufgedeckt hat: subline behauptete "neun
+  // PRODUKTIVE Systeme" — zwei der neun (wcp-arma, n8n-automation) sind aber status:"archived",
+  // laufen also gar nicht. Das war keine Stilfrage, sondern eine echte Falschbehauptung
+  // (widersprach der sonst strikten "keine erfundenen Werte"-Linie dieses Projekts). Der neue
+  // Text macht den Unterschied explizit statt ihn zu verschweigen.
   headlineLead: "Zwei Server,",
-  headlineEmphasis: "neun Systeme, ein Betreiber.",
+  headlineEmphasis: (total: number) => `${total} Systeme, ein Betreiber.`,
   // Gekürzt (2026-09-04, finaler Release-Check): der erste Satz wiederholte fast wörtlich, was
   // plainIntro direkt darüber schon sagt ("baue/betreibe... läuft") und was headlineEmphasis
   // schon zeigt ("Systeme") — reine Redundanz in der ohnehin langen Hero-Textkette, gerade
   // auf Mobile relevant. Der zweite Satz (Lagerbereich-Kontrast) bleibt, weil er die einzige neue
   // Information ist: keine Tatsache entfernt, nur die Doppelung gestrichen.
-  subline:
-    "Beruflich aktuell im Lagerbereich — nebenbei volle Infrastruktur-Verantwortung für neun produktive Systeme auf zwei eigenen Servern.",
+  subline: (total: number, inOperation: number) =>
+    `Beruflich aktuell im Lagerbereich — nebenbei Infrastruktur-Verantwortung für ${total} Systeme auf zwei eigenen Servern, ${inOperation} davon aktuell produktiv.`,
 };
 
 export const BIO = {

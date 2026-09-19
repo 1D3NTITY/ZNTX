@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { PROJECTS, LINKS } from "@/lib/content";
 import { formatProjectMeta } from "@/lib/labels";
 import { getProjectStatuses } from "@/lib/status";
+import { getUptimeHistorySummary, getKumaSummary } from "@/lib/uptime-history";
 import { ProjectCaseStudyBody } from "@/components/project-case-study";
 import { IncidentCallout } from "@/components/incident-callout";
 
@@ -60,8 +61,19 @@ export default async function ProjectPage({
   const project = PROJECTS.find((p) => p.id === slug);
   if (!project) notFound();
 
-  const { statuses } = await getProjectStatuses();
+  // Drei unabhängige Fetches, gleiches Muster wie app/page.tsx — Live-Status (echter Fetch),
+  // fachliche Uptime-Historie und Kuma-Erreichbarkeit (beide git-committed). Ergänzt 2026-09-19
+  // (ChatGPT-Zweitmeinung): vorher zeigte diese Seite nur den Live-Status, die Health-Bars gab
+  // es nur auf der Startseiten-Karte — wirkte wie ein Widerspruch, wenn der Live-Fetch gerade
+  // fehlschlug ("nicht abrufbar"), obwohl längst Historie vorliegt.
+  const [{ statuses }, uptimeHistory, kumaSummary] = await Promise.all([
+    getProjectStatuses(),
+    getUptimeHistorySummary(),
+    getKumaSummary(),
+  ]);
   const live = statuses[project.id] ?? null;
+  const uptime = uptimeHistory[project.id] ?? null;
+  const kuma = kumaSummary[project.id] ?? null;
 
   return (
     <main className="mx-auto w-full max-w-3xl px-6 py-16 lg:px-0 lg:py-24">
@@ -110,7 +122,7 @@ export default async function ProjectPage({
         </div>
       )}
 
-      <ProjectCaseStudyBody project={project} live={live} />
+      <ProjectCaseStudyBody project={project} live={live} uptime={uptime} kuma={kuma} />
 
       <IncidentCallout projectId={project.id} />
 

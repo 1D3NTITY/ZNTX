@@ -18,6 +18,47 @@ const LABEL: Record<DaySegment["status"], string> = {
   down: "down",
 };
 
+/**
+ * Label + Health-Bar + sr-only-Prozentzahl + Hover-Tooltip in einer Zeile — das komplette
+ * Muster, das vorher zweimal inline in rack-slot.tsx stand (2026-09-19, ChatGPT-Zweitmeinung:
+ * dieselbe Historie fehlte auf der Projekt-Detailseite komplett, obwohl die Startseiten-Karte
+ * sie zeigt — wirkte wie ein Widerspruch zwischen beiden Seiten). Jetzt an beiden Stellen
+ * dieselbe Komponente statt zwei gepflegter Kopien.
+ */
+export function HealthBarRow({
+  label,
+  segments,
+  percent,
+  days,
+  tooltipSuffix,
+}: {
+  label: string;
+  segments: DaySegment[];
+  percent: number | null;
+  days: number;
+  /** Optionaler Zusatz im Hover-Tooltip, z. B. "zuletzt geprüft vor 3 Min." (Kuma). */
+  tooltipSuffix?: string;
+}) {
+  if (segments.length === 0) return null;
+  const daysLabel = `${days} ${days === 1 ? "Tag" : "Tage"}`;
+  const percentLabel = percent !== null ? `${percent.toFixed(1)} %` : null;
+  const title = percentLabel
+    ? [`${percentLabel} · ${daysLabel}`, tooltipSuffix].filter(Boolean).join(" · ")
+    : undefined;
+
+  return (
+    <span className="flex items-center gap-2" title={title}>
+      <span className="shrink-0 font-mono text-[10px] uppercase tracking-widest text-foreground-muted">
+        {label}
+      </span>
+      <HealthBar segments={segments} />
+      <span className="sr-only">
+        {percentLabel ? `${percentLabel} über ${daysLabel}` : daysLabel}
+      </span>
+    </span>
+  );
+}
+
 export function HealthBar({ segments }: { segments: DaySegment[] }) {
   if (segments.length === 0) return null;
 

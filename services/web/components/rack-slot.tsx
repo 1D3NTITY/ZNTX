@@ -3,7 +3,7 @@ import type { ProjectNode } from "@/lib/content";
 import type { LiveStatus } from "@/lib/status";
 import type { UptimeHistorySummary, KumaSummary } from "@/lib/uptime-history";
 import { formatProjectMeta, formatLiveStatus, formatRelativeTime } from "@/lib/labels";
-import { HealthBar } from "@/components/health-bar";
+import { HealthBarRow } from "@/components/health-bar";
 
 // Ein Einschub im Server-Rack (Konzept F, 2026-08-27) — ersetzt die vorherige quadratische
 // Karte (project-card.tsx, gelöscht) durch eine horizontale Slot-Leiste, näher an der
@@ -106,42 +106,31 @@ export function RackSlot({
             Zeile ehrlich weg statt "0 %" zu zeigen. */}
         {/* Health-Bars (2026-09-17, ersetzt die reine Prozent-Text-Zeile) — Tages-Segmente statt
             Zahl, gleiche Daten wie zuvor. Zwei bewusst getrennte Zeilen (fachlich vs. Kuma-
-            Erreichbarkeit, siehe Kommentar bei der `kuma`-Prop oben) — nie zusammengelegt. Nur
-            gerendert, wenn Segmente vorliegen — gleiche "keine Zeile statt erfundener Wert"-
-            Regel wie zuvor bei der reinen Prozent-Zeile. */}
-        {!dimmed && uptime && uptime.segments.length > 0 && (
-          <span
-            className="mt-1 flex items-center gap-2"
-            title={`${uptime.percent.toFixed(1)} % · ${uptime.days} ${uptime.days === 1 ? "Tag" : "Tage"}`}
-          >
-            <span className="shrink-0 font-mono text-[10px] uppercase tracking-widest text-foreground-muted">
-              Status
-            </span>
-            <HealthBar segments={uptime.segments} />
-            <span className="sr-only">
-              {uptime.percent.toFixed(1)} % über {uptime.days} {uptime.days === 1 ? "Tag" : "Tage"}
-            </span>
-          </span>
+            Erreichbarkeit, siehe Kommentar bei der `kuma`-Prop oben) — nie zusammengelegt.
+            Gemeinsame Komposition mit der Projekt-Detailseite über HealthBarRow (2026-09-19,
+            siehe components/health-bar.tsx). */}
+        {!dimmed && uptime && (
+          <div className="mt-1">
+            <HealthBarRow
+              label="Status"
+              segments={uptime.segments}
+              percent={uptime.percent}
+              days={uptime.days}
+            />
+          </div>
         )}
-        {!dimmed && kuma && kuma.segments.length > 0 && (
-          <span
-            className="mt-1 flex items-center gap-2"
-            title={
-              kuma.uptimePercent !== null
-                ? `${kuma.uptimePercent.toFixed(1)} % · ${kuma.days} ${kuma.days === 1 ? "Tag" : "Tage"}${
-                    kuma.lastCheckedAt ? ` · zuletzt geprüft ${formatRelativeTime(kuma.lastCheckedAt)}` : ""
-                  }`
-                : undefined
-            }
-          >
-            <span className="shrink-0 font-mono text-[10px] uppercase tracking-widest text-foreground-muted">
-              Erreichbar
-            </span>
-            <HealthBar segments={kuma.segments} />
-            <span className="sr-only">
-              {kuma.uptimePercent?.toFixed(1)} % über {kuma.days} {kuma.days === 1 ? "Tag" : "Tage"}
-            </span>
-          </span>
+        {!dimmed && kuma && (
+          <div className="mt-1">
+            <HealthBarRow
+              label="Erreichbar"
+              segments={kuma.segments}
+              percent={kuma.uptimePercent}
+              days={kuma.days}
+              tooltipSuffix={
+                kuma.lastCheckedAt ? `zuletzt geprüft ${formatRelativeTime(kuma.lastCheckedAt)}` : undefined
+              }
+            />
+          </div>
         )}
         {/* Attributions-Tag (2026-09-07, Recherche-Synthese) — löst den häufigsten
             Glaubwürdigkeits-Einwand ("unklare Eigenleistung") direkt auf der Startseite, ohne

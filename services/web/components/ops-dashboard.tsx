@@ -222,9 +222,13 @@ export function OpsDashboard({
             <span
               ref={heroGlitchRef}
               className="text-gradient-accent glow-bloom glitch-text block"
-              data-text={HERO.headlineEmphasis}
+              data-text={HERO.headlineEmphasis(REAL_SYSTEMS.length)}
             >
-              <AnimatedWords text={HERO.headlineEmphasis} delay={0.3} reducedMotion={reducedMotion} />
+              <AnimatedWords
+                text={HERO.headlineEmphasis(REAL_SYSTEMS.length)}
+                delay={0.3}
+                reducedMotion={reducedMotion}
+              />
             </span>
           </h1>
           <motion.p
@@ -232,7 +236,7 @@ export function OpsDashboard({
             transition={reducedMotion ? { duration: 0 } : undefined}
             className="mt-3 max-w-xl text-sm leading-relaxed text-foreground-muted sm:text-base"
           >
-            {HERO.subline}
+            {HERO.subline(REAL_SYSTEMS.length, SYSTEMS_IN_OPERATION)}
           </motion.p>
           <motion.p
             variants={heroItem}
@@ -298,11 +302,19 @@ export function OpsDashboard({
                 Sicherheitsaudits
               </p>
               {/* Ersetzt die vorherige "Verantwortung: Alleinbetrieb"-Kachel (2026-09-07,
-                  Recherche-Synthese: Tiefen-Beleg direkt neben der Breiten-Kennzahl "acht
+                  Recherche-Synthese: Tiefen-Beleg direkt neben der Breiten-Kennzahl "neun
                   Systeme" statt einer abstrakten Rollenangabe). Drei echte, bereits in
                   lib/content.ts dokumentierte Audits, keine neue Behauptung: ravepuls
-                  (fünfphasig), buchhaltung (40 Punkte), qntx (~150 Punkte). */}
-              <p className="mt-1 text-xs font-semibold text-foreground sm:text-sm">3 eigenständig</p>
+                  (fünfphasig), buchhaltung (40 Punkte), qntx (~150 Punkte). Tooltip ergänzt
+                  (2026-09-19, ChatGPT-Zweitmeinung): "3 eigenständig" war für Außenstehende
+                  ohne Kontext nicht auflösbar — welche 3 Audits stand nur hier im Kommentar,
+                  nie im UI. */}
+              <p
+                className="mt-1 text-xs font-semibold text-foreground sm:text-sm"
+                title="ravepuls (fünfphasig) · buchhaltung (40 Punkte) · qntx (~150 Punkte)"
+              >
+                3 eigenständig
+              </p>
             </div>
           </motion.div>
         </motion.div>

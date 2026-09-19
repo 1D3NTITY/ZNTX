@@ -10,8 +10,7 @@ läuft, statt nur zu behaupten, was ich kann.
 
 ## Was das hier zeigt
 
-Kein Template, kein Showcase-Mockup — die Seite betreibt sich selbst und zeigt echte
-Betriebsdaten, keine erfundenen:
+Die Seite betreibt sich selbst und zeigt echte Betriebsdaten:
 
 - **Zwei unabhängige Live-Signale pro Projekt** — fachlicher Status (projekteigener
   `/status`-Endpoint, z. B. "läuft der Sync noch") und reine Erreichbarkeit (self-hosted
