@@ -58,3 +58,13 @@ eigenes Setup hier nötig, siehe foodapp/ravepuls.
   `docs/friction-log.md`: `- [ ] YYYY-MM-DD: Beschreibung [status:: offen|behoben]`.
   Kein Ticket-System — der Steward reviewt wöchentlich.
 - Beide Dateien werden automatisch ins Obsidian-Server-Überblick-Vault gespiegelt.
+
+## GitHub-README (Steward-Konvention)
+Sobald dieses Projekt ein GitHub-Repository hat — **auch wenn es privat ist** — muss
+`README.md` professionell und vollständig sein, kein Stub/Platzhalter-Text. Mindestens:
+kurze, klare Projektbeschreibung, Tech-Stack, lokales Setup/Installation (copy-paste-fähig),
+Projektstruktur-Überblick, Deployment-Hinweis falls zutreffend. Bei einem **öffentlichen**
+Repo zusätzlich: Screenshots/Demo-Link falls sinnvoll, Badges (Build/Lizenz) falls passend.
+"Privat" ist kein Grund für Schlamperei — README wird trotzdem gelesen (Kollaboratoren,
+zukünftiges Ich, KI-Agents die das Repo klonen).
+
