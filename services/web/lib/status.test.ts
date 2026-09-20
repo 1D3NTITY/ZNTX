@@ -67,7 +67,7 @@ describe("getProjectStatuses", () => {
     });
     const fetchMock = vi.fn().mockReturnValue(pending.then(() => okResponse({ status: "operational" })));
     vi.stubGlobal("fetch", fetchMock);
-    const { getProjectStatuses } = await freshStatusModule();
+    const { getProjectStatuses, getMonitoredProjectIds } = await freshStatusModule();
 
     const p1 = getProjectStatuses();
     const p2 = getProjectStatuses();
@@ -75,6 +75,8 @@ describe("getProjectStatuses", () => {
     const [r1, r2] = await Promise.all([p1, p2]);
 
     expect(r1).toBe(r2); // dasselbe Objekt: beide haben dasselbe In-Flight-Promise erhalten
-    expect(fetchMock.mock.calls.length).toBe(5); // ein Durchlauf über alle 5 Endpoints, nicht 10
+    // Dynamisch statt hardcodiert (war "5", brach still als zntx als 6. Endpoint dazukam,
+    // 2026-09-20) — ein Durchlauf über alle konfigurierten Endpoints, nicht zwei.
+    expect(fetchMock.mock.calls.length).toBe(getMonitoredProjectIds().length);
   });
 });

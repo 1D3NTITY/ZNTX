@@ -53,6 +53,10 @@ const STATUS_ENDPOINTS: Record<string, { url: string; schema: LiveStatus["schema
   foodapp: { url: "https://api.zblt.eu/status", schema: "basic" },
   "matrix-chat": { url: "https://matrix.zntx.de/status", schema: "uptime" },
   qntx: { url: "https://qntx.zblt.eu/status", schema: "badge" },
+  // Selbst-Check (2026-09-20) — Fetch geht über die öffentliche Domain (Caddy) zurück auf den
+  // eigenen Container, gleiches Muster wie bei jedem anderen Projekt hier. Endpoint liegt unter
+  // /api/status statt /status, siehe Kommentar in app/api/status/route.ts.
+  zntx: { url: "https://zntx.de/api/status", schema: "basic" },
 };
 
 // Für scripts/uptime-check.ts (2026-09-08, Git-committed Uptime-History) — eine Quelle der
