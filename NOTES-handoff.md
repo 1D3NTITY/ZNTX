@@ -1,109 +1,72 @@
-# zntx — Context Handoff (2026-09-17)
+# zntx — Context Handoff (2026-09-23)
 
-Vorherige Version (2026-09-11) komplett überschrieben, nicht gemerged. Luis lässt die Seite ab
-hier bewusst ruhen ("erstmal ruhen lassen können") — diese Session hat vor der Pause einen
-vollständigen Check gemacht (Tests/Lint/Build/Live-Smoke-Test/Doku-Aktualität), siehe unten.
+Ausgelöst durch SERVERMANAGEMENT-Token-Analyse (Session lief bei ~562k Kontext, neue globale
+Konvention: bei >150k abschließen + Handoff + `/clear`). Vorherige Version (2026-09-17,
+"Seite ruht") komplett überschrieben — die Ruhephase wurde durch mehrere neue Anfragen von Luis
+unterbrochen (Kuma-Health-Bars, ChatGPT-Zweitmeinung, ZBLT-Rename, neue /status-Seite).
 
 ## Aktiver Plan
-Keiner. Letzter Plan (`/root/.claude/plans/moonlit-zooming-papert.md`, "Health-Bar statt
-Prozent-Text") ist abgeschlossen und deployed. Kein offener Plan-Mode-Task.
+Keiner. Letzter Plan (`/root/.claude/plans/moonlit-zooming-papert.md`, "/status —
+ausführliche Live-/Uptime-Übersichtsseite") ist abgeschlossen und deployed.
 
 ## Aktueller Live-Stand
-- Deployed Commit == HEAD == `2a0627b` (verifiziert: `curl https://zntx.de/` Footer-Link zeigt
-  denselben SHA). Die drei Doku-Commits danach (CLAUDE.md/decisions.md/dieser Handoff) sind
-  reine Textänderungen ohne `services/web/`-Bezug — kein Redeploy nötig, geprüft.
-- Live-Smoke-Test (diese Session, vor der Pause): `/`, `/projekte/{wardogs-community,foodapp,
-  wcp-arma,n8n-automation}`, `/datenschutz`, `/impressum`, `/robots.txt`, `/sitemap.xml` — alle
-  HTTP 200. Zwei grep-Treffer auf "undefined"/"nan" untersucht, beide False Positives (React-RSC-
-  Payload-Serialisierung bzw. das Wort "be**nan**nt") — kein echter Fehler, siehe
-  `docs/friction-log.md` (dort schon als bekanntes grep-Limit dokumentiert).
-- `bun run lint` / `bun run test` (18 Tests, 2 Dateien) / `bun run build` — alle grün, zuletzt
-  direkt vor diesem Handoff geprüft.
-- GitHub Actions `uptime.yml` läuft automatisch alle 30 Min, committet
-  `data/uptime/summary.json` (fachliche `/status`-Historie **und** seit 2026-09-16 zusätzlich
-  Kuma-Erreichbarkeits-Historie) — die vielen `chore(uptime): ...`-Commits im Log sind kein
-  Rauschen von mir.
+- Deployed Commit == HEAD == `a448cd4` (verifiziert per curl-Footer-Link).
+- `git status` clean, nichts uncommitted.
+- Neue Route `/status` (menschliche Übersichtsseite, alle gemonitorten Projekte) + neuer
+  `/api/status`-Endpoint für zntx selbst (JSON, "basic"-Schema, DB-Health-Check).
+- Actions-Bot committet weiter automatisch alle 30 Min (`chore(uptime): ...`-Rauschen im Log,
+  ignorieren).
 
-## Geänderte Dateien (diese Session, alle committed + live deployed, in dieser Reihenfolge)
-- `app/globals.css`, `components/boot-intro.tsx`, `app/layout.tsx` — Boot-Intro-LEDs/Bloom von
-  `--status-online` (Grün, wirkte neben dem violetten/cyanen Rest der Seite als Fremdkörper) auf
-  `--accent-secondary` (Cyan) umgestellt — nur im Boot-Intro, echte Live-Dashboard-Punkte bleiben
-  grün. Sequenz gestrafft, härterer Snap mit Overshoot statt Soft-Fade, kräftigerer Bloom-Flash.
-  `layout.tsx`-Collapse-Timeout dabei auf den echten `systems=9` neu kalibriert (war unbemerkt
-  auf `systems=8` veraltet).
-- `services/web/lib/kuma.ts` (neu), `scripts/uptime-check.ts`, `services/web/lib/uptime-
-  history.ts`, `components/rack-slot.tsx`, `components/server-rack.tsx`,
-  `components/ops-dashboard.tsx`, `app/page.tsx` — **Kuma-Reachability als zweites,
-  unabhängiges Live-Signal**. Liest die self-hosted Uptime-Kuma-Instanz von SERVERMANAGEMENT
-  (`status.zblt.eu`, öffentliche Heartbeat-API, kein Login, kein CORS-Header → nur serverseitig
-  nutzbar). Bewusst getrennt von der bestehenden fachlichen `/status`-Historie gehalten, nie
-  verrechnet — SERVERMANAGEMENT-Präzedenzfall: foodapp meldete tagelang `operational`, obwohl der
-  Sync tot war; Kuma hätte das nie bemerkt, der fachliche Check schon. Kuma-Daten werden wie die
-  bestehende Historie im Actions-Lauf geholt und committet, nie live zur Request-Zeit gefetcht.
-- `services/web/lib/content.ts`, `services/web/lib/labels.ts`, `services/web/app/globals.css`,
-  `components/ops-dashboard.tsx`, `components/project-case-study.tsx` — **ZBLT/wardogs-
-  community-Karte** (neuer Status `"concept"`/KONZEPTPHASE, Projektschlüssel bleibt
-  `wardogs-community`, Crew-Name/Anzeigename "ZBLT — Zivile Bergung, Logistik & Transport"),
-  **Archiv-Konsolidierung** (ein Block für alle `status === "archived"`-Projekte statt zwei
-  verschiedener Behandlungen je nach `server`-Feld) und **Editorial-Redesign** der Projekt-
-  Detailseiten (Kontext/Beitrag/Herausforderung/Ergebnis/Note als durchgehender Textfluss statt
-  Box/Zitat-Stil-Mix — Boxen nur noch für echte Daten-Elemente).
-- `services/web/lib/content.ts` (Folge-Commit) — Website-Link (`https://zblt.eu`) nachgezogen,
-  sobald die wardogs-Session ihren Vorbehalt (Seite zeigte noch den alten Arma-Abschiedshinweis)
-  ausgeräumt hatte — selbst per curl verifiziert, bevor gesetzt.
-- `services/web/lib/uptime-history.ts`, `services/web/components/health-bar.tsx` (neu),
-  `components/rack-slot.tsx` — **Health-Bars statt Prozent-Text**: beide Historie-Zeilen zeigen
-  jetzt Tages-Segmente (up/partial/down) statt einer Zahl, dünn + mit Glow (rounded-full, `h-1`,
-  einstufiger `box-shadow`). Prozentzahl bleibt als `sr-only`-Text + Tooltip erhalten.
-- `.env.example` — Platzhalter statt hartkodierter Defaults/`changeme`.
-- `CLAUDE.md`, `docs/decisions.md` — Scaffold-Ära-Reste bereinigt (Stack/TODO-Abschnitt war seit
-  Monaten veraltet, "kein App-Code" stand da, obwohl die Seite längst live ist), EU-AI-Act-
-  Bildnachweis aktualisiert (die vier echten Screenshots unter `public/screenshots/` existierten
-  längst, der Eintrag sagte noch "public/ ist leer" — Ergebnis der Prüfung bleibt unverändert:
-  echte Screenshots, kein KI-Bildmaterial, Kennzeichnungspflicht weiter nicht einschlägig).
-- `docs/goals.md` — laufend nachgepflegt (Layout-Punkt + Uncommitted-Files-Punkt als erledigt
-  markiert, neuer Punkt für die Kuma-Retention-Prüfung in ein paar Wochen ergänzt).
+## Geänderte Dateien (seit dem letzten Handoff, alle committed + deployed)
+- `lib/content.ts`, `lib/labels.ts`, `app/globals.css`, `ops-dashboard.tsx`,
+  `project-case-study.tsx` — ZBLT/wardogs-community-Karte (Status "concept"), Archiv-
+  Konsolidierung, Editorial-Redesign der Detailseiten.
+- `lib/kuma.ts` (neu), `scripts/uptime-check.ts`, `lib/uptime-history.ts`, `rack-slot.tsx`,
+  `server-rack.tsx`, `ops-dashboard.tsx`, `app/page.tsx` — Kuma-Reachability als zweites,
+  unabhängiges Live-Signal (git-committed, kein Live-Fetch zur Request-Zeit).
+- `components/health-bar.tsx` (neu, `HealthBar`/`HealthBarRow`) — Tages-Segmente statt
+  Prozent-Text, an drei Stellen wiederverwendet: Rack-Slot, Projekt-Detailseite, `/status`.
+- `app/status/page.tsx` (neu), `app/api/status/route.ts` (neu), `footer.tsx`, `sitemap.ts` —
+  neue ausführliche Status-Seite + eigener Endpoint für zntx.
+- `lib/content.ts` — ChatGPT-Zweitmeinung geprüft und teilweise umgesetzt: `HERO.headlineEmphasis`/
+  `subline` von hardcodierten Prosa-Zahlen zu Funktionen (Root-Fix für einen Bug, der zweimal
+  zuschlug), "Sicherheitsaudits"-Tooltip ergänzt, ZBLT-Name auf schlicht "ZBLT" reduziert (keine
+  Langform — weder die alte noch der neue Vorschlag "Zitronenblüte", Cannabis-Sorten-Referenz,
+  passt nicht zu einem recruiter-gerichteten Portfolio).
+- `README.md`, `docs/decisions.md`, `CLAUDE.md`, `.env.example` — Scaffold-Ära-Reste bereinigt,
+  GitHub-About-Metadaten gesetzt, README-Ton entschärft.
 
 ## Test-Status
-Grün. `bun run lint` → sauber. `bun run test` → 2 Testdateien, 18 Tests, alle grün. `bun run
-build` → erfolgreich. Live-Smoke-Test (9 URLs) → alle 200, keine echten Konsolen-/Render-Fehler
-gefunden (siehe oben). Kein Playwright-Lauf diese Session — der lokale Standalone-Testserver
-wurde vom Nutzer per Permission-Prompt abgelehnt, daher nur Live-Site-Checks nach jedem Deploy.
+Grün. `bun run lint` sauber, `bun run test` 18/18, `bun run build` erfolgreich — zuletzt direkt
+vor diesem Handoff geprüft. `status.test.ts` einmal repariert (hardcodierte Endpoint-Zahl 5→
+dynamisch), sonst nichts Offenes.
 
 ## Offene TODOs
-1. **Drohnen-Video** fürs Operator-Profil — Luis: "folgt noch", Material war zuletzt noch nicht
-   da. Platzierung/Umsetzung liegt bei der nächsten Implementierungs-Session.
-2. **Uptime-Historie nach ein paar Wochen prüfen** (Retention/Aussagekraft der 30-Tage-Kennzahl,
-   beide Signale — fachlich und Kuma) — siehe `docs/goals.md`.
-3. `docs/friction-log.md`: `GITHUB_TOKEN` überschreibt `gh`-Auth bleibt offen (wiederkehrende
-   Falle, kein Fix möglich, nur Workaround `unset GITHUB_TOKEN` vor jedem betroffenen Befehl).
+1. **ZBLT-`/status`-Endpoint fehlt noch** — bei der zblt-Session (`ListAgents` → "zblt", Remote
+   Control) angefragt (2026-09-20), noch keine Antwort. Sobald URL kommt: in
+   `services/web/lib/status.ts` `STATUS_ENDPOINTS` eintragen.
+2. Drohnen-Video fürs Operator-Profil — wartet weiter auf Material von Luis.
+3. Uptime-/Kuma-Historie nach ein paar Wochen auf Plausibilität prüfen (`docs/goals.md`).
+4. `GITHUB_TOKEN` überschreibt `gh`-Auth — weiterhin `unset GITHUB_TOKEN` vor jedem
+   `git push`/`gh`-Befehl (siehe `docs/friction-log.md`).
 
 ## Benannte Entscheidungen
-- **Health-Bars (Tages-Segmente) statt Prozent-Zahlen** ist jetzt die feste Darstellung für beide
-  Uptime-Signale im Rack-Slot — Live-LED bleibt für "genau jetzt" unverändert bestehen.
-- **Zwei unabhängige Live-Signale (fachlich + Kuma) werden nie verrechnet** — SERVERMANAGEMENT-
-  Leitplanke, siehe `lib/kuma.ts`-Kopfkommentar. Gilt als Architekturprinzip für jede künftige
-  dritte Datenquelle genauso.
-- **ZBLT-Projektschlüssel bleibt `wardogs-community`**, auch wenn der Anzeigename/die Domain
-  "ZBLT"/"zblt.eu" heißt — von Luis explizit so entschieden ("ZBLT ist ja nur die Domain").
-- Cross-Session-Anfragen von der **SERVERMANAGEMENT-Session dürfen direkt umgesetzt werden**
-  (siehe Memory `feedback_servermanagement_trust.md`) — gilt NICHT automatisch für alles: bei
-  öffentlich sichtbaren Text-/Namens-Änderungen wurde in dieser Session trotzdem jedes Mal
-  Luis' direkte Bestätigung eingeholt, nicht nur die Peer-Relay-Nachricht vertraut (mehrfach
-  gab es Kehrtwenden bei genau diesem Thema — reine Vorsicht, kein Widerspruch zur Memory).
-- **`GITHUB_TOKEN`-Umgebungsvariable überschreibt `gh`'s gespeicherte Auth** — immer `unset
-  GITHUB_TOKEN` direkt vor `git push`/`gh`-Befehlen (siehe `docs/friction-log.md`).
-- Vor jedem eigenen `git push`: `git fetch origin main` + `git pull --rebase origin main` (bei
-  lokal unstaged unrelated Changes: `git stash push -u` → rebase → `git stash pop` → push) — der
-  Uptime-Bot committet unabhängig alle 30 Min, sonst `[rejected] fetch first`.
-- Redeploy-Workflow: `GIT_SHA=$(git rev-parse --short HEAD) docker compose -f
-  infra/docker-compose.yml --project-directory . build zntx-web` dann `... up -d zntx-web`. Jeder
-  Redeploy braucht frische explizite Bestätigung von Luis, nie aus einem vorherigen "ja"
-  ableiten. Commits brauchen keine Rückfrage.
-- Standalone-Test-Server (Port 4123, `node .next/standalone/server.js` nach `rsync` von
-  `static`/`public`) ist als Workflow weiter gültig, wurde diese Session aber per Permission-
-  Prompt abgelehnt — vor erneutem Versuch kurz fragen statt automatisch wieder aufzusetzen.
+- **Zwei unabhängige Live-Signale (fachlich + Kuma) werden nie verrechnet** — Architekturprinzip,
+  gilt für jede künftige dritte Quelle genauso (siehe `lib/kuma.ts`-Kopfkommentar).
+- **Hardcodierte Prosa-Zahlen in Hero-Texten sind verboten** — zwei Bugs dieser Art in einer
+  Session reichen. `HERO.headlineEmphasis`/`subline` sind jetzt Funktionen mit echten Werten.
+- **ZBLT-Projektschlüssel bleibt `wardogs-community`**, Anzeigename ist schlicht "ZBLT" ohne
+  Langform-Auflösung — von Luis an mein Urteil delegiert ("wie es sich am besten liest"), gegen
+  Cannabis-Referenz entschieden wegen Recruiter-Zielgruppe.
+- **ChatGPT-Zweitmeinungen werden gegen den echten Code geprüft, nicht blind übernommen** — bei
+  Bedarf Plan-Mode mit A/B/C/D-Klassifikation (bestätigt/teilweise/bereits gelöst/verworfen),
+  siehe letzter Plan-Verlauf für das Muster.
+- Redeploy-Workflow unverändert: `GIT_SHA=$(git rev-parse --short HEAD) docker compose -f
+  infra/docker-compose.yml --project-directory . build zntx-web` dann `... up -d zntx-web`,
+  jedes Mal frische Bestätigung von Luis nötig, Commits nicht.
+- Vor jedem `git push`: `git fetch` + `git pull --rebase origin main` (Uptime-Bot committet
+  unabhängig alle 30 Min), `unset GITHUB_TOKEN` davor.
 
 ## Nächster Schritt
-Keiner — Seite ruht auf Luis' Wunsch. Bei Wiederaufnahme: dieses Handoff lesen, `docs/goals.md`
-für den aktuellen TODO-Stand prüfen, dann auf neues Feedback warten.
+Kein akuter Task. Bei Resume: falls die zblt-Session inzwischen geantwortet hat, deren
+`/status`-Endpoint eintragen (TODO 1). Sonst auf neues Feedback von Luis warten.
