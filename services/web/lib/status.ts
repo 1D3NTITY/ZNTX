@@ -57,6 +57,11 @@ const STATUS_ENDPOINTS: Record<string, { url: string; schema: LiveStatus["schema
   // eigenen Container, gleiches Muster wie bei jedem anderen Projekt hier. Endpoint liegt unter
   // /api/status statt /status, siehe Kommentar in app/api/status/route.ts.
   zntx: { url: "https://zntx.de/api/status", schema: "basic" },
+  // Nachgereicht (2026-09-24) — Endpoint kam von der zblt-Session, per curl gegengeprüft
+  // (Steward-Session). "operational" heißt dort konkret: Discord-Bot-Heartbeat < 180s alt.
+  // "down" liefert der Endpoint nie aktiv — ein toter Stack zeigt sich als Fetch-Fehler, den
+  // fetchOne() unten schon ehrlich auf null abbildet.
+  "wardogs-community": { url: "https://zblt.eu/status", schema: "basic" },
 };
 
 // Für scripts/uptime-check.ts (2026-09-08, Git-committed Uptime-History) — eine Quelle der
