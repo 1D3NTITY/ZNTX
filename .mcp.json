@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "foreign-agent-zntx": {
+      "type": "stdio",
+      "command": "/root/infra/foreign-agent/.venv/bin/python",
+      "args": [
+        "/root/infra/foreign-agent/mcp_server.py"
+      ],
+      "env": {
+        "FOREIGN_AGENT_PROJECT_ROOT": "/srv/zntx"
+      }
+    }
+  }
+}
