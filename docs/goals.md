@@ -14,6 +14,8 @@
       dazu kam — kein Handlungsbedarf mehr.
 - [ ] Git-committed Uptime-History (Actions-Workflow, alle 30 Min) läuft produktiv — nach ein
       paar Wochen echten Datenbestand prüfen (Retention/Aussagekraft der 30-Tage-Kennzahl).
+      [fällig:: 2026-10-10]
 - [ ] Kuma-Reachability-Signal (seit 2026-09-16 live, siehe `lib/kuma.ts`) — nach ein paar
       Actions-Läufen prüfen, ob die Erreichbarkeits-% plausibel aussehen (insbesondere
       `wardogs-community`/ZBLT, dessen Monitore erst seit kurzem aktiv laufen).
+      [fällig:: 2026-10-10]
