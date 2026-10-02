@@ -1,8 +1,10 @@
-# zntx — Context Handoff (2026-09-30)
+# zntx — Context Handoff (2026-10-02)
 
-Ausgelöst durch bevorstehenden Server-Neustart (SERVERMANAGEMENT-Meldung). Vorherige Version
-(2026-09-25) komplett überschrieben — deren einziger offener TODO (graphify-Freigabe) ist
-erledigt.
+Ausgelöst durch bevorstehenden Server-Neustart (SERVERMANAGEMENT-Meldung). Seit der Vorversion
+(2026-09-30) keine Implementierungsarbeit in dieser Session — nur automatisierte
+Uptime-Chore-Commits (`b32b5f8` ff.) liefen in der Zwischenzeit. Alle TODOs unten unverändert
+offen; geprüft (nicht nur übernommen): `services/web/AGENTS.md` + `CLAUDE.md` existieren noch,
+`.git/hooks/post-commit` existiert weiterhin nicht.
 
 ## Aktiver Plan
 `/root/.claude/plans/giggly-herding-rainbow.md` — Hero-Headline "cooler/wow" + Farbanpassung,
@@ -11,9 +13,8 @@ nicht Boot-Intro. Noch keine Konzepte ausgearbeitet — nächster Schritt bei Wi
 echte Alternativkonzepte (nicht nur Parameter-Tuning) per AskUserQuestion vorlegen, siehe
 Präzedenzfall Boot-Intro-Konzeptwahl 2026-09-07 in `boot-intro.tsx`-Kopfkommentar.
 
-## Geänderte Dateien (dieser Session, noch NICHT committed)
-- `docs/goals.md` — `[fällig:: 2026-10-10]` an beiden Uptime-/Kuma-Plausibilitäts-TODOs ergänzt.
-- `NOTES-handoff.md` (gelöscht, alter Stand) → ersetzt durch diese Datei.
+## Geänderte Dateien (dieser Session)
+Keine Code-/Content-Änderungen — nur dieses Handoff-Datum/Status-Refresh vor dem Neustart.
 
 ## Offene TODOs
 1. **`services/web/AGENTS.md` + `services/web/CLAUDE.md` entfernen** — Sicherheitsfund diese
@@ -61,9 +62,8 @@ Präzedenzfall Boot-Intro-Konzeptwahl 2026-09-07 in `boot-intro.tsx`-Kopfkomment
   Commits). Dauerhafter Hook siehe TODO 3.
 
 ## Test-Status
-Nicht in dieser Session erneut geprüft — letzter bekannter Stand (2026-09-25, vor Handoff-
-Neustart): `bun run lint` sauber, `bun run test` 18/18. Vor nächster Implementierung neu
-verifizieren.
+Weiterhin nicht erneut geprüft seit 2026-09-25: `bun run lint` sauber, `bun run test` 18/18.
+Vor nächster Implementierung neu verifizieren.
 
 ## Nächster Schritt
 Bei Resume: TODO 1 (AGENTS.md-Entfernung) und TODO 3 (Hook-Installation) zuerst erledigen (beide
