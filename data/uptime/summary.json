@@ -1,13 +1,8 @@
 {
-  "updatedAt": "2026-10-10T21:22:59.111Z",
+  "updatedAt": "2026-10-11T00:22:24.624Z",
   "projects": {
     "ravepuls": {
       "days": [
-        {
-          "date": "2026-09-11",
-          "checks": 7,
-          "operational": 7
-        },
         {
           "date": "2026-09-12",
           "checks": 7,
@@ -152,11 +147,16 @@
           "date": "2026-10-10",
           "checks": 5,
           "operational": 5
+        },
+        {
+          "date": "2026-10-11",
+          "checks": 1,
+          "operational": 1
         }
       ],
       "kuma": {
         "lastStatus": "up",
-        "lastCheckedAt": "2026-10-10T21:22:59.111Z",
+        "lastCheckedAt": "2026-10-11T00:22:24.623Z",
         "days": [
           {
             "date": "2026-09-16",
@@ -282,6 +282,11 @@
             "date": "2026-10-10",
             "checks": 5,
             "up": 5
+          },
+          {
+            "date": "2026-10-11",
+            "checks": 1,
+            "up": 1
           }
         ]
       }
@@ -289,11 +294,6 @@
     "buchhaltung": {
       "days": [
         {
-          "date": "2026-09-11",
-          "checks": 7,
-          "operational": 6
-        },
-        {
           "date": "2026-09-12",
           "checks": 7,
           "operational": 7
@@ -437,11 +437,16 @@
           "date": "2026-10-10",
           "checks": 5,
           "operational": 5
+        },
+        {
+          "date": "2026-10-11",
+          "checks": 1,
+          "operational": 1
         }
       ],
       "kuma": {
         "lastStatus": "up",
-        "lastCheckedAt": "2026-10-10T21:22:59.111Z",
+        "lastCheckedAt": "2026-10-11T00:22:24.623Z",
         "days": [
           {
             "date": "2026-09-16",
@@ -567,17 +572,17 @@
             "date": "2026-10-10",
             "checks": 5,
             "up": 5
+          },
+          {
+            "date": "2026-10-11",
+            "checks": 1,
+            "up": 1
           }
         ]
       }
     },
     "foodapp": {
       "days": [
-        {
-          "date": "2026-09-11",
-          "checks": 7,
-          "operational": 5
-        },
         {
           "date": "2026-09-12",
           "checks": 7,
@@ -722,11 +727,16 @@
           "date": "2026-10-10",
           "checks": 5,
           "operational": 5
+        },
+        {
+          "date": "2026-10-11",
+          "checks": 1,
+          "operational": 1
         }
       ],
       "kuma": {
         "lastStatus": "up",
-        "lastCheckedAt": "2026-10-10T21:22:59.111Z",
+        "lastCheckedAt": "2026-10-11T00:22:24.623Z",
         "days": [
           {
             "date": "2026-09-16",
@@ -852,6 +862,11 @@
             "date": "2026-10-10",
             "checks": 5,
             "up": 5
+          },
+          {
+            "date": "2026-10-11",
+            "checks": 1,
+            "up": 1
           }
         ]
       }
@@ -859,11 +874,6 @@
     "matrix-chat": {
       "days": [
         {
-          "date": "2026-09-11",
-          "checks": 7,
-          "operational": 7
-        },
-        {
           "date": "2026-09-12",
           "checks": 7,
           "operational": 7
@@ -1007,11 +1017,16 @@
           "date": "2026-10-10",
           "checks": 5,
           "operational": 5
+        },
+        {
+          "date": "2026-10-11",
+          "checks": 1,
+          "operational": 1
         }
       ],
       "kuma": {
         "lastStatus": "up",
-        "lastCheckedAt": "2026-10-10T21:22:59.111Z",
+        "lastCheckedAt": "2026-10-11T00:22:24.623Z",
         "days": [
           {
             "date": "2026-09-16",
@@ -1137,6 +1152,11 @@
             "date": "2026-10-10",
             "checks": 5,
             "up": 5
+          },
+          {
+            "date": "2026-10-11",
+            "checks": 1,
+            "up": 1
           }
         ]
       }
@@ -1144,11 +1164,6 @@
     "qntx": {
       "days": [
         {
-          "date": "2026-09-11",
-          "checks": 7,
-          "operational": 7
-        },
-        {
           "date": "2026-09-12",
           "checks": 7,
           "operational": 7
@@ -1292,11 +1307,16 @@
           "date": "2026-10-10",
           "checks": 5,
           "operational": 5
+        },
+        {
+          "date": "2026-10-11",
+          "checks": 1,
+          "operational": 1
         }
       ],
       "kuma": {
         "lastStatus": "up",
-        "lastCheckedAt": "2026-10-10T21:22:59.111Z",
+        "lastCheckedAt": "2026-10-11T00:22:24.623Z",
         "days": [
           {
             "date": "2026-09-16",
@@ -1422,6 +1442,11 @@
             "date": "2026-10-10",
             "checks": 5,
             "up": 5
+          },
+          {
+            "date": "2026-10-11",
+            "checks": 1,
+            "up": 1
           }
         ]
       }
@@ -1532,11 +1557,16 @@
           "date": "2026-10-10",
           "checks": 5,
           "operational": 5
+        },
+        {
+          "date": "2026-10-11",
+          "checks": 1,
+          "operational": 1
         }
       ],
       "kuma": {
         "lastStatus": "up",
-        "lastCheckedAt": "2026-10-10T21:22:59.111Z",
+        "lastCheckedAt": "2026-10-11T00:22:24.623Z",
         "days": [
           {
             "date": "2026-09-16",
@@ -1662,6 +1692,11 @@
             "date": "2026-10-10",
             "checks": 5,
             "up": 5
+          },
+          {
+            "date": "2026-10-11",
+            "checks": 1,
+            "up": 1
           }
         ]
       }
@@ -1752,11 +1787,16 @@
           "date": "2026-10-10",
           "checks": 5,
           "operational": 5
+        },
+        {
+          "date": "2026-10-11",
+          "checks": 1,
+          "operational": 1
         }
       ],
       "kuma": {
         "lastStatus": "up",
-        "lastCheckedAt": "2026-10-10T21:22:59.111Z",
+        "lastCheckedAt": "2026-10-11T00:22:24.623Z",
         "days": [
           {
             "date": "2026-09-16",
@@ -1882,6 +1922,11 @@
             "date": "2026-10-10",
             "checks": 5,
             "up": 5
+          },
+          {
+            "date": "2026-10-11",
+            "checks": 1,
+            "up": 1
           }
         ]
       }
