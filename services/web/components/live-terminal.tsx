@@ -127,7 +127,7 @@ function runCommand(
 
     case "whoami":
       return [
-        { kind: "accent", text: "  Luis — Betreiber" },
+        { kind: "accent", text: "  ZNTX — Betreiber-Profil" },
         { kind: "out", text: `  ${BIO.dayJob}` },
         { kind: "out", text: `  ${BIO.passion}` },
         { kind: "dim", text: "  Details unter 'Operator-Profil' weiter unten auf der Seite." },

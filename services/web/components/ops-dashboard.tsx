@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion, type Variants } from "motion/react";
-import { PROJECTS, HERO, LINKS } from "@/lib/content";
+import { PROJECTS, HERO } from "@/lib/content";
 import { DashboardRow } from "@/components/dashboard-row";
 import { ServerRack } from "@/components/server-rack";
 import { RackSlot } from "@/components/rack-slot";
@@ -263,14 +263,6 @@ export function OpsDashboard({
                 →
               </span>
             </button>
-            <a
-              href={LINKS.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="glass rounded-full px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-foreground-muted transition-all duration-300 hover:border-accent hover:text-accent hover:shadow-[0_0_16px_color-mix(in_srgb,var(--accent)_20%,transparent)]"
-            >
-              LinkedIn ↗
-            </a>
           </motion.div>
           {/* Kennzahlen-Leiste (Idee aus einem Lovable-Vergleichsentwurf, 2026-08-29) — echte,
               aus content.ts berechnete/statische Werte, kein erfundenes Marketing-KPI. */}

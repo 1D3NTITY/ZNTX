@@ -358,7 +358,6 @@ export const INCIDENTS = [
 ];
 
 export const LINKS = {
-  linkedin: "https://www.linkedin.com/in/luis-b-668750319/",
   contactEmail: "kontakt@zntx.de",
 };
 
@@ -372,7 +371,7 @@ export const GITHUB_REPO = "https://github.com/1D3NTITY/ZNTX";
 // oben) ohne Klick in die Operator-Profil-Zeile scannbar — die zwei am besten
 // belegten Rollen aus ROLE_FIT, nicht alle fünf (sonst keine Tagline mehr).
 export const HERO = {
-  name: "Luis",
+  name: "ZNTX",
   // Klartext-Einstieg (2026-09-03) — steht laut Zweitmeinungs-Runde (Recruiter-/Designer-Rolle,
   // ChatGPT, alle unabhängig zum selben Befund gekommen) zu spät: die Flex-Headline darunter
   // ("Zwei Server, neun Systeme...") ist in 3 Sekunden ohne Vorwissen nicht selbsterklärend,

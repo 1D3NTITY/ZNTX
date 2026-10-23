@@ -11,5 +11,23 @@
         ]
       }
     ]
+  },
+  "autoMode": {
+    "allow": [
+      "$defaults",
+      "Bash(systemctl reload caddy) after a Caddyfile change the user already approved in this chat and that passed `caddy validate`"
+    ],
+    "environment": [
+      "### Org-wide",
+      "**Repository visibility**: private (github.com/1D3NTITY/ZNTX)",
+      "**Secrets management**: Local `.env` files (gitignored) with `.env.example` documenting keys; secrets never read/written by the agent per user CLAUDE.md hard rule",
+      "**Network posture**: SSH-based access to a second server (45.93.249.168); writes there require explicit per-action confirmation",
+      "**Key internal services**: Caddy (sole ingress), this project is an implementation-session exception (unlike most of the other 9 projects) — the user has explicitly authorized direct code edits here, see /root/.claude/hooks/scope-guard.py's IMPLEMENTATION_SESSION_ROOTS",
+      "**Sensitive data locations**: `.env*`, `secrets/**`, `~/.ssh/**`, `~/.aws/**` — never read or written per hard rule",
+      "### User-specific",
+      "**Primary use of Claude Code**: this is one of 10 managed projects on a personal infra server; a separate SERVERMANAGEMENT Steward session coordinates Claude-Code-settings/conventions across all of them",
+      "**Trusted repo**: this project's own working directory (/srv/zntx) and its configured origin remote (github.com/1D3NTITY/ZNTX)",
+      "**Note**: `GITHUB_TOKEN` env var, if set, overrides `gh`'s own auth and breaks `gh repo create`/workflow pushes — known issue, `unset GITHUB_TOKEN` before such operations, not a security concern"
+    ]
   }
 }

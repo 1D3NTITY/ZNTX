@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { PROJECTS, LINKS } from "@/lib/content";
+import { PROJECTS } from "@/lib/content";
 import { formatProjectMeta } from "@/lib/labels";
 import { getProjectStatuses } from "@/lib/status";
 import { getUptimeHistorySummary, getKumaSummary } from "@/lib/uptime-history";
@@ -142,14 +142,6 @@ export default async function ProjectPage({
         >
           Schreib mir →
         </Link>
-        <a
-          href={LINKS.linkedin}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="ml-3 inline-block rounded border border-border px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-foreground-muted transition-colors hover:border-accent hover:text-accent"
-        >
-          LinkedIn ↗
-        </a>
       </div>
     </main>
   );

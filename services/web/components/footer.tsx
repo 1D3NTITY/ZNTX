@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LINKS, GITHUB_REPO } from "@/lib/content";
+import { GITHUB_REPO } from "@/lib/content";
 
 // Git-SHA-Provenance (2026-09-07, Recherche-Synthese: "Betrachter kann Live-Code 1:1 mit dem
 // angezeigten Commit abgleichen" — stärkeres Beweismittel als eine bloße Behauptung). Kommt aus
@@ -35,14 +35,6 @@ export function Footer() {
           <Link href="/status" className="hover:text-accent">
             Status
           </Link>
-          <a
-            href={LINKS.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-accent"
-          >
-            LinkedIn
-          </a>
           <Link href="/impressum" className="hover:text-accent">
             Impressum
           </Link>

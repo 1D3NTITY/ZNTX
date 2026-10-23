@@ -35,7 +35,7 @@ const chakraPetch = Chakra_Petch({
   weight: ["600", "700"],
 });
 
-const TITLE = "zntx — Luis";
+const TITLE = "zntx — Infrastructure, not just words.";
 const DESCRIPTION =
   "Full-Stack-Entwicklung & Server-Infrastruktur: echte Produktiv-Infrastruktur über mehrere Server, Docker/Caddy/Postgres-Betrieb, laufende Projekte statt Prototypen.";
 
@@ -61,19 +61,15 @@ export const metadata: Metadata = {
   },
 };
 
-// JSON-LD (Person + WebSite, schema.org) — hilft Suchmaschinen/AI-Crawlern, Luis als Person und
-// zntx.de als Site einzuordnen. Natives <script>, kein next/script (Doku: next/script ist für
-// ausführbaren Code optimiert, nicht für reine Strukturdaten). Sanitized nach offiziell empfohlenem
-// XSS-Pattern (< → <), da dangerouslySetInnerHTML verwendet wird.
+// JSON-LD (WebSite, schema.org) — hilft Suchmaschinen/AI-Crawlern, zntx.de als Site einzuordnen.
+// Natives <script>, kein next/script (Doku: next/script ist für ausführbaren Code optimiert,
+// nicht für reine Strukturdaten). Sanitized nach offiziell empfohlenem XSS-Pattern (< → <), da
+// dangerouslySetInnerHTML verwendet wird.
+// Person-Entity (2026-10-23 entfernt, Luis: keine personenbezogenen Referenzen mehr, rein
+// technisches Profil) — enthielt Klartext-Name + LinkedIn-sameAs.
 const JSON_LD = {
   "@context": "https://schema.org",
   "@graph": [
-    {
-      "@type": "Person",
-      name: "Luis",
-      url: "https://zntx.de",
-      sameAs: ["https://www.linkedin.com/in/luis-b-668750319/"],
-    },
     {
       "@type": "WebSite",
       name: "zntx",
